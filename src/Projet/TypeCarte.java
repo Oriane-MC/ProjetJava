@@ -18,6 +18,7 @@ public enum TypeCarte {
 	CARTE14(1,"pique","HighestTrefle"),
 	CARTE15(1,"pique","Majority3"),
 	CARTE16(1,"pique","Majority2"),
+	CARTE18(18,"d","d"),
 	CARTE17(1,"pique","LowestTrefle");
 
 	private int valeur ;
