@@ -6,7 +6,6 @@ public class PaquetCarte {
 	
 	private LinkedList<Carte> listPioche;
 	
-	
 	public PaquetCarte(LinkedList<Carte> list) {
 		this.listPioche = list;
 	}
@@ -14,5 +13,20 @@ public class PaquetCarte {
 	public Carte piocher() {
 		return this.listPioche.poll();
 	}
+
+	public LinkedList<Carte> getListPioche() {
+		return listPioche;
+	}
+
+	public void setListPioche(LinkedList<Carte> listPioche) {
+		this.listPioche = listPioche;
+	}
+
+	
+	public String toString() {
+		return "Pioche : [ " + listPioche + " ]"; 
+	}
+	
+	
 
 }

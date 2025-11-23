@@ -20,9 +20,6 @@ public enum TypeCarte {
 	CARTE16(1,"pique","Majority2"),
 	CARTE17(1,"pique","LowestTrefle");
 
-
-
-
 	private int valeur ;
 	private String couleur;
 	private String condition;

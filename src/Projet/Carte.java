@@ -9,13 +9,21 @@ public class Carte {
 	
 	
 	public Carte(TypeCarte typeCarte) {
-		this.carte = typeCarte;
+		this.setCarte(typeCarte);
 		this.extension = false ; //pas sur que ce soir la bonne manière de procéder
 		
 	}
 	
 	public void estExtension() { //pas sur de cette manière de procéder 
 		this.extension = true;
+	}
+
+	public TypeCarte getCarte() {
+		return carte;
+	}
+
+	public void setCarte(TypeCarte carte) {
+		this.carte = carte;
 	}
 	
 }
