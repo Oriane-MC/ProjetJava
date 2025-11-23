@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Partie {
 	
-	private ArrayList<Joueur> listJoueur;
+	//private ArrayList<Joueur> listJoueur;
 	private LinkedList<Carte> listCarte;
 	//private List[Score] listScore;
 	private String etatPartie;
@@ -12,9 +12,13 @@ public class Partie {
 	
 	
 	public Partie() {
-		this.listJoueur = new ArrayList();
+		//this.listJoueur = new ArrayList();
 		this.listCarte = new LinkedList();
-			
+		this.etatPartie = "en cours";
+		
+		for (TypeCarte carte : TypeCarte.values()) {
+            listCarte.add(new Carte(carte.getValeur(), carte.getCouleur(), carte.getCondition()));
+        }	
 	}
 	
 	
@@ -31,11 +35,32 @@ public class Partie {
 		new PaquetCarte(listCarte);
 	}
 	
+	//public void ajouterJoueur(Joueur j) {
+	//	this.listJoueur.add(j);
+	//}
 	
-	public static main (String[args]) {
+	
+	
+	public String toString() {
+		return "Partie [etatPartie= " + etatPartie + " ; Joueur = ; Paquet Carte" + listCarte +  
+				"; variantes=" + variantes + "]";
+		//" + listJoueur + " 
+	}
+
+
+	public static void main (String[] args) {
 		// 1- demander si variantes ou pas 
 		// 2- demander si extension ou pas
+		Partie p = new Partie();
 		
+		//ajouter les joueurs
+		
+		p.mélanger();
+		p.répartir();
+		
+		System.out.println(p);
+		
+		// chaque joueur crée leurs offre 
 		
 	}
 }

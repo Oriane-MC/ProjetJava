@@ -7,6 +7,7 @@ public class Trophee {
 	private LinkedList<Carte> listTrophee;
 	
 	public Trophee (Carte c1, Carte c2) {
+		this.listTrophee = new LinkedList();
 		this.listTrophee.add(c1);
 		this.listTrophee.add(c2);
 	}

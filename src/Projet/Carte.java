@@ -4,26 +4,55 @@ package Projet;
 
 public class Carte {
 	
-	private TypeCarte carte;
+	private int valeur;
+	private String couleur;
+	private String condition;
 	private boolean extension;   //comment on va faire pour gérer ça ?
 	
 	
-	public Carte(TypeCarte typeCarte) {
-		this.setCarte(typeCarte);
-		this.extension = false ; //pas sur que ce soir la bonne manière de procéder
-		
+	public Carte(int valeur, String couleur, String condition) {
+		this.valeur = valeur;
+		this.couleur = couleur;
+		this.condition = condition;
+		this.extension = false ; //pas sur que ce soir la bonne manière de procéder	
+	}
+	
+	public String toString() {
+		return valeur +" de " + couleur + " / condition : "+ condition + " / extension="
+				+ extension;
+	}
+
+	public int getValeur() {
+		return valeur;
+	}
+
+	public void setValeur(int valeur) {
+		this.valeur = valeur;
+	}
+
+	public String getCouleur() {
+		return couleur;
+	}
+
+	public void setCouleur(String couleur) {
+		this.couleur = couleur;
+	}
+
+	public String getCondition() {
+		return condition;
+	}
+
+	public void setCondition(String condition) {
+		this.condition = condition;
+	}
+
+	public boolean getExtension() {
+		return extension;
 	}
 	
 	public void estExtension() { //pas sur de cette manière de procéder 
 		this.extension = true;
 	}
 
-	public TypeCarte getCarte() {
-		return carte;
-	}
-
-	public void setCarte(TypeCarte carte) {
-		this.carte = carte;
-	}
 	
 }
