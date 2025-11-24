@@ -1,2 +1,2 @@
-module JestProjet {
+module projetLO02 {
 }
