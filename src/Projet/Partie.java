@@ -41,6 +41,14 @@ public class Partie {
 	}
 	
 	public void calculerScore() {
+		
+		// il faut fixé les deck des joeurs au debut du calcul : on ne prend pas en compte l'effet de l'obtention d'un 
+		// trophées sur la determination de l'obtention du 2eme trophées 
+		
+		
+		// attention dans le cas ou le joker est un des trophées et que l'autre trophées a une condition sur le joker 
+		// alors on choisit de ne pas donner le trophée avec la condition sur le joker ou alors le joueur concernait 
+		// (celui qui a le plus de point (la condition du joker) prends les DEUX cartes
 
 		for (Carte t : this.Trophees.getListTrophee() ) {
 			
@@ -86,11 +94,14 @@ public class Partie {
 		// 1- demander si variantes ou pas 
 		// 2- demander si extension ou pas
 		Partie p = new Partie();
-		
-		//ajouter les joueurs
-		
+				
+		Joueur j1 = new Joueur(j1,REEL); // je ne sais plus comment on fait pour récupérer une valeur d'une énumeration 
+		Joueur j2 = new Joueur(j2,REEL);
+				
 		p.mélanger();
 		p.répartir();
+		
+		
 		
 		System.out.println(p);
 		

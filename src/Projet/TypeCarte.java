@@ -7,18 +7,18 @@ public enum TypeCarte {
 	CARTE3(2,"coeur","Joker"),
 	CARTE4(3,"coeur","Joker"),
 	CARTE5(4,"coeur","Joker"),
-	CARTE6(1,"carreau","Majority4"),
-	CARTE7(2,"carreau","HighestCarreau"),
-	CARTE8(3,"carreau","LowestCarreau"),
+	CARTE6(1,"carreau","Majority"),
+	CARTE7(2,"carreau","Highest"),
+	CARTE8(3,"carreau","Lowest"),
 	CARTE9(4,"carreau","BestJestAndNoJoker"),
-	CARTE10(1,"trèfle","HighestPique"),
-	CARTE11(2,"trèfle","LowestCoeur"),
-	CARTE12(3,"trèfle","HighestCoeur"),
-	CARTE13(4,"trèfle","LowesttPique"),
-	CARTE14(1,"pique","HighestTrefle"),
-	CARTE15(1,"pique","Majority3"),
-	CARTE16(1,"pique","Majority2"),
-	CARTE17(1,"pique","LowestTrefle");
+	CARTE10(1,"trèfle","Highest"),
+	CARTE11(2,"trèfle","Lowest"),
+	CARTE12(3,"trèfle","Highest"),
+	CARTE13(4,"trèfle","Lowestt"),
+	CARTE14(1,"pique","Highest"),
+	CARTE15(1,"pique","Majority"),
+	CARTE16(1,"pique","Majority"),
+	CARTE17(1,"pique","Lowest");
 
 	private int valeur ;
 	private String couleur;
