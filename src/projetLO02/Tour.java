@@ -1,7 +1,7 @@
 package projetLO02;
 
-
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Tour {
@@ -12,7 +12,7 @@ public class Tour {
 // constructeur 
 	public Tour (List<Joueur> listeJoueurs, int numeroTour) {
 		 this.listeJoueurs = new ArrayList<>(listeJoueurs);
-	      this.numeroTour = numeroTour;
+	     this.numeroTour = numeroTour;
 		
 	}
 	
@@ -66,12 +66,21 @@ public class Tour {
 	}
 	
 	
+	 /**
+     * Affiche l'ordre actuel des joueurs.
+     */
 	public void afficherOrdreJoueurs() {
         System.out.println("Ordre des joueurs pour le tour " + numeroTour + " :");
-        for (int i = 0; i < joueurs.size(); i++) {
-            Joueur j = joueurs.get(i);
+        for (int i = 0; i < this.listeJoueurs.size(); i++) {
+            Joueur j = this.listeJoueurs.get(i);
+            // Réutilise la méthode getCarteVisible()
+            Carte carteVisible = j.getCarteVisible(); 
+            String carteInfo = (carteVisible != null) ? 
+                               carteVisible.getValeur() + " de " + carteVisible.getCouleur() : 
+                               "AUCUNE OFFRE";
+                               
             System.out.println((i + 1) + ". " + j.getNom() +
-                    " (carte visible : " + j.getCarteVisible() + ")");
+                    " (carte visible : " + carteInfo + ")");
         }
     }
 	

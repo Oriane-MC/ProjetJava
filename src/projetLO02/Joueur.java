@@ -6,13 +6,13 @@ public class Joueur {
 	private String nom; 
 	private String typeJoueur; 
 	private Offre offre; 
-	private Deck cartePosserder; 
+	private Deck cartePosseder; 
 	
 	// Constructeur 
-	public Joueur() {
+	public Joueur(String nom, String typeJoueur, Offre offre, Deck cartePosseder) {
 		this.nom = nom;
         this.typeJoueur = typeJoueur;
-        this.deckPossede = new Deck(); // initialisation vide
+        this.cartePosseder = new Deck(this); // initialisation vide
    
 	}
 	
@@ -30,7 +30,7 @@ public class Joueur {
     }
 
     public Deck getDeckPossede() {
-        return deckPossede;
+        return cartePosseder;
     }
 
     public void setOffre(Offre offre) {
@@ -38,23 +38,46 @@ public class Joueur {
     }
 
 	//Méthodes 
+    /**
+     * Prend la carte visible de l'offre et l'ajoute au deck du joueur.
+     */
     public void prendreOffre(Offre offre) {
-        this.deckPossede.ajouterCarte(offre.getCarte());
+        // Correction: Utilise la méthode getCarteVisible() de la classe Offre
+        Carte carteAPrendre = offre.carteVisiblePrise(); // Utilise la méthode prise pour changer l'état de l'offre
+        if (carteAPrendre != null) {
+            this.cartePosseder.ajouterCarte(carteAPrendre);
+            System.out.println(this.nom + " a pris la carte visible de l'offre.");
+        }
     }
 
+    /**
+     * Pioche une carte du deck de pioche (passé en paramètre) et l'ajoute au deck du joueur.
+     */
     public void piocher(Deck pioche) {
          Carte c = pioche.piocherCarte();
-        this.deckPossede.ajouterCarte(c);
+        if (c != null) {
+            this.cartePosseder.ajouterCarte(c);
+            System.out.println(this.nom + " a pioché une carte.");
+        } else {
+             System.out.println("La pioche est vide.");
+        }
     }
 
+
+    /**
+     * Crée l'offre du joueur en utilisant le constructeur à 2 arguments de Offre.
+     */
     public void creerMonOffre(Carte faceVisible, Carte faceCachee) {
-        this.offre = new Offre(faceVisible, faceCachee);
+        this.offre = new Offre(faceVisible, faceCachee, null);
     }
 
+    /**
+     * Ajoute une carte au deck de cartes possédées par le joueur.
+     */
     public void ajouterCarteDeck(Carte carte) {
-        this.deckPossede.ajouterCarte(carte);
-    }
-	
+        // Correction: Utilise le nom d'attribut correct 'cartePosserder'
+        this.cartePosseder.ajouterCarte(carte);
+    } 
 	
 
 }

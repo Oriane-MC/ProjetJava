@@ -1,4 +1,4 @@
-package projetJest;
+package projetLO02;
 import java.util.*;
 
 public class Partie {
