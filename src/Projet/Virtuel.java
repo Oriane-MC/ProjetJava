@@ -18,11 +18,11 @@ public class Virtuel extends Joueur {
 
     // Décider de son offre
     public Offre choisirMonOffre(Deck pioche, List<Offre> offresAdversaires) {
-        return strategie.choisirOffre(this, pioche, offresAdversaires);
+        return strategie.choisirMonOffre(this, pioche, offresAdversaires);
     }
 
     // Décider de prendre l'offre d'un adversaire
-    public boolean deciderOffreAdversaire(Offre offre) {
-        return strategie.prendreOffre(offre, this);
+    public void deciderOffreAdversaire(Offre offre) {
+         strategie.prendreOffreAdversaire(offre, this);
     }
 }
