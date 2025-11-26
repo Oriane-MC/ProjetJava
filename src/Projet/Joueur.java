@@ -1,8 +1,5 @@
 package Projet;
 
-import projetLO02.Carte;
-import projetLO02.Deck;
-import projetLO02.Offre;
 
 public class Joueur {
 	
@@ -13,7 +10,7 @@ public class Joueur {
 		private Deck cartePosseder; 
 		
 		// Constructeur 
-		public Joueur(String nom, String typeJoueur, Offre offre, Deck cartePosseder) {
+		public Joueur(String nom, String typeJoueur ) {
 			this.nom = nom;
 	        this.typeJoueur = typeJoueur;
 	        this.cartePosseder = new Deck(this); // initialisation vide

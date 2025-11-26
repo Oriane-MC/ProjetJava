@@ -17,6 +17,10 @@ public class Offre {
 		
 	}
 	
+	
+	public Carte getCarteVisible () {
+		return carteVisible; 
+	}
 	public Carte carteVisiblePrise() {
 		if (this.etat) {
 			this.etat = false;
@@ -35,6 +39,8 @@ public class Offre {
 		else {
 			System.out.println("action impossible");
 		}
-	}	
+	}
+	
+	
 
 }
