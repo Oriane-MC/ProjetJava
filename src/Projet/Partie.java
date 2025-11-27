@@ -95,17 +95,29 @@ public class Partie {
 		// 2- demander si extension ou pas
 		Partie p = new Partie();
 				
-		Joueur j1 = new Joueur(j1,REEL); // je ne sais plus comment on fait pour récupérer une valeur d'une énumeration 
-		Joueur j2 = new Joueur(j2,REEL);
+		Joueur j1 = new Joueur("j1","reel"); // je ne sais plus comment on fait pour récupérer une valeur d'une énumeration 
+		Joueur j2 = new Joueur("j2","reel");
+		
+		Virtuel j3 = new Virtuel("j3");
+		
 				
 		p.mélanger();
 		p.répartir();
+	
+		//chaque joueur crée son offre 
+		
+		//chaque joueur prend une offre 
+		
+		//chaque joueur ajoute a son deck 
+		
+		//distribuer les trophées 
+		
+		//calculer les points 
 		
 		
 		
 		System.out.println(p);
 		
-		// chaque joueur crée leurs offre 
 		
 	}
 }
