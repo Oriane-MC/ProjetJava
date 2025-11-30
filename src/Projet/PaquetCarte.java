@@ -21,6 +21,10 @@ public class PaquetCarte {
 	public void setListPioche(LinkedList<Carte> listPioche) {
 		this.listPioche = listPioche;
 	}
+	
+	public void melanger() {
+		Collections.shuffle(listPioche);
+	}
 
 	
 	public String toString() {

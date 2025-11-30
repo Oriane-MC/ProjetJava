@@ -2,8 +2,6 @@ package Projet;
 
 import java.util.*;
 
-import Q1.InvalidPolynomException;
-
 public class Partie {
 	
 	private ArrayList<Joueur> listJoueur;
@@ -55,20 +53,19 @@ public class Partie {
 	 * méthode qui mélange le paquet de carte/la pioche de la partie
 	 */
 	public void mélanger() {
-		Collections.shuffle(listCarte);
+		listCarte.melanger();;
 	}
 	
 	/**
 	 * méthode qui permet de répartir les cartes : permet de déterminer et créer les trophées,
 	 * et de créer la pioche qui est un paquet de carte
 	 */
-	public PaquetCarte répartir() {
+	public void répartir() {
 		// peut etre on peut 'fussionner' la méthode mélanger et répartie car appelé que au début de partie
-		Carte c1 = listCarte.poll();
-		Carte c2 = listCarte.poll();
+		Carte c1 = listCarte.piocher();
+		Carte c2 = listCarte.piocher();
 		this.trophees = new Trophee(c1,c2);
 		System.out.println("Les trophées de la partie sont : " + c1 + " et " + c2);
-		new PaquetCarte(listCarte);
 	}
 	
 	
@@ -519,15 +516,16 @@ public class Partie {
 		// 1- demander si variantes ou pas 
 		// 2- demander si extension ou pas
 		Partie p = new Partie();
-				
-		Joueur j1 = new Joueur("j1","reel"); // je ne sais plus comment on fait pour récupérer une valeur d'une énumeration 
+			
+		
+		Joueur j1 = new Joueur("j1","reel"); 
 		Joueur j2 = new Joueur("j2","reel");
-		
 		Virtuel j3 = new Virtuel("j3", new StrategieBasique());
+		p.ajouterJoueur(j1);
+		p.ajouterJoueur(j2);
+		p.ajouterJoueur(j3);
+
 		
-		
-		
-				
 		p.mélanger();
 		p.répartir();
 	
