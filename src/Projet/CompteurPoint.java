@@ -9,7 +9,7 @@ public class CompteurPoint implements Visitor {
 		int score = 0;
 	for (Carte j.getDeck()) { // il faut récupérer le deck du joueur 
 		
-	}
+	}// créer des listes pour chaque joueur de ses couleurs de cartes et ensuite calculer 
 		
 	}
 }
