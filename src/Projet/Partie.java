@@ -98,7 +98,9 @@ public class Partie {
 		Joueur j1 = new Joueur("j1","reel"); // je ne sais plus comment on fait pour récupérer une valeur d'une énumeration 
 		Joueur j2 = new Joueur("j2","reel");
 		
-		Virtuel j3 = new Virtuel("j3");
+		Virtuel j3 = new Virtuel("j3", new StrategieBasique());
+		
+		
 		
 				
 		p.mélanger();

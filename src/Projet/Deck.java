@@ -23,8 +23,8 @@ public class Deck {
 	
 	// Getters
 	// Pr lire la main du joueur 
-		public List<Carte> getCartes() {
-		    return this.cartes;
+	public List<Carte> getCartes() {
+		return this.cartes;
 		}
 		
     public Joueur getProprietaire() {
