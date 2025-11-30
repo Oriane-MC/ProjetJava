@@ -17,6 +17,8 @@ Lors de la prise :
  */
 
 	public class StrategieBasique implements Strategie {
+		
+		
 		// Décider quelle offre faire, quel carte je mets cacher et quel carte je mets visible 
 	    public Offre choisirMonOffre( Joueur joueur, Deck pioche, List<Offre> offresAdversaires) {
 	    	  // Piocher 2 cartes pour créer l'offre
@@ -63,8 +65,8 @@ Lors de la prise :
 	   
 	    
 	   /**
-	     * Cette méthode choisit L'OFFRE adverse (pas dans l'interface mais utile si tu l'ajoutes)
-	     * Selon ta logique :
+	     * Cette méthode choisit L'OFFRE adverse 
+	     * Selon la logique :
 	     *   → prendre la carte visible la plus forte parmi toutes les offres valides
 	     *   → sinon prendre une offre au hasard
 	     */

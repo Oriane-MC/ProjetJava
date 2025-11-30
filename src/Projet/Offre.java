@@ -4,16 +4,25 @@ public class Offre {
 
     private Carte carteVisible;
     private Carte carteCachee; 
+    private Joueur createur; // Réfère au joueur qui a mis l'offre
     private boolean etat; // true = cartes non prises, false = cartes déjà prises
 
     public Offre(Carte cCache, Carte cVisible, Joueur j) {
         this.carteCachee = cCache;
         this.carteVisible = cVisible;
+        this.createur = j; // Attribution du créateur
         this.etat = true;
     }
 
     public Carte getCarteVisible() {
         return carteVisible;
+    }
+
+    /**
+     * @return L'objet Joueur créateur de l'offre.
+     */
+    public Joueur getCreateur() {
+        return createur;
     }
 
     /**
