@@ -5,6 +5,10 @@ import java.util.*;
 public class CompteurPoint implements Visitor {
 	
 
+	
+	/**
+	 * méthode qui permet de calculer le score/les points d'un joueur 
+	 */
 	public int visiter (Joueur j) {
 		
 		int score = 0;
@@ -100,8 +104,7 @@ public class CompteurPoint implements Visitor {
 				score += elt;
 			}
 		}
-		
-				
+			
 		//si un cœur et un trèfle ayant la même valeur -> alors +2 points pour chaque paires
 		for (int elt : listCoeur) {
 			for (int elt1 : listTrefle) {
@@ -110,6 +113,12 @@ public class CompteurPoint implements Visitor {
 				}
 			}
 		}
-		return score;
+		
+		if (score < 0 ){
+			return 0;
+		}
+		else {
+			return score;
+		}
 	}
 }

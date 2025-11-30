@@ -7,47 +7,86 @@ import Q1.InvalidPolynomException;
 public class Partie {
 	
 	private ArrayList<Joueur> listJoueur;
-	private LinkedList<Carte> listCarte;
+	private PaquetCarte listCarte;
 	private String etatPartie;
 	private int variantes;
 	private Trophee trophees;
 	private Map<Joueur, Integer> score = new HashMap();
 	
 	
+	/**
+	 * constructeur de la classe Partie qui initialise la liste de joueur, 
+	 * crée la pioche (listCarte),
+	 * et met la partie en mode "en cours"
+	 */
 	public Partie() {
 		this.listJoueur = new ArrayList();
-		this.listCarte = new LinkedList();
 		this.etatPartie = "en cours";
 		
+		LinkedList listC = new LinkedList();
 		for (TypeCarte carte : TypeCarte.values()) {
-            listCarte.add(new Carte(carte.getValeur(), carte.getCouleur(), carte.getCondition()));
-        }	
+            listC.add(new Carte(carte.getValeur(), carte.getCouleur(), carte.getCondition()));
+        }
+		this.listCarte = new PaquetCarte(listC);
+	}
+	
+	/**
+	 * surcharge du constructeur de la classe Partie qui, ici permet de créer une partie avec une variantes 
+	 * et qui permet de : initialiser la liste de joueur, 
+	 * créer la pioche (listCarte),
+	 * et mettre la partie en mode "en cours"
+	 */
+	public Partie(int v) {
+		this.listJoueur = new ArrayList();
+		this.etatPartie = "en cours";
+		
+		LinkedList listC = new LinkedList();
+		for (TypeCarte carte : TypeCarte.values()) {
+            listC.add(new Carte(carte.getValeur(), carte.getCouleur(), carte.getCondition()));
+        }
+		this.listCarte = new PaquetCarte(listC);
+		
+		this.variantes = v;
 	}
 	
 	
+	
+	/**
+	 * méthode qui mélange le paquet de carte/la pioche de la partie
+	 */
 	public void mélanger() {
 		Collections.shuffle(listCarte);
 	}
 	
-	
-	public void répartir() {
+	/**
+	 * méthode qui permet de répartir les cartes : permet de déterminer et créer les trophées,
+	 * et de créer la pioche qui est un paquet de carte
+	 */
+	public PaquetCarte répartir() {
 		// peut etre on peut 'fussionner' la méthode mélanger et répartie car appelé que au début de partie
 		Carte c1 = listCarte.poll();
 		Carte c2 = listCarte.poll();
-		this.Trophees = new Trophee(c1,c2);
+		this.trophees = new Trophee(c1,c2);
+		System.out.println("Les trophées de la partie sont : " + c1 + " et " + c2);
 		new PaquetCarte(listCarte);
 	}
 	
+	
+	/**
+	 * méthode qui ajoute un joueur à la partie et initialise son score à 0
+	 * @param j
+	 */
 	public void ajouterJoueur(Joueur j) {
 		this.listJoueur.add(j);
+		this.score.put(j,0);
 	}
 	
 	
 	/**
 	 * méthode qui permet de distribuer les trophées au joueur qui les mérite
-	 * et qui calcule les score pour chaque joueur et met donc a jour l'attirbut score
+	 * et qui calcule les score pour chaque joueur et met donc à jour l'attribut score
 	 */
-	public void calculerScore() throws IllegalStateException {
+	public void calculerScoreFinal() throws IllegalStateException {
 		
 		//on fixe les decks des joeurs au debut du calcul 
 		//: on ne prend pas en compte l'effet de l'obtention d'un trophées sur la determination 
@@ -66,16 +105,73 @@ public class Partie {
 			if (t.getCondition().equals("Lowest")) {
 				//cas où condition = lowest trèfle
 				if (t.getCouleur().equals("pique")) {
-					
+					Joueur gagnant = new Joueur("tmp","tmp");
+					int lowest = 5;
+					Iterator<Joueur> it = joueur_deck.keySet().iterator();
+					while (it.hasNext()) {
+						Joueur key = it.next();
+						Deck valeur = joueur_deck.get(key);
+						for (Carte c : valeur.getCartes()) {
+							if (c.getCouleur().equals("trefle")) {
+								if (c.getValeur() < lowest ) {
+									lowest = c.getValeur();
+									gagnant = key;
+								}
+							}
+						}
+					}
+					if (gagnant.getNom().equals("tmp")) {
+						IllegalStateException e = new IllegalStateException("personne n'a de trèfle");
+						throw e;
+					}
+					gagnant.ajouterCarteDeck(t);
 				}
 				else if (t.getCouleur().equals("trefle")) {
 					//cas où condition = lowest pique
 					if (t.getValeur() == 4) {
-						
+						Joueur gagnant = new Joueur("tmp","tmp");
+						int lowest = 5;
+						Iterator<Joueur> it = joueur_deck.keySet().iterator();
+						while (it.hasNext()) {
+							Joueur key = it.next();
+							Deck valeur = joueur_deck.get(key);
+							for (Carte c : valeur.getCartes()) {
+								if (c.getCouleur().equals("pique")) {
+									if (c.getValeur() < lowest ) {
+										lowest = c.getValeur();
+										gagnant = key;
+									}
+								}
+							}
+						}
+						if (gagnant.getNom().equals("tmp")) {
+							IllegalStateException e = new IllegalStateException("personne n'a de pique");
+							throw e;
+						}
+						gagnant.ajouterCarteDeck(t);
 					}
 					//cas où condition = lowest coeur
 					else if (t.getValeur() == 2) {
-						
+						Joueur gagnant = new Joueur("tmp","tmp");
+						int lowest = 5;
+						Iterator<Joueur> it = joueur_deck.keySet().iterator();
+						while (it.hasNext()) {
+							Joueur key = it.next();
+							Deck valeur = joueur_deck.get(key);
+							for (Carte c : valeur.getCartes()) {
+								if (c.getCouleur().equals("coeur")) {
+									if (c.getValeur() < lowest ) {
+										lowest = c.getValeur();
+										gagnant = key;
+									}
+								}
+							}
+						}
+						if (gagnant.getNom().equals("tmp")) {
+							IllegalStateException e = new IllegalStateException("personne n'a de coeur");
+							throw e;
+						}
+						gagnant.ajouterCarteDeck(t);
 					}
 					else {
 						IllegalStateException e = new IllegalStateException("problème avec la condition du trophée");
@@ -84,19 +180,135 @@ public class Partie {
 				}
 				//cas où condition =  lowest carreau
 				else if (t.getCouleur().equals("carreau")) {
-					
+					Joueur gagnant = new Joueur("tmp","tmp");
+					int lowest = 5;
+					Iterator<Joueur> it = joueur_deck.keySet().iterator();
+					while (it.hasNext()) {
+						Joueur key = it.next();
+						Deck valeur = joueur_deck.get(key);
+						for (Carte c : valeur.getCartes()) {
+							if (c.getCouleur().equals("carreau")) {
+								if (c.getValeur() < lowest ) {
+									lowest = c.getValeur();
+									gagnant = key;
+								}
+							}
+						}
+					}
+					if (gagnant.getNom().equals("tmp")) {
+						IllegalStateException e = new IllegalStateException("personne n'a de carreau");
+						throw e;
+					}
+					gagnant.ajouterCarteDeck(t);
 				}
 				else {
 					IllegalStateException e = new IllegalStateException("problème avec la condition du trophée");
 					throw e;
-				}
-			
-				
-
-				
+				}	
 			}
 			else if (t.getCondition().equals("Highest")) {
-				
+				//cas où condition = highest trèfle
+				if (t.getCouleur().equals("pique")) {
+					Joueur gagnant = new Joueur("tmp","tmp");
+					int highest = 0;
+					Iterator<Joueur> it = joueur_deck.keySet().iterator();
+					while (it.hasNext()) {
+						Joueur key = it.next();
+						Deck valeur = joueur_deck.get(key);
+						for (Carte c : valeur.getCartes()) {
+							if (c.getCouleur().equals("trefle")) {
+								if (c.getValeur() > highest ) {
+									highest = c.getValeur();
+									gagnant = key;
+								}
+							}
+						}
+					}
+					if (gagnant.getNom().equals("tmp")) {
+						IllegalStateException e = new IllegalStateException("personne n'a de trèfle");
+						throw e;
+					}
+					gagnant.ajouterCarteDeck(t);
+				}
+				else if (t.getCouleur().equals("trefle")) {
+					//cas où condition = highest pique
+					if (t.getValeur() == 1) {
+						Joueur gagnant = new Joueur("tmp","tmp");
+						int highest = 0;
+						Iterator<Joueur> it = joueur_deck.keySet().iterator();
+						while (it.hasNext()) {
+							Joueur key = it.next();
+							Deck valeur = joueur_deck.get(key);
+							for (Carte c : valeur.getCartes()) {
+								if (c.getCouleur().equals("pique")) {
+									if (c.getValeur() > highest ) {
+										highest = c.getValeur();
+										gagnant = key;
+									}
+								}
+							}
+						}
+						if (gagnant.getNom().equals("tmp")) {
+							IllegalStateException e = new IllegalStateException("personne n'a de pique");
+							throw e;
+						}
+						gagnant.ajouterCarteDeck(t);
+					}
+					//cas où condition = highest coeur
+					else if (t.getValeur() == 3) {
+						Joueur gagnant = new Joueur("tmp","tmp");
+						int highest = 0;
+						Iterator<Joueur> it = joueur_deck.keySet().iterator();
+						while (it.hasNext()) {
+							Joueur key = it.next();
+							Deck valeur = joueur_deck.get(key);
+							for (Carte c : valeur.getCartes()) {
+								if (c.getCouleur().equals("coeur")) {
+									if (c.getValeur() > highest ) {
+										highest = c.getValeur();
+										gagnant = key;
+									}
+								}
+							}
+						}
+						if (gagnant.getNom().equals("tmp")) {
+							IllegalStateException e = new IllegalStateException("personne n'a de coeur");
+							throw e;
+						}
+						gagnant.ajouterCarteDeck(t);
+					}
+					else {
+						IllegalStateException e = new IllegalStateException("problème avec la condition du trophée");
+						throw e;
+					}
+				}
+				//cas où condition =  highest carreau
+				else if (t.getCouleur().equals("carreau")) {
+					Joueur gagnant = new Joueur("tmp","tmp");
+					int highest = 0;
+					Iterator<Joueur> it = joueur_deck.keySet().iterator();
+					while (it.hasNext()) {
+						Joueur key = it.next();
+						Deck valeur = joueur_deck.get(key);
+						for (Carte c : valeur.getCartes()) {
+							if (c.getCouleur().equals("carreau")) {
+								if (c.getValeur() > highest ) {
+									highest = c.getValeur();
+									gagnant = key;
+								}
+							}
+						}
+					}
+					if (gagnant.getNom().equals("tmp")) {
+						IllegalStateException e = new IllegalStateException("personne n'a de carreau");
+						throw e;
+					}
+					gagnant.ajouterCarteDeck(t);
+				}
+				else {
+					IllegalStateException e = new IllegalStateException("problème avec la condition du trophée");
+					throw e;
+				}	
 			}
 			else if (t.getCondition().equals("Majority")) {
 				//cas où condition = majority de 4
@@ -203,19 +415,39 @@ public class Partie {
 					}
 				gagnant.ajouterCarteDeck(t);
 			}
-			else if (t.getCondition().equals("BestJest")){    // dans le cas ou on a besoin de calculer les points avant de donner les trophees 
-				// calculer les scores de chaque joueur et les enregistrer 
-				// les comparer 
-				// attribuer la carte au meilleur joueur
-				// recalculer le score de celui qui a changé de Jest 
-				// return pour ne pas recalculer 
+			else if (t.getCondition().equals("BestJest")){   
+				this.calculerScoreSansTrophees();
+				Joueur gagnant = this.joueurGagnant();
+				gagnant.ajouterCarteDeck(t);
 			}
 			else if (t.getCondition().equals("BestJestAndNoJoker")) {
-				// calculer les scores de chaque joueur et les enregistrer en excluant celui qui a le joker 
-				// les comparer 
-				// attribuer la carte au meilleur joueur
-				// recalculer le score de celui qui a changé de Jest 
-				// return pour ne pas recalculer 
+				this.calculerScoreSansTrophees();
+				Joueur gagnant = this.joueurGagnant();
+				boolean joker = false;
+				for (Carte c : gagnant.getDeckPossede().getCartes()) {
+					if (c.getCouleur().equals("joker")) {
+						joker = true;
+					}
+				}
+				if (joker == false) {
+					gagnant.ajouterCarteDeck(t);
+				}
+				else {
+					int score_max = score.get(gagnant);
+					int score_max_second = 0;
+					
+					Iterator<Joueur> it = this.score.keySet().iterator();
+					while (it.hasNext()) {
+						Joueur key = it.next();
+						Integer valeur = this.score.get(key);
+						
+						if (valeur<score_max && valeur>score_max_second) {
+							gagnant = key;
+							score_max_second = valeur;
+						}
+					}
+					gagnant.ajouterCarteDeck(t);
+				}
 			}
 			else {
 				IllegalStateException e = new IllegalStateException("problème avec la condition du trophée");
@@ -223,28 +455,54 @@ public class Partie {
 			}
 			
 			
-			// calculer les scores pour chaque joueur
+			// calcul des scores pour chaque joueur et les ajoute à score
+			for (Joueur j : this.listJoueur) {
+				CompteurPoint cpt = new CompteurPoint();
+				score.put(j, cpt.visiter(j));
+			}
 		}
 	}
 	
-	public void finPartie() {
+	public void calculerScoreSansTrophees() {
+		for (Joueur j : this.listJoueur) {
+			CompteurPoint cpt = new CompteurPoint();
+			score.put(j, cpt.visiter(j));
+		}
+	}
+	
+	public void finPartie() throws IllegalStateException {
+		this.calculerScoreFinal();
 		this.etatPartie = "terminé";
 		System.out.println("la partie est " + this.etatPartie +". Voici les score : ");
-		
 		Iterator<Joueur> it = this.score.keySet().iterator();
-		Joueur gagnant = new Joueur("tmp","tmp");
-		int score_max = 0;
 		while (it.hasNext()) {
 			Joueur key = it.next();
 			Integer valeur = this.score.get(key);
 			System.out.println(key.getNom() + " a " + valeur + " pts." );
+		}
+		System.out.println("Le gagnant est donc : " + this.joueurGagnant().getNom());	
+	}
+	
+	/**
+	 * méthode qui permet de renvoyer le nom du gagnant de la partie
+	 * méthode privée car elle ne s'appelle qu'à la fin de la partie ou dans le calcul des scores, 
+	 * l'utilisateur ne peut l'appeler pour eviter de l'appeler si les scores sont nuls
+	 * @return
+	 */
+	private Joueur joueurGagnant() {
+		Joueur gagnant = new Joueur("tmp","tmp");
+		int score_max = 0;
+		Iterator<Joueur> it = this.score.keySet().iterator();
+		while (it.hasNext()) {
+			Joueur key = it.next();
+			Integer valeur = this.score.get(key);
 			
 			if (valeur > score_max) {
 				gagnant = key;
 				score_max = valeur;
 			}
 		}
-		System.out.println("Le gagnant est donc : " + gagnant.getNom());	
+		return gagnant;
 	}
 	
 	public String getEtat() {
@@ -253,12 +511,11 @@ public class Partie {
 	
 	
 	public String toString() {
-		return "Partie [etatPartie= " + etatPartie + " ; Joueur = " + listJoueur + " ; Paquet Carte" + listCarte +  
-				"; variantes=" + variantes + "]";
+		return "Partie [etatPartie= " + etatPartie + " ; Joueur = " + listJoueur +" ; variantes=" + variantes + "]";
 	}
 
 
-	public static void main (String[] args) {
+	public static void main (String[] args) throws IllegalStateException {
 		// 1- demander si variantes ou pas 
 		// 2- demander si extension ou pas
 		Partie p = new Partie();
@@ -281,10 +538,9 @@ public class Partie {
 		//chaque joueur ajoute a son deck 
 		
 		//distribuer les trophées 
-		p.
+		
 		
 		//calculer les points 
-		p.calculerScore();
 		p.finPartie();
 		
 		
