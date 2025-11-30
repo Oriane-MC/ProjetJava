@@ -4,7 +4,7 @@ public class Offre {
 
     private Carte carteVisible;
     private Carte carteCachee; 
-    private Joueur createur; // Réfère au joueur qui a mis l'offre
+    private Joueur createur; // Réfère au joueur qui a créer l'offre
     private boolean etat; // true = cartes non prises, false = cartes déjà prises
 
     public Offre(Carte cCache, Carte cVisible, Joueur j) {

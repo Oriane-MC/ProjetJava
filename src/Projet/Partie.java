@@ -528,22 +528,38 @@ public class Partie {
 		
 		p.mélanger();
 		p.répartir();
-	
+		
+		
+		// IL FAUT INTEGRER LES TOURS DANS LA CLASSE PARTIE
+		
+		// déterminer ordre de joueurs
+		
+		
 		//chaque joueur crée son offre 
+		j1.creerMonOffreHumain(null); //créer offre doit prendre en paramètre la partie, pk y'a 2 créer mon offre ?
+		j2.creerMonOffre(null, null);
+		
+		j3.creerMonOffre(null, null); 
+		
 		
 		//chaque joueur prend une offre 
+		j1.prendreOffre(null); 
+		j2.prendreOffre(null);
+		
+		j3.prendreOffre(null);
 		
 		//chaque joueur ajoute a son deck 
+		j1.ajouterCarteDeck(null);
+		j2.ajouterCarteDeck(null);
 		
-		//distribuer les trophées 
+		j3.ajouterCarteDeck(null);
 		
-		
-		//calculer les points 
+		//distribuer les trophées, calculer les points, annoncer le gagnant 
 		p.finPartie();
 		
 		
 		
-		System.out.println(p);
+		
 		
 		
 	}
