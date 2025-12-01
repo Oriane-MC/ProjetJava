@@ -537,9 +537,9 @@ public class Partie {
 		
 		//chaque joueur crée son offre 
 		j1.creerMonOffreHumain(null); //créer offre doit prendre en paramètre la partie, pk y'a 2 créer mon offre ?
-		j2.creerMonOffre(null, null);
+		j2.creerMonOffreHumain(null, null);
 		
-		j3.creerMonOffre(null, null); 
+		j3.creerMonOffreVirtuel(null, null); 
 		
 		
 		//chaque joueur prend une offre 

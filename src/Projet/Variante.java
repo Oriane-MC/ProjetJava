@@ -16,7 +16,7 @@ public class Variante {
 	}
 	
 	
-	public void modifJoker() {
+	public void modifOrdreJoueur() {
 		// jsp, comment ca va fonctionné ? ...
 	}
 }
