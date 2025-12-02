@@ -7,7 +7,8 @@ public class Partie {
 	private ArrayList<Joueur> listJoueur;
 	private PaquetCarte listCarte;
 	private String etatPartie;
-	private int variantes;
+	private int variantes; //variantes = nouvelles règles (2)
+	private boolean extension; //extension = nouvelles cartes
 	private Trophee trophees;
 	private Map<Joueur, Integer> score;
 	
@@ -15,11 +16,11 @@ public class Partie {
 	/**
 	 * constructeur de la classe Partie qui initialise la liste de joueur, 
 	 * crée la pioche (listCarte),
-	 * et met la partie en mode "en cours"
+	 * met la partie en mode "en cours",
+	 * gère si il y a des extension ou des variantes présente 
 	 */
-	public Partie() {
+	public Partie(boolean extension, int v) {
 		this.listJoueur = new ArrayList();
-		this.etatPartie = "en cours";
 		
 		LinkedList listC = new LinkedList();
 		for (TypeCarte carte : TypeCarte.values()) {
@@ -27,31 +28,16 @@ public class Partie {
         }
 		this.listCarte = new PaquetCarte(listC);
 		
-		this.score = new HashMap();
-	}
-	
-	/**
-	 * surcharge du constructeur de la classe Partie qui, ici permet de créer une partie avec une variantes 
-	 * et qui permet de : initialiser la liste de joueur, 
-	 * créer la pioche (listCarte),
-	 * et mettre la partie en mode "en cours"
-	 */
-	public Partie(int v) {
-		this.listJoueur = new ArrayList();
 		this.etatPartie = "en cours";
 		
-		LinkedList listC = new LinkedList();
-		for (TypeCarte carte : TypeCarte.values()) {
-            listC.add(new Carte(carte.getValeur(), carte.getCouleur(), carte.getCondition()));
-        }
-		this.listCarte = new PaquetCarte(listC);
-		
-		this.score = new HashMap();
-
+		//variantes
 		this.variantes = v;
+		
+		//extension
+		this.extension = extension;
+		
+		this.score = new HashMap();
 	}
-	
-	
 	
 	/**
 	 * méthode qui mélange le paquet de carte/la pioche de la partie
@@ -141,8 +127,6 @@ public class Partie {
 	
 	/**
 	 * méthode qui permet de renvoyer le nom du gagnant de la partie
-	 * méthode privée car elle ne s'appelle qu'à la fin de la partie ou dans le calcul des scores, 
-	 * l'utilisateur ne peut l'appeler pour eviter de l'appeler si les scores sont nuls
 	 * @return
 	 */
 	public Joueur joueurGagnant() {
@@ -172,11 +156,20 @@ public class Partie {
 
 
 	public static void main (String[] args) throws IllegalStateException {
-		// 1- demander si variantes ou pas 
-		// 2- demander si extension ou pas
-		Partie p = new Partie();
+		Scanner sc = new Scanner(System.in);
+
+		// 1- demander si extension ou pas
+        System.out.println("Voulez-vous activer les extensions/ nouvelles cartes ? (1=oui, 0=non)");
+        boolean extension = sc.nextInt() == 1;
+        
+        // 2- demander si variantes ou pas 
+        System.out.println("Choisissez une variante : 0=base, 1=v1, 2=v2");
+        int variante = sc.nextInt();
+       
+        //instanciation de la partie 
+		Partie p = new Partie(extension, variante);
 			
-		
+		//création et ajout des joueurs à la partie 
 		Joueur j1 = new Joueur("j1","reel"); 
 		Joueur j2 = new Joueur("j2","reel");
 		Virtuel j3 = new Virtuel("j3", new StrategieBasique());
@@ -184,6 +177,7 @@ public class Partie {
 		p.ajouterJoueur(j2);
 		p.ajouterJoueur(j3);
 
+		
 		
 		p.mélanger();
 		p.répartir();
