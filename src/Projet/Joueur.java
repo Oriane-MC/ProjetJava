@@ -43,6 +43,19 @@ public class Joueur {
 	    }
 
 		//Méthodes 
+	    
+	    /** 
+	     * méthode relatif au pattern Visitor
+	     * @param v
+	     * @return
+	     */
+	    public int accept(Visitor v) {
+	    	return v.visit(this);
+	    }
+	    
+	    
+	    
+	    
 	    /**
 	     * Prend la carte visible de l'offre et l'ajoute au deck du joueur.
 	     */

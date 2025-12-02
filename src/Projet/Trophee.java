@@ -23,4 +23,15 @@ public class Trophee {
 	public LinkedList<Carte> getListTrophee(){
 		return this.listTrophee;
 	}
+	
+	/** 
+     * méthode relatif au pattern Visitor
+     * @param v
+     * @return
+     */
+    public int accept(Visitor v) {
+    	return v.visit(this);
+    }
+    
+    
 }

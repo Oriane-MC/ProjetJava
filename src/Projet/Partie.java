@@ -79,6 +79,16 @@ public class Partie {
 	}
 	
 	
+	/** 
+     * méthode relatif au pattern Visitor
+     * @param v
+     * @return
+     */
+    public int accept(Visitor v) {
+    	return v.visit(this);
+    }
+	
+	
 	/**
 	 * méthode qui permet de distribuer les trophées au joueur qui les mérite
 	 * et qui calcule les score pour chaque joueur et met donc à jour l'attribut score

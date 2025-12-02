@@ -1,7 +1,10 @@
 package Projet;
 
 public interface  Visitor {
-	// patron visitor : il va venir visiter chaque jouer et compter les point pour chacun des joueurs 
+	// patron visitor : il va venir visiter chaque element et compter les point pour chacun des elements 
 
-	public int visiter(Joueur j);
+	public int visit(Joueur j);
+	public int visit(Partie p);
+	public int visit(Carte c);
+	public int visit(Trophee t);
 }
