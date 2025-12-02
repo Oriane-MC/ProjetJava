@@ -113,6 +113,10 @@ public class Partie {
 	public Trophee getTrophees() {
 		return trophees;
 	}
+	
+	public Map<Joueur, Integer> getScore() {
+		return score;
+	}
 
 
 	public void calculerScoreSansTrophees() throws GameException {
@@ -141,7 +145,7 @@ public class Partie {
 	 * l'utilisateur ne peut l'appeler pour eviter de l'appeler si les scores sont nuls
 	 * @return
 	 */
-	private Joueur joueurGagnant() {
+	public Joueur joueurGagnant() {
 		Joueur gagnant = new Joueur("tmp","tmp");
 		int score_max = 0;
 		Iterator<Joueur> it = this.score.keySet().iterator();
@@ -218,4 +222,6 @@ public class Partie {
 		
 		
 	}
+
+	
 }

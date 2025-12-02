@@ -10,7 +10,7 @@ public enum TypeCarte {
 	CARTE6(1,"carreau","Majority4"),
 	CARTE7(2,"carreau","HighestCarreau"),
 	CARTE8(3,"carreau","LowestCarreau"),
-	CARTE9(4,"carreau","BestJestAndNoJoker"),
+	CARTE9(4,"carreau","BestJestNoJoker"),
 	CARTE10(1,"trèfle","HighestPique"),
 	CARTE11(2,"trèfle","LowestCoeur"),
 	CARTE12(3,"trèfle","HighestCoeur"),
