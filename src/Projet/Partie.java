@@ -9,7 +9,7 @@ public class Partie {
 	private String etatPartie;
 	private int variantes;
 	private Trophee trophees;
-	private Map<Joueur, Integer> score = new HashMap();
+	private Map<Joueur, Integer> score;
 	
 	
 	/**
@@ -26,6 +26,8 @@ public class Partie {
             listC.add(new Carte(carte.getValeur(), carte.getCouleur(), carte.getCondition()));
         }
 		this.listCarte = new PaquetCarte(listC);
+		
+		this.score = new HashMap();
 	}
 	
 	/**
@@ -44,6 +46,8 @@ public class Partie {
         }
 		this.listCarte = new PaquetCarte(listC);
 		
+		this.score = new HashMap();
+
 		this.variantes = v;
 	}
 	
@@ -84,400 +88,41 @@ public class Partie {
      * @param v
      * @return
      */
-    public int accept(Visitor v) {
+    public Map<Joueur, Integer> accept(Visitor v) throws GameException {
     	return v.visit(this);
     }
 	
-	
-	/**
-	 * méthode qui permet de distribuer les trophées au joueur qui les mérite
-	 * et qui calcule les score pour chaque joueur et met donc à jour l'attribut score
-	 */
-	public void calculerScoreFinal() throws IllegalStateException {
-		
-		//on fixe les decks des joeurs au debut du calcul 
-		//: on ne prend pas en compte l'effet de l'obtention d'un trophées sur la determination 
-		//de l'obtention du 2eme trophées 
-		Map<Joueur, Deck> joueur_deck = new HashMap();
-		for (Joueur j : this.listJoueur) {
-			joueur_deck.put(j, j.getDeckPossede());
-		}
-		
-		// attention dans le cas ou le joker est un des trophées et que l'autre trophées a une condition sur le joker 
-		// alors on choisit de ne pas donner le trophée avec la condition sur le joker ou alors le joueur concernait 
-		// (celui qui a le plus de point (la condition du joker) prends les DEUX cartes
-
-		for (Carte t : this.trophees.getListTrophee() ) {
-			
-			if (t.getCondition().equals("Lowest")) {
-				//cas où condition = lowest trèfle
-				if (t.getCouleur().equals("pique")) {
-					Joueur gagnant = new Joueur("tmp","tmp");
-					int lowest = 5;
-					Iterator<Joueur> it = joueur_deck.keySet().iterator();
-					while (it.hasNext()) {
-						Joueur key = it.next();
-						Deck valeur = joueur_deck.get(key);
-						for (Carte c : valeur.getCartes()) {
-							if (c.getCouleur().equals("trefle")) {
-								if (c.getValeur() < lowest ) {
-									lowest = c.getValeur();
-									gagnant = key;
-								}
-							}
-						}
-					}
-					if (gagnant.getNom().equals("tmp")) {
-						IllegalStateException e = new IllegalStateException("personne n'a de trèfle");
-						throw e;
-					}
-					gagnant.ajouterCarteDeck(t);
-				}
-				else if (t.getCouleur().equals("trefle")) {
-					//cas où condition = lowest pique
-					if (t.getValeur() == 4) {
-						Joueur gagnant = new Joueur("tmp","tmp");
-						int lowest = 5;
-						Iterator<Joueur> it = joueur_deck.keySet().iterator();
-						while (it.hasNext()) {
-							Joueur key = it.next();
-							Deck valeur = joueur_deck.get(key);
-							for (Carte c : valeur.getCartes()) {
-								if (c.getCouleur().equals("pique")) {
-									if (c.getValeur() < lowest ) {
-										lowest = c.getValeur();
-										gagnant = key;
-									}
-								}
-							}
-						}
-						if (gagnant.getNom().equals("tmp")) {
-							IllegalStateException e = new IllegalStateException("personne n'a de pique");
-							throw e;
-						}
-						gagnant.ajouterCarteDeck(t);
-					}
-					//cas où condition = lowest coeur
-					else if (t.getValeur() == 2) {
-						Joueur gagnant = new Joueur("tmp","tmp");
-						int lowest = 5;
-						Iterator<Joueur> it = joueur_deck.keySet().iterator();
-						while (it.hasNext()) {
-							Joueur key = it.next();
-							Deck valeur = joueur_deck.get(key);
-							for (Carte c : valeur.getCartes()) {
-								if (c.getCouleur().equals("coeur")) {
-									if (c.getValeur() < lowest ) {
-										lowest = c.getValeur();
-										gagnant = key;
-									}
-								}
-							}
-						}
-						if (gagnant.getNom().equals("tmp")) {
-							IllegalStateException e = new IllegalStateException("personne n'a de coeur");
-							throw e;
-						}
-						gagnant.ajouterCarteDeck(t);
-					}
-					else {
-						IllegalStateException e = new IllegalStateException("problème avec la condition du trophée");
-						throw e;
-					}
-				}
-				//cas où condition =  lowest carreau
-				else if (t.getCouleur().equals("carreau")) {
-					Joueur gagnant = new Joueur("tmp","tmp");
-					int lowest = 5;
-					Iterator<Joueur> it = joueur_deck.keySet().iterator();
-					while (it.hasNext()) {
-						Joueur key = it.next();
-						Deck valeur = joueur_deck.get(key);
-						for (Carte c : valeur.getCartes()) {
-							if (c.getCouleur().equals("carreau")) {
-								if (c.getValeur() < lowest ) {
-									lowest = c.getValeur();
-									gagnant = key;
-								}
-							}
-						}
-					}
-					if (gagnant.getNom().equals("tmp")) {
-						IllegalStateException e = new IllegalStateException("personne n'a de carreau");
-						throw e;
-					}
-					gagnant.ajouterCarteDeck(t);
-				}
-				else {
-					IllegalStateException e = new IllegalStateException("problème avec la condition du trophée");
-					throw e;
-				}	
-			}
-			else if (t.getCondition().equals("Highest")) {
-				//cas où condition = highest trèfle
-				if (t.getCouleur().equals("pique")) {
-					Joueur gagnant = new Joueur("tmp","tmp");
-					int highest = 0;
-					Iterator<Joueur> it = joueur_deck.keySet().iterator();
-					while (it.hasNext()) {
-						Joueur key = it.next();
-						Deck valeur = joueur_deck.get(key);
-						for (Carte c : valeur.getCartes()) {
-							if (c.getCouleur().equals("trefle")) {
-								if (c.getValeur() > highest ) {
-									highest = c.getValeur();
-									gagnant = key;
-								}
-							}
-						}
-					}
-					if (gagnant.getNom().equals("tmp")) {
-						IllegalStateException e = new IllegalStateException("personne n'a de trèfle");
-						throw e;
-					}
-					gagnant.ajouterCarteDeck(t);
-				}
-				else if (t.getCouleur().equals("trefle")) {
-					//cas où condition = highest pique
-					if (t.getValeur() == 1) {
-						Joueur gagnant = new Joueur("tmp","tmp");
-						int highest = 0;
-						Iterator<Joueur> it = joueur_deck.keySet().iterator();
-						while (it.hasNext()) {
-							Joueur key = it.next();
-							Deck valeur = joueur_deck.get(key);
-							for (Carte c : valeur.getCartes()) {
-								if (c.getCouleur().equals("pique")) {
-									if (c.getValeur() > highest ) {
-										highest = c.getValeur();
-										gagnant = key;
-									}
-								}
-							}
-						}
-						if (gagnant.getNom().equals("tmp")) {
-							IllegalStateException e = new IllegalStateException("personne n'a de pique");
-							throw e;
-						}
-						gagnant.ajouterCarteDeck(t);
-					}
-					//cas où condition = highest coeur
-					else if (t.getValeur() == 3) {
-						Joueur gagnant = new Joueur("tmp","tmp");
-						int highest = 0;
-						Iterator<Joueur> it = joueur_deck.keySet().iterator();
-						while (it.hasNext()) {
-							Joueur key = it.next();
-							Deck valeur = joueur_deck.get(key);
-							for (Carte c : valeur.getCartes()) {
-								if (c.getCouleur().equals("coeur")) {
-									if (c.getValeur() > highest ) {
-										highest = c.getValeur();
-										gagnant = key;
-									}
-								}
-							}
-						}
-						if (gagnant.getNom().equals("tmp")) {
-							IllegalStateException e = new IllegalStateException("personne n'a de coeur");
-							throw e;
-						}
-						gagnant.ajouterCarteDeck(t);
-					}
-					else {
-						IllegalStateException e = new IllegalStateException("problème avec la condition du trophée");
-						throw e;
-					}
-				}
-				//cas où condition =  highest carreau
-				else if (t.getCouleur().equals("carreau")) {
-					Joueur gagnant = new Joueur("tmp","tmp");
-					int highest = 0;
-					Iterator<Joueur> it = joueur_deck.keySet().iterator();
-					while (it.hasNext()) {
-						Joueur key = it.next();
-						Deck valeur = joueur_deck.get(key);
-						for (Carte c : valeur.getCartes()) {
-							if (c.getCouleur().equals("carreau")) {
-								if (c.getValeur() > highest ) {
-									highest = c.getValeur();
-									gagnant = key;
-								}
-							}
-						}
-					}
-					if (gagnant.getNom().equals("tmp")) {
-						IllegalStateException e = new IllegalStateException("personne n'a de carreau");
-						throw e;
-					}
-					gagnant.ajouterCarteDeck(t);
-				}
-				else {
-					IllegalStateException e = new IllegalStateException("problème avec la condition du trophée");
-					throw e;
-				}	
-			}
-			else if (t.getCondition().equals("Majority")) {
-				//cas où condition = majority de 4
-				if (t.getCouleur().equals("carreau")) {
-					Joueur gagnant = new Joueur("tmp","tmp");
-					int majority = 0;
-					Iterator<Joueur> it = joueur_deck.keySet().iterator();
-					while (it.hasNext()) {
-						Joueur key = it.next();
-						Deck valeur = joueur_deck.get(key);
-						int nb_4 = 0;
-						for (Carte c : valeur.getCartes()) {
-							if (c.getValeur() == 4) {
-								nb_4 += 1;
-							}
-						}
-						if (nb_4 > majority) {
-							majority = nb_4;
-							gagnant = key;
-						}
-					}
-					if (majority == 0) {
-						IllegalStateException e = new IllegalStateException("personne n'a de 4");
-						throw e;
-					}
-					gagnant.ajouterCarteDeck(t);
-				}
-				else if (t.getCouleur().equals("pique")){
-					//cas où condition = majority de 3
-					if (t.getValeur() == 2) {
-						Joueur gagnant = new Joueur("tmp","tmp");
-						int majority = 0;
-						Iterator<Joueur> it = joueur_deck.keySet().iterator();
-						while (it.hasNext()) {
-							Joueur key = it.next();
-							Deck valeur = joueur_deck.get(key);
-							int nb_3 = 0;
-							for (Carte c : valeur.getCartes()) {
-								if (c.getValeur() == 3) {
-									nb_3 += 1;
-								}
-							}
-							if (nb_3 > majority) {
-								majority = nb_3;
-								gagnant = key;
-							}
-						}
-						if (majority == 0) {
-							IllegalStateException e = new IllegalStateException("personne n'a de 3");
-							throw e;
-						}
-						gagnant.ajouterCarteDeck(t);
-					}
-					//cas où condition = majority de 2
-					else if (t.getValeur() == 3){
-						Joueur gagnant = new Joueur("tmp","tmp");
-						int majority = 0;
-						Iterator<Joueur> it = joueur_deck.keySet().iterator();
-						while (it.hasNext()) {
-							Joueur key = it.next();
-							Deck valeur = joueur_deck.get(key);
-							int nb_2 = 0;
-							for (Carte c : valeur.getCartes()) {
-								if (c.getValeur() == 2) {
-									nb_2 += 1;
-								}
-							}
-							if (nb_2 > majority) {
-								majority = nb_2;
-								gagnant = key;
-							}
-						}
-						if (majority == 0) {
-							IllegalStateException e = new IllegalStateException("personne n'a de 2");
-							throw e;
-						}
-						gagnant.ajouterCarteDeck(t);
-					}
-					else {
-						IllegalStateException e = new IllegalStateException("problème avec la condition du trophée");
-						throw e;
-					}
-				}
-				else {
-					IllegalStateException e = new IllegalStateException("problème avec la condition du trophée");
-					throw e;
-				}	
-			}
-			else if (t.getCondition().equals("Joker")) {
-				Joueur gagnant = new Joueur("tmp","tmp");
-				Iterator<Joueur> it = joueur_deck.keySet().iterator();
-				while (it.hasNext()) {
-					Joueur key = it.next();
-					Deck valeur = joueur_deck.get(key);
-					for (Carte c : valeur.getCartes()) {
-						if (c.getCouleur().equals("joker")) {
-								gagnant = key;
-						}
-					}
-				}
-				if (gagnant.getNom().equals("tmp")) {
-					IllegalStateException e = new IllegalStateException("personne n'a de Joker");
-					throw e;
-					}
-				gagnant.ajouterCarteDeck(t);
-			}
-			else if (t.getCondition().equals("BestJest")){   
-				this.calculerScoreSansTrophees();
-				Joueur gagnant = this.joueurGagnant();
-				gagnant.ajouterCarteDeck(t);
-			}
-			else if (t.getCondition().equals("BestJestAndNoJoker")) {
-				this.calculerScoreSansTrophees();
-				Joueur gagnant = this.joueurGagnant();
-				boolean joker = false;
-				for (Carte c : gagnant.getDeckPossede().getCartes()) {
-					if (c.getCouleur().equals("joker")) {
-						joker = true;
-					}
-				}
-				if (joker == false) {
-					gagnant.ajouterCarteDeck(t);
-				}
-				else {
-					int score_max = score.get(gagnant);
-					int score_max_second = 0;
-					
-					Iterator<Joueur> it = this.score.keySet().iterator();
-					while (it.hasNext()) {
-						Joueur key = it.next();
-						Integer valeur = this.score.get(key);
-						
-						if (valeur<score_max && valeur>score_max_second) {
-							gagnant = key;
-							score_max_second = valeur;
-						}
-					}
-					gagnant.ajouterCarteDeck(t);
-				}
-			}
-			else {
-				IllegalStateException e = new IllegalStateException("problème avec la condition du trophée");
-				throw e;
-			}
-			
-			
-			// calcul des scores pour chaque joueur et les ajoute à score
-			for (Joueur j : this.listJoueur) {
-				CompteurPoint cpt = new CompteurPoint();
-				score.put(j, cpt.visiter(j));
-			}
-		}
+    /**
+     * méthode relatif au pattern Visitor qui permet de calculer le score de la partie final
+     * @throws GameException
+     */
+    public void calculerScoreFinal() throws GameException {
+    	Visitor cpt = new CompteurPoint();
+    	this.score = this.accept(cpt);
+    }
+    
+    
+   
+	public ArrayList<Joueur> getJoueur() {
+		return listJoueur;
 	}
+
+
 	
-	public void calculerScoreSansTrophees() {
+	
+	public Trophee getTrophees() {
+		return trophees;
+	}
+
+
+	public void calculerScoreSansTrophees() throws GameException {
 		for (Joueur j : this.listJoueur) {
 			CompteurPoint cpt = new CompteurPoint();
-			score.put(j, cpt.visiter(j));
+			score.put(j, cpt.visit(j));
 		}
 	}
 	
-	public void finPartie() throws IllegalStateException {
+	public void finPartie() throws GameException {
 		this.calculerScoreFinal();
 		this.etatPartie = "terminé";
 		System.out.println("la partie est " + this.etatPartie +". Voici les score : ");

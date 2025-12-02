@@ -48,8 +48,9 @@ public class Joueur {
 	     * méthode relatif au pattern Visitor
 	     * @param v
 	     * @return
+	     * @throws GameException 
 	     */
-	    public int accept(Visitor v) {
+	    public int accept(Visitor v) throws GameException {
 	    	return v.visit(this);
 	    }
 	    
