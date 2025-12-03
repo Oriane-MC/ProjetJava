@@ -7,11 +7,12 @@ public class Partie {
 	private ArrayList<Joueur> listJoueur;
 	private PaquetCarte listCarte;
 	private String etatPartie;
-	private int variantes; //variantes = nouvelles règles (2)
 	private boolean extension; //extension = nouvelles cartes
 	private Trophee trophees;
 	private Scanner scanner; 
 	private Map<Joueur, Integer> score;
+	private Variante variante; // DINA peut être null si aucune variante choisie
+	private int numeroTour;//DINA 
 	
 	
 	/**
@@ -31,8 +32,9 @@ public class Partie {
 		
 		this.etatPartie = "en cours";
 		
-		//variantes
-		this.variantes = v;
+		//variantes AJOUT DINA 
+		 this.variante = variante; // null signifie aucune variante
+		 this.numeroTour = 1;  
 		
 		//extension
 		this.extension = extension;
@@ -40,7 +42,7 @@ public class Partie {
 		this.score = new HashMap();
 	}
 	
-<<<<<<< HEAD
+
 	/**
      * Permet de récupérer le scanner utilisé dans la partie.
      */
@@ -48,10 +50,7 @@ public class Partie {
         return this.scanner;
     }
 	
-	
-=======
->>>>>>> df4c23558958db7995ad03bf6acd7934e497e4a6
-	/**
+		/**
 	 * méthode qui mélange le paquet de carte/la pioche de la partie
 	 */
 	public void mélanger() {
@@ -157,6 +156,28 @@ public class Partie {
 		return gagnant;
 	}
 	
+	public void jouerTour() {
+        // Créer le tour
+        Tour tour = new Tour(this.listJoueur, numeroTour);
+
+        // Déterminer l'ordre normal selon les cartes visibles
+        tour.determinerOrdreJoueurs();
+
+     // Appliquer la variante si elle existe
+        if (variante != null) {
+            variante.appliquer(tour);
+        }
+
+        // Faire jouer les joueurs dans l'ordre
+        for (Joueur j : tour.getListeJoueurs()) {
+            System.out.println("C'est au tour de " + Joueur.getNom() + " de jouer !");
+            j.jouer();// PEUT NOUS AIDER A SIMPLIFIER 
+        }
+
+        numeroTour++;
+    }
+	
+	
 	public String getEtat() {
 		return this.etatPartie;
 	}
@@ -196,7 +217,34 @@ public class Partie {
 		
 		
 		// IL FAUT INTEGRER LES TOURS DANS LA CLASSE PARTIE
-		
+		//DINA VARIANTES 
+		 // 2️⃣ Demander à un joueur de choisir une variante
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Quel joueur choisit la variante ? (Alice/Bob/Charlie)");
+        String nomJoueur = sc.nextLine();
+
+        Joueur joueurChoix = null;
+        for (Joueur j : joueurs) {
+            if (j.getNom().equalsIgnoreCase(nomJoueur)) {
+                joueurChoix = j;
+                break;
+            }
+        }
+
+        // 3️⃣ Afficher les variantes possibles
+        System.out.println("Choisissez une variante :");
+        System.out.println("1 - Inversion");
+        System.out.println("2 - Départ aléatoire");
+        System.out.println("3 - Aucune");
+        int choix = sc.nextInt();
+
+        Variante varianteChoisie = null;
+        switch (choix) {
+            case 1 -> varianteChoisie = new Variante("Inversion");
+            case 2 -> varianteChoisie = new Variante("Départ aléatoire");
+            case 3 -> varianteChoisie = null; // aucune variante
+        }
+
 		// déterminer ordre de joueurs
 		
 		
