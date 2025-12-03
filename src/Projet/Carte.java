@@ -25,6 +25,16 @@ public class Carte {
 	public int getValeur() {
 		return valeur;
 	}
+	
+	/** 
+     * méthode relatif au pattern Visitor
+     * @param v
+     * @return
+	 * @throws GameException 
+     */
+    public int accept(Visitor v) throws GameException {
+    	return v.visit(this);
+    }
 
 	public void setValeur(int valeur) {
 		this.valeur = valeur;

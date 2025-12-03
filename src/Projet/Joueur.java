@@ -13,7 +13,7 @@ public class Joueur {
 		private Deck jest; //correspond au carte qu'il possede de maniere permanante
 		private Deck mainOffre; // La main temporaire de 2 cartes pour former l'offre actuelle.
 		private Partie p; // Référence à la partie (pour Scanner, etc.)
-	
+		private Scanner scanner;
 		
 		// Constructeur 
 		 /**
@@ -64,7 +64,21 @@ public class Joueur {
 	        return "Virtuel".equalsIgnoreCase(this.typeJoueur);
 	    }
 	    
-		//Méthodes 
+		
+	    //Méthodes 
+
+	 
+	    /** 
+	     * méthode relatif au pattern Visitor
+	     * @param v
+	     * @return
+	     * @throws GameException 
+	     */
+	    public int accept(Visitor v) throws GameException {
+	    	return v.visit(this);
+	    }
+	    
+	    
 	    
 	    /**
 	     * Permet au joueur de choisir une offre valide parmi celles des adversaires.
@@ -262,7 +276,6 @@ public class Joueur {
 
 	        // METTRE UN EXCEPTION Sécurité : si aucune carte en mainOffre
 	       
-
 	        // Transfert de toutes les cartes
 	        for (Carte c : new ArrayList<>(this.mainOffre.getCartes())) {
 	            this.jest.ajouterCarte(c);
