@@ -10,7 +10,7 @@ public class Partie {
 	private int variantes;
 	private Trophee trophees;
 	private Map<Joueur, Integer> score = new HashMap();
-	
+	private Scanner scanner; 
 	
 	/**
 	 * constructeur de la classe Partie qui initialise la liste de joueur, 
@@ -47,6 +47,12 @@ public class Partie {
 		this.variantes = v;
 	}
 	
+	/**
+     * Permet de récupérer le scanner utilisé dans la partie.
+     */
+    public Scanner getScanner() {
+        return this.scanner;
+    }
 	
 	
 	/**

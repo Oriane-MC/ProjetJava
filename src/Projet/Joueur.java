@@ -2,23 +2,33 @@ package Projet;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Joueur {
 	
 	// Attributs d'un joueur
 		private String nom; 
-		private String typeJoueur; 
+		private String typeJoueur; // "Humain" ou "Virtuel"
 		private Offre offre; 
 		private Deck jest; //correspond au carte qu'il possede de maniere permanante
 		private Deck mainOffre; // La main temporaire de 2 cartes pour former l'offre actuelle.
+		private Partie p; // Référence à la partie (pour Scanner, etc.)
+	
 		
-	// Constructeur 
+		// Constructeur 
+		 /**
+	     * Constructeur principal.
+	     * @param nom Nom du joueur
+	     * @param typeJoueur Type du joueur ("Humain" ou "Virtuel")
+	     * @param partie Référence à la partie (pour Scanner)
+	     */
 		
-		public Joueur(String nom, String typeJoueur ) {
+		public Joueur(String nom, String typeJoueur, Partie p ) {
 			this.nom = nom;
 	        this.typeJoueur = typeJoueur;
-	        this.jest = new Deck(this); 
-	        this.mainOffre = new Deck(this); // Nouvelle main temporaire
+	        this.jest = new Deck(this); // Deck permanent
+	        this.mainOffre = new Deck(this); // Main temporaire
+	        this.p = p;
 		}
 		
 		// Getters / Setters 
@@ -37,51 +47,140 @@ public class Joueur {
 	    public Deck getDeckPossede() {
 	        return jest;
 	    }
-
+	    
+	    public Deck getMainOffre() { 
+	    	return mainOffre; 
+	    }
+	   
 	    public void setOffre(Offre offre) {
 	        this.offre = offre;
 	    }
-
+	    
+	    /**
+	     * Vérifie si le joueur est virtuel.
+	     * @return true si le joueur est virtuel
+	     */
+	    public boolean isVirtuel() {
+	        return "Virtuel".equalsIgnoreCase(this.typeJoueur);
+	    }
+	    
 		//Méthodes 
+	    
 	    /**
-	     * Prend la carte visible de l'offre et l'ajoute au deck du joueur.
+	     * Permet au joueur de choisir une offre valide parmi celles des adversaires.
+	     * @param offres : ensemble de toutes les offres posées
+	     * @param partie : pour accès au Scanner
+	     * @return l'offre choisie par le joueur
 	     */
-	    public void prendreOffre(Offre offre) {
-	    	Joueur createurOffre = offre.getCreateur(); 
-	        String nomCreateur = (createurOffre != null) ? createurOffre.getNom() : "un joueur inconnu";
-	        
-	        Carte carteAPrendre = offre.carteVisiblePrise();
-	    	 if (carteAPrendre != null) {
-	            this.jest.ajouterCarte(carteAPrendre);
-	            System.out.println(this.nom + " a pris l'offre de " + nomCreateur + 
-                        " et a reçu la carte : " + carteAPrendre.toString() + " pour son Jest.");
-	        } else {
-	        	System.out.println("L'offre est vide ou déjà prise.");
+	    public Offre choisirOffre(List<Offre> offres, Partie partie) {
+
+	        System.out.println("\n" + this.nom + ", choisis l'offre d'un adversaire :");
+
+	        // 1) Filtrer les offres valides : pas prises + pas la sienne
+	        List<Offre> disponibles = new ArrayList<>();
+	        for (Offre o : offres) {
+	            if (o != null && o.estDisponible() && o.getCreateur() != this) {
+	                disponibles.add(o);
+	            }
 	        }
+
+	        // 2) Si rien de disponible → erreur logique mais on protège
+	        if (disponibles.isEmpty()) {
+	            System.out.println("Aucune offre disponible !");
+	            return null;
+	        }
+
+	        // 3) Affichage numéroté des offres
+	        for (int i = 0; i < disponibles.size(); i++) {
+	            Offre o = disponibles.get(i);
+	            System.out.println("  " + (i + 1) + ") Offre de " 
+	                    + o.getCreateur().getNom()
+	                    + " : visible = " + o.getCarteVisible());
+	        }
+
+	        // 4) Choix du joueur, sécurisé
+	        int choix;
+	        do {
+	            System.out.print("Ton choix (1 à " + disponibles.size() + ") : ");
+
+	            while (!partie.getScanner().hasNextInt()) {
+	                System.out.print("Veuillez entrer un nombre valable : ");
+	                partie.getScanner().next();
+	            }
+
+	            choix = partie.getScanner().nextInt();
+
+	        } while (choix < 1 || choix > disponibles.size());
+
+	        Offre selection = disponibles.get(choix - 1);
+
+	        System.out.println(this.nom + " a choisi l'offre de " 
+	                + selection.getCreateur().getNom());
+
+	        return selection;
 	    }
 
+	  
+	    
 	    /**
-	     * Pioche une carte du deck de pioche (passé en paramètre) et l'ajoute au deck du joueur.
-	     * C'est la méthode de secours si le joueur décide de ne pas prendre d'offre adverse.
+	     * Permet au joueur de prendre soit la carte visible, soit la carte cachée d'une offre.
 	     */
-	    public void piocher(Deck pioche) {
-	         Carte c = pioche.piocherCarte();
-	        if (c != null) {
-	            this.jest.ajouterCarte(c);
-	            System.out.println(this.nom + " ne prend pas d'offre et pioche une carte : " + c.toString() + " pour son Jest.");
-	            } else {
-	             System.out.println("La pioche est vide.");
+	    public void prendreOffre(Offre offre, Partie partie) {
+
+	        // 1) Vérifier qu'elle est disponible
+	        if (!offre.estDisponible()) {
+	            System.out.println("Cette offre a déjà été prise !");
+	            return;
 	        }
+
+	        String nomCreateur = (offre.getCreateur() != null)
+	                ? offre.getCreateur().getNom()
+	                : "un joueur inconnu";
+
+	        System.out.println("\n" + this.nom + ", tu dois choisir une carte dans l'offre de " + nomCreateur + " :");
+	        System.out.println(" ► Carte visible : " + offre.getCarteVisible());
+	        System.out.println(" ► Carte cachée : [???]");
+
+	        // 2) Choix sécurisé : visible ou cachée
+	        int choix;
+	        do {
+	            System.out.print("Prends-tu (1) la carte visible ou (2) la carte cachée ? ");
+
+	            while (!partie.getScanner().hasNextInt()) {
+	                System.out.print("Veuillez entrer 1 ou 2 : ");
+	                partie.getScanner().next();
+	            }
+
+	            choix = partie.getScanner().nextInt();
+
+	        } while (choix != 1 && choix != 2);
+
+	        // 3) Récupération de la carte
+	        Carte carteAPrendre = (choix == 1)
+	                ? offre.carteVisiblePrise()
+	                : offre.carteCacheePrise();
+
+	        // 4) Sécurité
+	        if (carteAPrendre == null) {
+	            System.out.println("Erreur : la carte choisie n'est pas disponible.");
+	            return;
+	        }
+
+	        // 5) Ajout au Jest
+	        this.jest.ajouterCarte(carteAPrendre);
+
+	        System.out.println(this.nom + " a pris l'offre de " + nomCreateur +
+	                " et a reçu : " + carteAPrendre);
 	    }
+
+
 
 
 	    /**
 	     * Crée l'offre du joueur en utilisant le constructeur à 2 arguments de Offre.
 	     */
-	    public void creerMonOffre(Carte faceVisible, Carte faceCachee) {
-	    	// Le constructeur est supposé être : new Offre(carteVisible, carteCachee, Joueur createur)
-	        this.offre = new Offre(faceVisible, faceCachee, this); 
-	        
+	    public void creerMonOffre(Carte faceVisible, Carte faceCachee, Partie p) {
+	    	 this.offre = new Offre(faceVisible, faceCachee, this); 
 	        // Retirer les cartes de la MAIN D'OFFRE après la création de l'offre
 	        this.mainOffre.retirerCarte(faceVisible);
 	        this.mainOffre.retirerCarte(faceCachee);
@@ -93,11 +192,8 @@ public class Joueur {
 	     * Logique de création de l'offre pour un joueur HUMAIN, avec interaction console.
 	     * Cette méthode gère la pioche, l'affichage et le choix.
 	     */
-	    public void creerMonOffreHumain(Deck pioche) {
-	        // Le Scanner devrait être géré par la classe principale de la partie
-	        Scanner scanner = new Scanner(System.in);
-	        
-	        System.out.println("\n--- Tour de " + this.nom + " (Humain) : Création de l'offre ---");
+	    public void creerMonOffreHumain(Deck pioche, Partie p) {
+	         System.out.println("\n--- Tour de " + this.nom + " (Humain) : Création de l'offre ---");
 	        
 	        // 1. Piocher les deux cartes dans la main d'offre
 	        Carte c1 = pioche.piocherCarte();
@@ -145,23 +241,36 @@ public class Joueur {
 	        Carte carteCachee = cartesEnMain.get(choixCacheIndex);
 	        
 	        // 4. Créer l'offre
-	        creerMonOffre(carteVisible, carteCachee);
+	        creerMonOffre(carteVisible, carteCachee, p);
 	        
 	        System.out.println("Offre de " + this.nom + " créée : Visible (" + carteVisible.toString() + ") / Cachée.");
 	    }
 	    
-	    /**
-	     * Utile pour différencier l'humain du virtuel.
-	     */
-	    public boolean isVirtuel() {
-	        return this.typeJoueur.equalsIgnoreCase("Virtuel"); 
-	    }
+	  
 	    
 	    /**
 	     * Ajoute une carte au deck de cartes possédées par le joueur.
 	     */
-	    public void ajouterCarteDeck(Carte carte) {
+	    public void ajouterCarteDeck(Carte carte, Partie p) {
 	        this.jest.ajouterCarte(carte);
 	    } 
+	    
+	    /**
+	     * Ajoute toutes les cartes de la main temporaire au deck permanent (Jest)
+	     */
+	    public void ajouterMainAuDeck() {
+
+	        // METTRE UN EXCEPTION Sécurité : si aucune carte en mainOffre
+	       
+
+	        // Transfert de toutes les cartes
+	        for (Carte c : new ArrayList<>(this.mainOffre.getCartes())) {
+	            this.jest.ajouterCarte(c);
+	        }
+	        // Vider la main 
+	        this.mainOffre.getCartes().clear();
+	        System.out.println("Les cartes de la main d'offre ont été ajoutées au Jest de " + this.nom + ".");
+	    }
+
 		
 }

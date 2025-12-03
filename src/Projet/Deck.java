@@ -67,17 +67,5 @@ public class Deck {
         }
         System.out.println("-------------------------------------------");
     }
-    
-	/**
-	 * Mélange le deck. Utile pour la pioche principale.
-	 */
-	public void melanger() {
-		Collections.shuffle(this.cartes);
-	}
-	
-	
-	
-	
-
 	 
 }

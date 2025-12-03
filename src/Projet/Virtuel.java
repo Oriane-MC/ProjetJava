@@ -4,10 +4,11 @@ import java.util.List;
 public class Virtuel extends Joueur {
 
     private Strategie strategie;
+    private static Partie p; 
 
     // Constructeur avec stratégie
     public Virtuel(String nom, Strategie strategie) {
-        super(nom, "Virtuel");
+        super(nom, "Virtuel", p);
         this.strategie = strategie;
     }
 
