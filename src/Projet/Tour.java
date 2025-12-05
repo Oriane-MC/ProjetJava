@@ -4,39 +4,66 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Représente un tour de jeu.
- * Détermine l'ordre des joueurs pour prendre des cartes selon la carte visible de leur offre.
+ * Représente un tour de jeu au cours d'une partie.
+ * <p>
+ * Cette classe gère :
+ * <ul>
+ *     <li>Les joueurs participant au tour</li>
+ *     <li>Le numéro du tour</li>
+ *     <li>L’ordre dans lequel les joueurs vont jouer</li>
+ * </ul>
+ * L'ordre est déterminé selon la carte visible que chaque joueur a mise dans son offre.
+ * Les règles de priorité des cartes sont :
+ * <ul>
+ *     <li>Valeur la plus élevée en premier</li>
+ *     <li>En cas d'égalité, priorité à la couleur selon la hiérarchie :
+ *         <b>Pique > Trèfle > Carreau > Coeur > Joker</b>
+ *     </li>
+ * </ul>
  */
 public class Tour {
 
-    // Liste des joueurs participant au tour
-    private List<Joueur> listeJoueurs;
-
-    // Numéro du tour
-    private int numeroTour;
+   // ATTRIBUTS 
+    private List<Joueur> listeJoueurs;  // Liste des joueurs participant au tour
+    private int numeroTour; // Numéro du tour courant 
 
     // Constructeur
+    /**
+     * Constructeur d'un tour de jeu
+     *
+     * @param listeJoueurs  liste des joueurs participant au tour
+     * @param numeroTour    numéro du tour actuel
+     */
     public Tour(List<Joueur> listeJoueurs, int numeroTour) {
-        this.listeJoueurs = new ArrayList<>(listeJoueurs); // copie pour sécurité
+        this.listeJoueurs = new ArrayList<>(listeJoueurs); 
         this.numeroTour = numeroTour;
     }
 
     // Getters
+    
+    /**
+     * @return liste des joueurs participant au tour 
+     */
     public List<Joueur> getListeJoueurs() {
         return listeJoueurs;
     }
 
+    /**
+     * @return numéro du tour
+     */
     public int getNumeroTour() {
         return numeroTour;
     }
 
     /**
      * Détermine l'ordre des joueurs selon la carte visible de leur offre.
-     * Règles :
+     * Règles de tri  :
      * - La carte visible la plus forte joue en premier
      * - En cas d'égalité, tri selon la hiérarchie des couleurs : Pique > Trèfle > Carreau > Coeur > Joker
+     *Si un joueur n'a pas d'offre, il est considéré comme ayant une carte visible nulle.
      */
     public void determinerOrdreJoueurs() {
+    	//sort modif la liste automatiquement :) i hope
         listeJoueurs.sort((j1, j2) -> {
 
             Carte c1 = (j1.getOffre() != null) ? j1.getOffre().getCarteVisible() : null;
@@ -60,6 +87,8 @@ public class Tour {
     /**
      * Retourne la force d'une couleur selon les règles : 
      * Pique > Trèfle > Carreau > Coeur > Joker
+     * * @param c carte dont la couleur doit être évaluée
+     * @return un entier représentant la "force" de la couleur
      */
     private int getForceCouleur(Carte c) {
         if (c == null) return 0;
@@ -77,8 +106,9 @@ public class Tour {
 
 
     /**
-     * Affiche l'ordre actuel des joueurs pour ce tour.
+     * Affiche l'ordre actuel des joueurs pour ce tour .
      * Affiche le nom du joueur et sa carte visible.
+     * Format :  NomJoueur (carte visible : 8 de Pique)
      */
     public void afficherOrdreJoueurs() {
         System.out.println("Ordre des joueurs pour le tour " + numeroTour + " :");

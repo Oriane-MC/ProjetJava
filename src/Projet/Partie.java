@@ -218,33 +218,23 @@ public class Partie {
 		
 		// IL FAUT INTEGRER LES TOURS DANS LA CLASSE PARTIE
 		//DINA VARIANTES 
-		 // 2️⃣ Demander à un joueur de choisir une variante
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Quel joueur choisit la variante ? (Alice/Bob/Charlie)");
-        String nomJoueur = sc.nextLine();
+		 //  Demander à l'utilisateur de choisir une variante
+        Scanner sc1 = new Scanner(System.in);
+        System.out.println("Choisissez une variante pour cette partie :");
+        System.out.println("1 - Inversion (inverse l'ordre des joueurs chaque tour)");
+        System.out.println("2 - Départ aléatoire (mélange aléatoirement l'ordre des joueurs chaque tour)");
+        System.out.println("3 - Aucune (ordre normal selon les cartes visibles)");
 
-        Joueur joueurChoix = null;
-        for (Joueur j : joueurs) {
-            if (j.getNom().equalsIgnoreCase(nomJoueur)) {
-                joueurChoix = j;
-                break;
-            }
-        }
-
-        // 3️⃣ Afficher les variantes possibles
-        System.out.println("Choisissez une variante :");
-        System.out.println("1 - Inversion");
-        System.out.println("2 - Départ aléatoire");
-        System.out.println("3 - Aucune");
-        int choix = sc.nextInt();
+        int choix = sc1.nextInt();
+        sc1.nextLine(); // consommer le retour à la ligne
 
         Variante varianteChoisie = null;
         switch (choix) {
             case 1 -> varianteChoisie = new Variante("Inversion");
             case 2 -> varianteChoisie = new Variante("Départ aléatoire");
             case 3 -> varianteChoisie = null; // aucune variante
+            default -> System.out.println("Choix invalide, aucune variante appliquée.");
         }
-
 		// déterminer ordre de joueurs
 		
 		
@@ -252,7 +242,7 @@ public class Partie {
 		j1.creerMonOffreHumain(null); //créer offre doit prendre en paramètre la partie, pk y'a 2 créer mon offre ?
 		j2.creerMonOffreHumain(null, null);
 		
-		j3.creerMonOffreVirtuel(null, null); 
+		j3.creerMonOffreVirtuel(null, null); // A CHANGER CELLE CI EXISTE PAS 
 		
 		
 		//chaque joueur prend une offre 

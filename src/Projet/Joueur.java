@@ -23,12 +23,12 @@ public class Joueur {
 	     * @param partie Référence à la partie (pour Scanner)
 	     */
 		
-		public Joueur(String nom, String typeJoueur, Partie p ) {
+		public Joueur(String nom, String typeJoueur, Partie partie ) {
 			this.nom = nom;
 	        this.typeJoueur = typeJoueur;
 	        this.jest = new Deck(this); // Deck permanent
 	        this.mainOffre = new Deck(this); // Main temporaire
-	        this.p = p;
+	        this.p = partie;
 		}
 		
 		// Getters / Setters 
