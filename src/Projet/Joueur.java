@@ -197,11 +197,13 @@ public class Joueur {
 	    /**
 	     * Crée l'offre du joueur en utilisant le constructeur à 2 arguments de Offre.
 	     */
-	    private void creerMonOffre(Carte faceVisible, Carte faceCachee) { //ORIANE : supressionde l'attribut partie car inutile et 
+	    private void creerMonOffre(Carte faceVisible, Carte faceCachee) { //ORIANE : supression de l'attribut partie car inutile et 
 	    // passe de la méthode en privé car elle ne sert que pour ici, que a la méthode créerMonOfreHumain
+	    	
 	    	 this.offre = new Offre(faceVisible, faceCachee, this); 
 	        // Retirer les cartes de la MAIN D'OFFRE après la création de l'offre
-	        this.mainOffre.remove(faceVisible);
+	        this.mainOffre.remove(faceVisible);      //ORIANE : c'est nourmal de les supprimer ici ??? il faurdrait pas mieux les supprimer dans
+	        											// prendreOffre pour le joueur a qui on prends l'offre
 	        this.mainOffre.remove(faceCachee);
 	        
 	    }
@@ -211,7 +213,7 @@ public class Joueur {
 	     * Logique de création de l'offre pour un joueur HUMAIN, avec interaction console.
 	     * Cette méthode gère la pioche, l'affichage et le choix.
 	     */
-	    public void creerMonOffreHumain(Partie p) { // ORIANE : changement de parametre, j'ai mis que partie 
+	    public void creerMonOffre(Partie p) { // ORIANE : changement de parametre, j'ai mis que partie 
 	         System.out.println("\n--- Tour de " + this.nom + " (Humain) : Création de l'offre ---");
 	        
 	        // 1. Piocher les deux cartes dans la main d'offre

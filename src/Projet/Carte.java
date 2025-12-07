@@ -14,7 +14,13 @@ public class Carte {
 		this.valeur = valeur;
 		this.couleur = couleur;
 		this.condition = condition;
-		this.extension = false ; //pas sur que ce soir la bonne manière de procéder	
+		
+		if (condition.equals("None")){
+			this.extension = true;
+		}
+		else {
+		this.extension = false ; 
+		}
 	}
 	
 	public String toString() {

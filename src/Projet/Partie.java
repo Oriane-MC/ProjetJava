@@ -28,19 +28,29 @@ public class Partie {
 		
 		this.etatPartie = "en cours";
 		
-		//variantes AJOUT DINA 
-		 this.variante = variante; // null signifie aucune variante
-		 this.numeroTour = 1;  
+		//variantes 
+		Variante varianteChoisie = null;
+        switch (v) {
+            case 1 -> varianteChoisie = new Variante("Inversion");
+            case 2 -> varianteChoisie = new Variante("Départ aléatoire");
+            case 3 -> varianteChoisie = null; // aucune variante
+            default -> System.out.println("Choix invalide, aucune variante appliquée.");
+        }
+        this.variante = varianteChoisie;
+		
+		
+		this.numeroTour = 0;  
 		
 		//extension
 		this.extension = extension;
 		
 		this.score = new HashMap();
 		
-		LinkedList listC = new LinkedList();
+		LinkedList<Carte> listC = new LinkedList();
 		for (TypeCarte carte : TypeCarte.values()) {
             listC.add(new Carte(carte.getValeur(), carte.getCouleur(), carte.getCondition()));
         }
+		
 		if (extension == true) {
 			for (CarteVariante carte : CarteVariante.values()) {
 	            listC.add(new Carte(carte.getValeur(), carte.getCouleur(), "None"));
@@ -71,11 +81,18 @@ public class Partie {
 	 * et de créer la pioche qui est un paquet de carte
 	 */
 	public void répartir() {
-		// peut etre on peut 'fussionner' la méthode mélanger et répartie car appelé que au début de partie
 		Carte c1 = listCarte.piocher();
+		while (c1.getExtension()) { //on ne peut mettre un carte extension en trophées
+			c1 = listCarte.piocher();
+		}
+		
 		Carte c2 = listCarte.piocher();
+		while (c2.getExtension()) {
+			c2 = listCarte.piocher();
+		}
+		
 		this.trophees = new Trophee(c1,c2);
-		System.out.println("Les trophées de la partie sont : " + c1 + " et " + c2);
+		System.out.println("Les trophées de la partie sont : " + trophees);
 	}
 	
 	public boolean estJouable() {
@@ -186,26 +203,7 @@ public class Partie {
 		return gagnant;
 	}
 	
-	public void jouerTour() {
-        // Créer le tour
-        Tour tour = new Tour(this.listJoueur, numeroTour);
-
-        // Déterminer l'ordre normal selon les cartes visibles
-        tour.determinerOrdreJoueurs();
-
-     // Appliquer la variante si elle existe
-        if (variante != null) {
-            variante.appliquer(tour);
-        }
-
-        // Faire jouer les joueurs dans l'ordre
-        for (Joueur j : tour.getListeJoueurs()) {
-            System.out.println("C'est au tour de " + Joueur.getNom() + " de jouer !");
-            j.jouer();// PEUT NOUS AIDER A SIMPLIFIER 
-        }
-
-        numeroTour++;
-    }
+	
 	
 	
 	public String getEtat() {
@@ -217,21 +215,93 @@ public class Partie {
 		return "Partie [etatPartie= " + etatPartie + " ; Joueur = " + listJoueur +" ; variantes=" + variante + "]";
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	/**
+     * Détermine l'ordre des joueurs selon la carte visible de leur offre.
+     * Règles de tri  :
+     * - La carte visible la plus forte joue en premier
+     * - En cas d'égalité, tri selon la hiérarchie des couleurs : Pique > Trèfle > Carreau > Coeur > Joker
+     *Si un joueur n'a pas d'offre, il est considéré comme ayant une carte visible nulle.
+     */
+    public Joueur determinerPremierJoueur() {
+    	
+    	Joueur joueurPremier = listJoueur.get(0);
+    	Carte plusForte = joueurPremier.offre.getCarteVisible();
+    	for (Joueur j : this.listJoueur) {
+    		Carte carteVisible = j.offre.getCarteVisible();
+    		if (plusForte.getCouleur() == carteVisible.getCouleur()) {
+    			if (plusForte.getValeur() < carteVisible.getValeur()) {
+    				plusForte = carteVisible;
+    				joueurPremier = j;
+    			}
+    		}
+    		else {
+    			int val1 = this.getForceCouleur(plusForte);
+    			int val2 = this.getForceCouleur(carteVisible);
+    			
+    			if (val1 < val2) {
+    				plusForte = carteVisible;
+    				joueurPremier = j;
+    			}
+    		}	
+    	}
+    	return joueurPremier;
+    }
+
+    /**
+     * Retourne la force d'une couleur selon les règles : 
+     * Pique > Trèfle > Carreau > Coeur > Joker
+     * * @param c carte dont la couleur doit être évaluée
+     * @return un entier représentant la "force" de la couleur
+     */
+    private int getForceCouleur(Carte c) {
+        if (c == null) return 0;
+
+        String couleur = c.getCouleur().toLowerCase();
+        return switch (couleur) {
+            case "pique" -> 4;
+            case "trèfle" -> 3;
+            case "carreau" -> 2;
+            case "coeur" -> 1;
+            case "joker" -> 0;
+            default -> 0;
+        };
+    }
+    
+    public void tourSuivant() {
+    	this.numeroTour ++;
+    }
+    
+    	
+	
+	
 
 	public static void main (String[] args) throws GameException {
 		Scanner sc = new Scanner(System.in);
 
-		// 1- demander si extension ou pas
-        System.out.println("Voulez-vous activer les extensions/ nouvelles cartes ? (1=oui, 0=non)");
+		// demander si extension ou pas
+        System.out.println("Voulez-vous activer les extensions pour cette partie (nouvelles cartes 6 et 7 de chaque couleurs) ? (1=oui, 0=non)");
         boolean extension = sc.nextInt() == 1;
         
-        // 2- demander si variantes ou pas 
-        System.out.println("Choisissez une variante : 0=base, 1=v1, 2=v2");
+        // demander si variantes ou pas 
+        System.out.println("Choisissez une variante pour cette partie :");
+        System.out.println("1 - Inversion (inverse l'ordre des joueurs chaque tour)");
+        System.out.println("2 - Départ aléatoire (mélange aléatoirement l'ordre des joueurs chaque tour)");
+        System.out.println("3 - Aucune (ordre normal selon les cartes visibles)");
+
         int variante = sc.nextInt();
        
+        
         //instanciation de la partie 
 		Partie p = new Partie(extension, variante);
 			
+		
 		//création et ajout des joueurs à la partie 
 		Joueur j1 = new Joueur("j1","reel",p); 
 		Joueur j2 = new Joueur("j2","reel",p);
@@ -242,54 +312,43 @@ public class Partie {
 		
 		p.mélanger();
 		p.répartir();
-		
-		
-		// IL FAUT INTEGRER LES TOURS DANS LA CLASSE PARTIE
+	
  
-		 //  Demander à l'utilisateur de choisir une variante
-        Scanner sc1 = new Scanner(System.in);
-        System.out.println("Choisissez une variante pour cette partie :");
-        System.out.println("1 - Inversion (inverse l'ordre des joueurs chaque tour)");
-        System.out.println("2 - Départ aléatoire (mélange aléatoirement l'ordre des joueurs chaque tour)");
-        System.out.println("3 - Aucune (ordre normal selon les cartes visibles)");
-
-        int choix = sc1.nextInt();
-        sc1.nextLine(); // consommer le retour à la ligne
-
-        Variante varianteChoisie = null;
-        switch (choix) {
-            case 1 -> varianteChoisie = new Variante("Inversion");
-            case 2 -> varianteChoisie = new Variante("Départ aléatoire");
-            case 3 -> varianteChoisie = null; // aucune variante
-            default -> System.out.println("Choix invalide, aucune variante appliquée.");
-        }
+		
 		
 
         while (p.estJouable()) {
         	//tour de plus 
-        	
-        	
-        	
+        	p.tourSuivant();
         
         	//chaque joueur crée son offre 
-        	j1.creerMonOffreHumain(p); 
-        	j2.creerMonOffreHumain(p);
-        	j3.creerMonOffreVirtuel(p); 
+        	for (Joueur j : p.getJoueur()) {
+        		j.creerMonOffre(p);
+        	}
 		
         	
+        	//le premier joueur joue 
         	
-        	// déterminer ordre de joueurs
+        	p.determinerPremierJoueur().prendreOffre(j1,p);
+        	
+        	
+        	Joueur joueurSuivant = j1;
+        	
+        	
+        	
         	
 		
         	//chaque joueur prend une offre 
         	j1.prendreOffre(j2,p); 
         	j2.prendreOffre(j1,p);
-        	j3.prendreOffreVirtuel(p);
+        	j3.prendreOffre(p);
 		
-        	//chaque joueur ajoute a son deck 
-        	j1.ajouterMainAuDeck();
-        	j2.ajouterMainAuDeck();
-        	j3.ajouterMainAuDeckVirtuel();
+        	
+        	
+        	//chaque joueur ajoute sa main a son deck 
+        	for (Joueur j : p.getJoueur()) {
+        		j.ajouterMainAuDeck();
+        	}
 		
         }
 		

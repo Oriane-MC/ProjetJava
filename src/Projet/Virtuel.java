@@ -52,7 +52,7 @@ public class Virtuel extends Joueur {
         return strategie.choisirMonOffre(this, p.getPioche(), offresAdversaires);
     }
 
-    public void creerMonOffreVirtuel(Partie p) { //ORIANE : changement du code ici 
+    public void creerMonOffre(Partie p) { //ORIANE : changement du code ici 
     	super.offre = choisirMonOffre(p);
     }
     /**
@@ -66,7 +66,7 @@ public class Virtuel extends Joueur {
     }
     
     
-    public void prendreOffreVirtuel(Partie partie) {
+    public void prendreOffre(Partie partie) {
     	Carte c = this.deciderOffreAdversaire( ///////// );
     	super.jest.ajouterCarte(c);
     }
