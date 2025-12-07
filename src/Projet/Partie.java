@@ -114,6 +114,9 @@ public class Partie {
 	}
 
 
+	public PaquetCarte getPioche() {
+		return listCarte;
+	}
 	
 	
 	public Trophee getTrophees() {
@@ -212,21 +215,19 @@ public class Partie {
 		Partie p = new Partie(extension, variante);
 			
 		//création et ajout des joueurs à la partie 
-		Joueur j1 = new Joueur("j1","reel"); 
-		Joueur j2 = new Joueur("j2","reel");
+		Joueur j1 = new Joueur("j1","reel",p); 
+		Joueur j2 = new Joueur("j2","reel",p);
 		Virtuel j3 = new Virtuel("j3", new StrategieBasique());
 		p.ajouterJoueur(j1);
 		p.ajouterJoueur(j2);
 		p.ajouterJoueur(j3);
-
-		
 		
 		p.mélanger();
 		p.répartir();
 		
 		
 		// IL FAUT INTEGRER LES TOURS DANS LA CLASSE PARTIE
-		//DINA VARIANTES 
+ 
 		 //  Demander à l'utilisateur de choisir une variante
         Scanner sc1 = new Scanner(System.in);
         System.out.println("Choisissez une variante pour cette partie :");
@@ -248,23 +249,23 @@ public class Partie {
 		
 		
 		//chaque joueur crée son offre 
-		j1.creerMonOffreHumain(null); //créer offre doit prendre en paramètre la partie, pk y'a 2 créer mon offre ?
-		j2.creerMonOffreHumain(null, null);
+		j1.creerMonOffreHumain(p); 
+		j2.creerMonOffreHumain(p);
 		
-		j3.creerMonOffreVirtuel(null, null); // A CHANGER CELLE CI EXISTE PAS 
+		j3.creerMonOffreVirtuel(p); 
 		
 		
 		//chaque joueur prend une offre 
-		j1.prendreOffre(null); 
-		j2.prendreOffre(null);
+		j1.prendreOffre(j2,p); 
+		j2.prendreOffre(j1,p);
 		
-		j3.prendreOffre(null);
+		j3.prendreOffreVirtuel(p);
 		
 		//chaque joueur ajoute a son deck 
-		j1.ajouterCarteDeck(null);
-		j2.ajouterCarteDeck(null);
+		j1.ajouterMainAuDeck();
+		j2.ajouterMainAuDeck();
 		
-		j3.ajouterCarteDeck(null);
+		j3.ajouterMainAuDeckVirtuel();
 		
 		//distribuer les trophées, calculer les points, annoncer le gagnant 
 		p.finPartie();

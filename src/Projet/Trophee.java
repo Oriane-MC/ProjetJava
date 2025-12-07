@@ -83,7 +83,7 @@ public class Trophee {
     }
     	
     	public Joueur gagnantLowestTrefle(Partie p) throws GameException {
-    		Joueur gagnant = new Joueur("tmp","tmp");
+    		Joueur gagnant = new Joueur("tmp","tmp",null);
 			int lowest = 5;
 		
 			for (Joueur j : p.getJoueur()) {
@@ -102,7 +102,7 @@ public class Trophee {
     	}
     	
     	public Joueur gagnantLowestPique(Partie p) throws GameException {
-    		Joueur gagnant = new Joueur("tmp","tmp");
+    		Joueur gagnant = new Joueur("tmp","tmp",null);
 			int lowest = 5;
 		
 			for (Joueur j : p.getJoueur()) {
@@ -121,7 +121,7 @@ public class Trophee {
     	}
     	
     	public Joueur gagnantLowestCoeur(Partie p) throws GameException {
-    		Joueur gagnant = new Joueur("tmp","tmp");
+    		Joueur gagnant = new Joueur("tmp","tmp",null);
 			int lowest = 5;
 		
 			for (Joueur j : p.getJoueur()) {
@@ -140,7 +140,7 @@ public class Trophee {
     	}
     	
     	public Joueur gagnantLowestCarreau(Partie p) throws GameException {
-    		Joueur gagnant = new Joueur("tmp","tmp");
+    		Joueur gagnant = new Joueur("tmp","tmp",null);
 			int lowest = 5;
 		
 			for (Joueur j : p.getJoueur()) {
@@ -159,7 +159,7 @@ public class Trophee {
     	}
     	
     	public Joueur gagnantHighestTrefle(Partie p) throws GameException {
-    		Joueur gagnant = new Joueur("tmp","tmp");
+    		Joueur gagnant = new Joueur("tmp","tmp",null);
 			int highest = 0;
 		
 			for (Joueur j : p.getJoueur()) {
@@ -178,7 +178,7 @@ public class Trophee {
     	}
     	
     	public Joueur gagnantHighestPique(Partie p) throws GameException {
-    		Joueur gagnant = new Joueur("tmp","tmp");
+    		Joueur gagnant = new Joueur("tmp","tmp",null);
 			int highest = 0;
 		
 			for (Joueur j : p.getJoueur()) {
@@ -197,7 +197,7 @@ public class Trophee {
     	}
     	
     	public Joueur gagnantHighestCoeur(Partie p) throws GameException {
-    		Joueur gagnant = new Joueur("tmp","tmp");
+    		Joueur gagnant = new Joueur("tmp","tmp",null);
 			int highest = 0;
 		
 			for (Joueur j : p.getJoueur()) {
@@ -216,7 +216,7 @@ public class Trophee {
     	}
     	
     	public Joueur gagnantHighestCarreau(Partie p) throws GameException {
-    		Joueur gagnant = new Joueur("tmp","tmp");
+    		Joueur gagnant = new Joueur("tmp","tmp",null);
 			int highest = 0;
 		
 			for (Joueur j : p.getJoueur()) {
@@ -235,7 +235,7 @@ public class Trophee {
     	}
     	
     	public Joueur gagnantMajority4(Partie p) throws GameException {
-    		Joueur gagnant = new Joueur("tmp","tmp");
+    		Joueur gagnant = new Joueur("tmp","tmp",null);
 			int majority = 0;
 		
 			for (Joueur j : p.getJoueur()) {
@@ -260,7 +260,7 @@ public class Trophee {
     	}
     	
     	public Joueur gagnantMajority3(Partie p) throws GameException {
-    		Joueur gagnant = new Joueur("tmp","tmp");
+    		Joueur gagnant = new Joueur("tmp","tmp",null);
 			int majority = 0;
 		
 			for (Joueur j : p.getJoueur()) {
@@ -285,7 +285,7 @@ public class Trophee {
     	}
     	
     	public Joueur gagnantMajority2(Partie p) throws GameException {
-    		Joueur gagnant = new Joueur("tmp","tmp");
+    		Joueur gagnant = new Joueur("tmp","tmp",null);
 			int majority = 0;
 		
 			for (Joueur j : p.getJoueur()) {

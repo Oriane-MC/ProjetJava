@@ -7,13 +7,13 @@ import java.util.ArrayList;
 public class Joueur {
 	
 	// Attributs d'un joueur
-		private String nom; 
-		private String typeJoueur; // "Humain" ou "Virtuel"
-		private Offre offre; 
-		private Deck jest; //correspond au carte qu'il possede de maniere permanante
-		private Deck mainOffre; // La main temporaire de 2 cartes pour former l'offre actuelle.
-		private Partie p; // Référence à la partie (pour Scanner, etc.)
-		private Scanner scanner;
+		protected String nom; 
+		protected String typeJoueur; // "Humain" ou "Virtuel"
+		protected Offre offre; 
+		protected Deck jest; //correspond au carte qu'il possede de maniere permanante
+		protected Deck mainOffre; // La main temporaire de 2 cartes pour former l'offre actuelle.
+		protected Partie p; // Référence à la partie (pour Scanner, etc.)
+		protected Scanner scanner;
 		
 		// Constructeur 
 		 /**
@@ -86,7 +86,8 @@ public class Joueur {
 	     * @param partie : pour accès au Scanner
 	     * @return l'offre choisie par le joueur
 	     */
-	    public Offre choisirOffre(List<Offre> offres, Partie partie) {
+	    public Offre choisirOffre(List<Offre> offres, Partie partie) { //ORIANE = je pense qu'il faut supprimer cett méthde : pas utile
+	    	// : elle n'est pas utiliser das le reste de ton code . Cette méthode est utile seuelement pour un joueur VIRTUEL
 
 	        System.out.println("\n" + this.nom + ", choisis l'offre d'un adversaire :");
 
@@ -139,20 +140,21 @@ public class Joueur {
 	    /**
 	     * Permet au joueur de prendre soit la carte visible, soit la carte cachée d'une offre.
 	     */
-	    public void prendreOffre(Offre offre, Partie partie) {
+	    public void prendreOffre(Joueur j, Partie partie) { //ORIANE  = changement des parametre et donc du code qui en découle
+	    	// j'ai changé le parametre offre en joueur, a verifier car pas sur si j'ai bien tout remplacer les offre par j.getOffre()
 
 	        // 1) Vérifier qu'elle est disponible
-	        if (!offre.estDisponible()) {
+	        if (!j.getOffre().estDisponible()) {
 	            System.out.println("Cette offre a déjà été prise !");
 	            return;
 	        }
 
-	        String nomCreateur = (offre.getCreateur() != null)
-	                ? offre.getCreateur().getNom()
+	        String nomCreateur = (j.getNom() != null)
+	                ? j.getNom()
 	                : "un joueur inconnu";
 
 	        System.out.println("\n" + this.nom + ", tu dois choisir une carte dans l'offre de " + nomCreateur + " :");
-	        System.out.println(" ► Carte visible : " + offre.getCarteVisible());
+	        System.out.println(" ► Carte visible : " + j.getOffre().getCarteVisible());
 	        System.out.println(" ► Carte cachée : [???]");
 
 	        // 2) Choix sécurisé : visible ou cachée
@@ -171,8 +173,8 @@ public class Joueur {
 
 	        // 3) Récupération de la carte
 	        Carte carteAPrendre = (choix == 1)
-	                ? offre.carteVisiblePrise()
-	                : offre.carteCacheePrise();
+	                ? j.getOffre().carteVisiblePrise()
+	                : j.getOffre().carteCacheePrise();
 
 	        // 4) Sécurité
 	        if (carteAPrendre == null) {
@@ -193,7 +195,8 @@ public class Joueur {
 	    /**
 	     * Crée l'offre du joueur en utilisant le constructeur à 2 arguments de Offre.
 	     */
-	    public void creerMonOffre(Carte faceVisible, Carte faceCachee, Partie p) {
+	    private void creerMonOffre(Carte faceVisible, Carte faceCachee) { //ORIANE : supressionde l'attribut partie car inutile et 
+	    // passe de la méthode en privé car elle ne sert que pour ici, que a la méthode créerMonOfreHumain
 	    	 this.offre = new Offre(faceVisible, faceCachee, this); 
 	        // Retirer les cartes de la MAIN D'OFFRE après la création de l'offre
 	        this.mainOffre.retirerCarte(faceVisible);
@@ -206,12 +209,12 @@ public class Joueur {
 	     * Logique de création de l'offre pour un joueur HUMAIN, avec interaction console.
 	     * Cette méthode gère la pioche, l'affichage et le choix.
 	     */
-	    public void creerMonOffreHumain(Deck pioche, Partie p) {
+	    public void creerMonOffreHumain(Partie p) { // ORIANE : changement de parametre, j'ai mis que partie 
 	         System.out.println("\n--- Tour de " + this.nom + " (Humain) : Création de l'offre ---");
 	        
 	        // 1. Piocher les deux cartes dans la main d'offre
-	        Carte c1 = pioche.piocherCarte();
-	        Carte c2 = pioche.piocherCarte();
+	        Carte c1 = p.getPioche().piocher();
+	        Carte c2 = p.getPioche().piocher();
 	        
 	        if (c1 == null || c2 == null) {
 	            System.out.println("Erreur: Pas assez de cartes dans la pioche.");
@@ -255,7 +258,7 @@ public class Joueur {
 	        Carte carteCachee = cartesEnMain.get(choixCacheIndex);
 	        
 	        // 4. Créer l'offre
-	        creerMonOffre(carteVisible, carteCachee, p);
+	        creerMonOffre(carteVisible, carteCachee);
 	        
 	        System.out.println("Offre de " + this.nom + " créée : Visible (" + carteVisible.toString() + ") / Cachée.");
 	    }
@@ -265,7 +268,7 @@ public class Joueur {
 	    /**
 	     * Ajoute une carte au deck de cartes possédées par le joueur.
 	     */
-	    public void ajouterCarteDeck(Carte carte, Partie p) {
+	    public void ajouterCarteDeck(Carte carte) { //Oriane = suppression du parametre partie 
 	        this.jest.ajouterCarte(carte);
 	    } 
 	    

@@ -3,7 +3,7 @@ import java.util.List;
 
 public interface Strategie  {
 	// Décider quelle offre faire, quel carte je mets cacher et quel carte je mets visible 
-    public Offre choisirMonOffre(Joueur joueur, Deck pioche, List<Offre> offresAdversaires);
+    public Offre choisirMonOffre(Joueur joueur,PaquetCarte pioche, List<Offre> offresAdversaires);
     
     // Décider quelle offre je vais prendre chez mes adversaire 
     public void prendreOffreAdversaire(Offre offre, Joueur joueur);

@@ -20,10 +20,10 @@ Lors de la prise :
 		
 		
 		// Décider quelle offre faire, quel carte je mets cacher et quel carte je mets visible 
-	    public Offre choisirMonOffre( Joueur joueur, Deck pioche, List<Offre> offresAdversaires) {
+	    public Offre choisirMonOffre( Joueur joueur, PaquetCarte pioche, List<Offre> offresAdversaires) {
 	    	  // Piocher 2 cartes pour créer l'offre
-	        Carte c1 = pioche.piocherCarte();
-	        Carte c2 = pioche.piocherCarte();
+	        Carte c1 = pioche.piocher();
+	        Carte c2 = pioche.piocher();
 	        
 	        if (c1 == null || c2 == null) {
 	            System.out.println("Pioche insuffisante pour créer une offre.");

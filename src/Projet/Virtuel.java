@@ -1,5 +1,6 @@
 package Projet;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -42,17 +43,47 @@ public class Virtuel extends Joueur {
      * @param offresAdversaires Liste des offres déjà déposées par les autres joueurs.
      * @return L'offre choisie par le joueur virtuel conformément à sa stratégie.
      */
-    public Offre choisirMonOffre(Deck pioche, List<Offre> offresAdversaires) {
-        return strategie.choisirMonOffre(this, pioche, offresAdversaires);
+    private Offre choisirMonOffre(Partie p) { //ORIANE : changement du code ici 
+    	
+    	ArrayList<Offre> offresAdversaires = new ArrayList();
+    	for (Joueur j : p.getJoueur()) {
+    		offresAdversaires.add(j.getOffre());
+    	}
+        return strategie.choisirMonOffre(this, p.getPioche(), offresAdversaires);
     }
 
+    public void creerMonOffreVirtuel(Partie p) { //ORIANE : changement du code ici 
+    	super.offre = choisirMonOffre(p);
+    }
     /**
      * Demande à la stratégie de décider si le joueur virtuel doit prendre
      * l'offre d'un adversaire. 
      *
      * @param offre Offre proposée par un joueur adverse.
      */
-    public void deciderOffreAdversaire(Offre offre) {
-         strategie.prendreOffreAdversaire(offre, this);
+    private Carte deciderOffreAdversaire( ///////// ) {
+         return strategie.prendreOffreAdversaire( //////// );
     }
+    
+    
+    public void prendreOffreVirtuel(Partie partie) {
+    	Carte c = this.deciderOffreAdversaire( ///////// );
+    	super.jest.ajouterCarte(c);
+    }
+    // prendreOffre doit faire appel a deciderOffreAdversaire pour choisir une carte de l'offre d'un des joueur et renvoyer 
+    //cette carte pour pouvoir ajouter la carte au deck du joueur virtuel 
+    //et decider offre adversaire doit donc retourner un joueur et doit juste faire appel
+    // a une méthode de stratégie qui permet de renvoyer le carte le plus interresant à prendre parmes le offres et les joueur
+    // normalement le code squellet est bon pour ici (pas dans les classe stategie par exemple), fait juste que tu mettes les parametres 
+    // que tu veux là ou j'ai mis des //////// (tu peux te débrouiller un peu comme tu veux en ayant partie en parametre en vrai 
+    // tu peux regarder ce que j'ai fait pour choisirMonOffre dans cette classe pour te donner des idées de parametre "plus simple" a gerer
+
+    
+    
+    
+    
+    public void ajouterMainAuDeckVirtuel() { //ORIANE : j'ai fait ca car il y en a besoin pour la partie : a verifier 
+		super.ajouterMainAuDeck();
+	}
+
 }
