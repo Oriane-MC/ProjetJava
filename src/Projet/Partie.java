@@ -13,6 +13,8 @@ public class Partie {
 	private Map<Joueur, Integer> score;
 	
 	
+	
+	
 	/**
 	 * constructeur de la classe Partie qui initialise la liste de joueur, 
 	 * crée la pioche (listCarte),
@@ -21,12 +23,6 @@ public class Partie {
 	 */
 	public Partie(boolean extension, int v) {
 		this.listJoueur = new ArrayList();
-		
-		LinkedList listC = new LinkedList();
-		for (TypeCarte carte : TypeCarte.values()) {
-            listC.add(new Carte(carte.getValeur(), carte.getCouleur(), carte.getCondition()));
-        }
-		this.listCarte = new PaquetCarte(listC);
 		
 		this.etatPartie = "en cours";
 		
@@ -37,6 +33,19 @@ public class Partie {
 		this.extension = extension;
 		
 		this.score = new HashMap();
+		
+		LinkedList listC = new LinkedList();
+		for (TypeCarte carte : TypeCarte.values()) {
+            listC.add(new Carte(carte.getValeur(), carte.getCouleur(), carte.getCondition()));
+        }
+		if (extension == true) {
+			for (CarteVariante carte : CarteVariante.values()) {
+	            listC.add(new Carte(carte.getValeur(), carte.getCouleur(), "None"));
+	        }
+		}
+		this.listCarte = new PaquetCarte(listC);
+		
+		
 	}
 	
 	/**
