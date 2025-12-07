@@ -1,5 +1,8 @@
 package Projet;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Offre {
 
     private Carte carteVisible;
@@ -59,5 +62,22 @@ public class Offre {
     public boolean estDisponible() {
         return this.etat;
     }
+    
+    /**
+     * Retourne la liste des offres encore disponibles (non prises).
+     */
+    public static List<Offre> getOffresDisponibles(List<Offre> offres) {
+
+        List<Offre> disponibles = new ArrayList<>();
+
+        for (Offre o : offres) {
+            if (o.estDisponible()) {
+                disponibles.add(o);
+            }
+        }
+
+        return disponibles;
+    }
+
 
 }

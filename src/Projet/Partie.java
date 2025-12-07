@@ -7,10 +7,12 @@ public class Partie {
 	private ArrayList<Joueur> listJoueur;
 	private PaquetCarte listCarte;
 	private String etatPartie;
-	private int variantes; //variantes = nouvelles règles (2)
 	private boolean extension; //extension = nouvelles cartes
 	private Trophee trophees;
+	private Scanner scanner; 
 	private Map<Joueur, Integer> score;
+	private Variante variante; // DINA peut être null si aucune variante choisie
+	private int numeroTour;//DINA 
 	
 	
 	
@@ -26,8 +28,9 @@ public class Partie {
 		
 		this.etatPartie = "en cours";
 		
-		//variantes
-		this.variantes = v;
+		//variantes AJOUT DINA 
+		 this.variante = variante; // null signifie aucune variante
+		 this.numeroTour = 1;  
 		
 		//extension
 		this.extension = extension;
@@ -48,7 +51,15 @@ public class Partie {
 		
 	}
 	
+
 	/**
+     * Permet de récupérer le scanner utilisé dans la partie.
+     */
+    public Scanner getScanner() {
+        return this.scanner;
+    }
+	
+		/**
 	 * méthode qui mélange le paquet de carte/la pioche de la partie
 	 */
 	public void mélanger() {
@@ -154,6 +165,28 @@ public class Partie {
 		return gagnant;
 	}
 	
+	public void jouerTour() {
+        // Créer le tour
+        Tour tour = new Tour(this.listJoueur, numeroTour);
+
+        // Déterminer l'ordre normal selon les cartes visibles
+        tour.determinerOrdreJoueurs();
+
+     // Appliquer la variante si elle existe
+        if (variante != null) {
+            variante.appliquer(tour);
+        }
+
+        // Faire jouer les joueurs dans l'ordre
+        for (Joueur j : tour.getListeJoueurs()) {
+            System.out.println("C'est au tour de " + Joueur.getNom() + " de jouer !");
+            j.jouer();// PEUT NOUS AIDER A SIMPLIFIER 
+        }
+
+        numeroTour++;
+    }
+	
+	
 	public String getEtat() {
 		return this.etatPartie;
 	}
@@ -193,7 +226,24 @@ public class Partie {
 		
 		
 		// IL FAUT INTEGRER LES TOURS DANS LA CLASSE PARTIE
-		
+		//DINA VARIANTES 
+		 //  Demander à l'utilisateur de choisir une variante
+        Scanner sc1 = new Scanner(System.in);
+        System.out.println("Choisissez une variante pour cette partie :");
+        System.out.println("1 - Inversion (inverse l'ordre des joueurs chaque tour)");
+        System.out.println("2 - Départ aléatoire (mélange aléatoirement l'ordre des joueurs chaque tour)");
+        System.out.println("3 - Aucune (ordre normal selon les cartes visibles)");
+
+        int choix = sc1.nextInt();
+        sc1.nextLine(); // consommer le retour à la ligne
+
+        Variante varianteChoisie = null;
+        switch (choix) {
+            case 1 -> varianteChoisie = new Variante("Inversion");
+            case 2 -> varianteChoisie = new Variante("Départ aléatoire");
+            case 3 -> varianteChoisie = null; // aucune variante
+            default -> System.out.println("Choix invalide, aucune variante appliquée.");
+        }
 		// déterminer ordre de joueurs
 		
 		
@@ -201,7 +251,7 @@ public class Partie {
 		j1.creerMonOffreHumain(null); //créer offre doit prendre en paramètre la partie, pk y'a 2 créer mon offre ?
 		j2.creerMonOffreHumain(null, null);
 		
-		j3.creerMonOffreVirtuel(null, null); 
+		j3.creerMonOffreVirtuel(null, null); // A CHANGER CELLE CI EXISTE PAS 
 		
 		
 		//chaque joueur prend une offre 
