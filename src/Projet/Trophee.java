@@ -101,7 +101,8 @@ public class Trophee {
 			}
     	}
     	
-    	public Joueur gagnantLowestPique(Partie p) throws GameException {
+
+		public Joueur gagnantLowestPique(Partie p) throws GameException {
     		Joueur gagnant = new Joueur("tmp","tmp",null);
 			int lowest = 5;
 		
@@ -355,6 +356,12 @@ public class Trophee {
 					}
 				return gagnant;
 				}
-			}   
+			} 
+		
+		
+		public String toString() {
+			return "Trophees=" + this.getTrophee1() + " / condition : "+ this.getTrophee1().getCondition()+ " et "
+					+ this.getTrophee2() + " / condition : " + this.getTrophee2().getCondition();
+		}
     
 }

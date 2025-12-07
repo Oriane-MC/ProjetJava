@@ -7,6 +7,8 @@ public enum CarteVariante {
 	CARTE20("dame","coeur"),
 	CARTE21("roi","coeur");
 	
+		
+	
 	private String valeur ;
 	private String couleur;
 

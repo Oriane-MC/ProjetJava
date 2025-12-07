@@ -31,7 +31,12 @@ public enum TypeCarte {
 	}
 	
 	public String toString() {
-		String str = new String(this.valeur + "de" + this.couleur + " / condition : "+ this.condition);
+		String str = new String(this.valeur + "de" + this.couleur);
+		return str;
+	}
+	
+	public String toStringCondition() {
+		String str = new String(this.valeur + "de" + this.couleur);
 		return str;
 	}
 

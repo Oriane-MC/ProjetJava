@@ -76,33 +76,7 @@ public class Deck {
 		return this.cartes.remove(this.cartes.size() - 1); 
 	}
 	
-    /**
-     * Retire une carte spécifique du deck si elle s'y trouve.
-     * @param carte carte à retirer
-     */
-    public void retirerCarte(Carte carte) { // ES CE QUE C VRMNT UTILE ???
-    	this.cartes.remove(carte); 
-    	}
+   
     
-    /**
-     * Affiche toutes les cartes du deck avec un indice
-     * pour permettre au joueur d'en choisir une.
-     * Exemple d'affichage :
-     * --- Main du joueur ---
-     *   [1] 7 de Pique
-     *   [2] Roi de Coeur
-     * @param titre titre affiché avant les cartes 
-     */
-    public void afficherCartesPourChoix(String titre) { // ES CE QUE C VRMNT UTILE ???
-        if (cartes.isEmpty()) {
-            System.out.println("Deck " + titre + " vide.");
-            return;
-        }
-        System.out.println("--- " + titre + " ---");
-        for (int i = 0; i < cartes.size(); i++) {
-            System.out.println("  [" + (i + 1) + "] " + cartes.get(i).toString());
-        }
-        System.out.println("-------------------------------------------");
-    }
-	 
+  
 }

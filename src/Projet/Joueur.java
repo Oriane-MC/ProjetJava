@@ -11,7 +11,9 @@ public class Joueur {
 		protected String typeJoueur; // "Humain" ou "Virtuel"
 		protected Offre offre; 
 		protected Deck jest; //correspond au carte qu'il possede de maniere permanante
-		protected Deck mainOffre; // La main temporaire de 2 cartes pour former l'offre actuelle.
+		protected ArrayList<Carte> mainOffre; // La main temporaire de 2 cartes pour former l'offre actuelle.
+		// ORIANE  : mainOffre remplacer par juste une liste basique pour plus de simplicité et changements du code relatif a ca 
+		
 		protected Partie p; // Référence à la partie (pour Scanner, etc.)
 		protected Scanner scanner;
 		
@@ -27,7 +29,7 @@ public class Joueur {
 			this.nom = nom;
 	        this.typeJoueur = typeJoueur;
 	        this.jest = new Deck(this); // Deck permanent
-	        this.mainOffre = new Deck(this); // Main temporaire
+	        this.mainOffre = new ArrayList(); // Main temporaire
 	        this.p = partie;
 		}
 		
@@ -48,7 +50,7 @@ public class Joueur {
 	        return jest;
 	    }
 	    
-	    public Deck getMainOffre() { 
+	    public ArrayList getMainOffre() { 
 	    	return mainOffre; 
 	    }
 	   
@@ -199,8 +201,8 @@ public class Joueur {
 	    // passe de la méthode en privé car elle ne sert que pour ici, que a la méthode créerMonOfreHumain
 	    	 this.offre = new Offre(faceVisible, faceCachee, this); 
 	        // Retirer les cartes de la MAIN D'OFFRE après la création de l'offre
-	        this.mainOffre.retirerCarte(faceVisible);
-	        this.mainOffre.retirerCarte(faceCachee);
+	        this.mainOffre.remove(faceVisible);
+	        this.mainOffre.remove(faceCachee);
 	        
 	    }
 
@@ -222,18 +224,17 @@ public class Joueur {
 	        }
 
 	        // Ajouter les cartes à la main temporaire (mainOffre)
-	        this.mainOffre.ajouterCarte(c1);
-	        this.mainOffre.ajouterCarte(c2);
+	        this.mainOffre.add(c1);
+	        this.mainOffre.add(c2);
 	        
 	        System.out.println(this.nom + " pioche deux cartes. Voici vos options :");
 	        
 	        // 2. Afficher la main avec les indices [1] et [2]
-	        List<Carte> cartesEnMain = this.mainOffre.getCartes();
 	        
 	        // Affichage corrigé
 	        System.out.println("Main de " + this.nom + " :");
-	        System.out.println("  [1] " + cartesEnMain.get(0).toString());
-	        System.out.println("  [2] " + cartesEnMain.get(1).toString());
+	        System.out.println("  [1] " + mainOffre.get(0).toString());
+	        System.out.println("  [2] " + mainOffre.get(1).toString());
 
 	        // 3. Choix de quelle carte est visible
 	        int choixVisible = 0;
@@ -254,8 +255,8 @@ public class Joueur {
 	        int choixVisibleIndex = choixVisible - 1;
 	        int choixCacheIndex = (choixVisible == 1) ? 1 : 0;
 	        
-	        Carte carteVisible = cartesEnMain.get(choixVisibleIndex);
-	        Carte carteCachee = cartesEnMain.get(choixCacheIndex);
+	        Carte carteVisible = mainOffre.get(choixVisibleIndex);
+	        Carte carteCachee = mainOffre.get(choixCacheIndex);
 	        
 	        // 4. Créer l'offre
 	        creerMonOffre(carteVisible, carteCachee);
@@ -280,11 +281,11 @@ public class Joueur {
 	        // METTRE UN EXCEPTION Sécurité : si aucune carte en mainOffre
 	       
 	        // Transfert de toutes les cartes
-	        for (Carte c : new ArrayList<>(this.mainOffre.getCartes())) {
+	        for (Carte c : this.mainOffre) {
 	            this.jest.ajouterCarte(c);
 	        }
 	        // Vider la main 
-	        this.mainOffre.getCartes().clear();
+	        this.mainOffre.clear();
 	        System.out.println("Les cartes de la main d'offre ont été ajoutées au Jest de " + this.nom + ".");
 	    }
 

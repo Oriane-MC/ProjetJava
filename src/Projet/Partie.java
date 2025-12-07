@@ -78,6 +78,24 @@ public class Partie {
 		System.out.println("Les trophées de la partie sont : " + c1 + " et " + c2);
 	}
 	
+	public boolean estJouable() {
+		
+		//le nombre de joueurs doit etre de 3 ou 4 
+		if (this.listJoueur.size() > 4 || this.listJoueur.size() < 3) {
+			System.out.println("le nombre de joueurs n'est pas dans les normes (entre 3 et 4 joueurs acceptés)");
+			return false;
+		}
+					
+		//si il n'y a plus assez de carte a piocher pour chaque joueur alors le jeux s'arrete 
+		if (this.listCarte.getListPioche().size() < (this.listJoueur.size()*2)) {
+			System.out.println("le jeu est terminé : il n'y a plus assez de cartes à piocher");
+			return false;
+		}
+		
+		return true;
+		
+	}
+	
 	
 	/**
 	 * méthode qui ajoute un joueur à la partie et initialise son score à 0
@@ -153,7 +171,7 @@ public class Partie {
 	 * @return
 	 */
 	public Joueur joueurGagnant() {
-		Joueur gagnant = new Joueur("tmp","tmp");
+		Joueur gagnant = new Joueur("tmp","tmp",null);
 		int score_max = 0;
 		Iterator<Joueur> it = this.score.keySet().iterator();
 		while (it.hasNext()) {
@@ -196,11 +214,11 @@ public class Partie {
 	
 	
 	public String toString() {
-		return "Partie [etatPartie= " + etatPartie + " ; Joueur = " + listJoueur +" ; variantes=" + variantes + "]";
+		return "Partie [etatPartie= " + etatPartie + " ; Joueur = " + listJoueur +" ; variantes=" + variante + "]";
 	}
 
 
-	public static void main (String[] args) throws IllegalStateException {
+	public static void main (String[] args) throws GameException {
 		Scanner sc = new Scanner(System.in);
 
 		// 1- demander si extension ou pas
@@ -217,7 +235,7 @@ public class Partie {
 		//création et ajout des joueurs à la partie 
 		Joueur j1 = new Joueur("j1","reel",p); 
 		Joueur j2 = new Joueur("j2","reel",p);
-		Virtuel j3 = new Virtuel("j3", new StrategieBasique());
+		Virtuel j3 = new Virtuel("j3", new StrategieBasique(),p);
 		p.ajouterJoueur(j1);
 		p.ajouterJoueur(j2);
 		p.ajouterJoueur(j3);
@@ -245,33 +263,38 @@ public class Partie {
             case 3 -> varianteChoisie = null; // aucune variante
             default -> System.out.println("Choix invalide, aucune variante appliquée.");
         }
-		// déterminer ordre de joueurs
 		
+
+        while (p.estJouable()) {
+        	//tour de plus 
+        	
+        	
+        	
+        
+        	//chaque joueur crée son offre 
+        	j1.creerMonOffreHumain(p); 
+        	j2.creerMonOffreHumain(p);
+        	j3.creerMonOffreVirtuel(p); 
 		
-		//chaque joueur crée son offre 
-		j1.creerMonOffreHumain(p); 
-		j2.creerMonOffreHumain(p);
+        	
+        	
+        	// déterminer ordre de joueurs
+        	
 		
-		j3.creerMonOffreVirtuel(p); 
+        	//chaque joueur prend une offre 
+        	j1.prendreOffre(j2,p); 
+        	j2.prendreOffre(j1,p);
+        	j3.prendreOffreVirtuel(p);
 		
+        	//chaque joueur ajoute a son deck 
+        	j1.ajouterMainAuDeck();
+        	j2.ajouterMainAuDeck();
+        	j3.ajouterMainAuDeckVirtuel();
 		
-		//chaque joueur prend une offre 
-		j1.prendreOffre(j2,p); 
-		j2.prendreOffre(j1,p);
-		
-		j3.prendreOffreVirtuel(p);
-		
-		//chaque joueur ajoute a son deck 
-		j1.ajouterMainAuDeck();
-		j2.ajouterMainAuDeck();
-		
-		j3.ajouterMainAuDeckVirtuel();
+        }
 		
 		//distribuer les trophées, calculer les points, annoncer le gagnant 
 		p.finPartie();
-		
-		
-		
 		
 		
 		
