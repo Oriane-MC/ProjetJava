@@ -1,15 +1,13 @@
 package Projet;
 
 public enum CarteVariante {
-	
-	CARTE18(6,"coeur"),
-	CARTE19(7,"coeur"),
-	CARTE20(6,"pique"),
-	CARTE21(7,"pique"),
-	CARTE22(6,"trèfle"),
-	CARTE23(7,"trèfle"),
-	CARTE24(6,"carreau"),
-	CARTE25(7,"carreau");
+
+	CARTE18(6,"pique"),
+	CARTE19(7,"pique"),
+	CARTE20(6,"trèfle"),
+	CARTE21(7,"trèfle"),
+	CARTE22(6,"carreau"),
+	CARTE23(7,"carreau");
 	
 	
 		

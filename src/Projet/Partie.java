@@ -300,12 +300,14 @@ public class Partie {
         
         //instanciation de la partie 
 		Partie p = new Partie(extension, variante);
+		
 			
 		
 		//création et ajout des joueurs à la partie 
 		Joueur j1 = new Joueur("j1","reel",p); 
 		Joueur j2 = new Joueur("j2","reel",p);
-		Virtuel j3 = new Virtuel("j3", new StrategieBasique(),p);
+		Joueur j3 = new Joueur("j3","reel",p);
+		//Virtuel j3 = new Virtuel("j3", new StrategieBasique(),p);
 		p.ajouterJoueur(j1);
 		p.ajouterJoueur(j2);
 		p.ajouterJoueur(j3);
@@ -313,9 +315,6 @@ public class Partie {
 		p.mélanger();
 		p.répartir();
 	
- 
-		
-		
 
         while (p.estJouable()) {
         	//tour de plus 
@@ -325,30 +324,22 @@ public class Partie {
         	for (Joueur j : p.getJoueur()) {
         		j.creerMonOffre(p);
         	}
-		
-        	
+		        	
         	//le premier joueur joue 
+        	Joueur suivant = p.determinerPremierJoueur().prendreOffreEtJoueurSuivant(p);
         	
-        	p.determinerPremierJoueur().prendreOffre(j1,p);
-        	
-        	
-        	Joueur joueurSuivant = j1;
-        	
-        	
-        	
-        	
-		
-        	//chaque joueur prend une offre 
-        	j1.prendreOffre(j2,p); 
-        	j2.prendreOffre(j1,p);
-        	j3.prendreOffre(p);
-		
-        	
+        	//chaque joueur prend une offre et donne le prochain joueur en choissisant l'offre 
+        	for (int i = 0; i < (p.getJoueur().size()-1) ; i++) {
+        		Joueur j = suivant;
+        		suivant = j.prendreOffreEtJoueurSuivant(p);
+        	}
         	
         	//chaque joueur ajoute sa main a son deck 
         	for (Joueur j : p.getJoueur()) {
         		j.ajouterMainAuDeck();
         	}
+        	
+        	//enregistrement de la partie (pour ne pas perdre) 
 		
         }
 		

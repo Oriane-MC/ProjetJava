@@ -360,7 +360,7 @@ public class Trophee {
 		
 		
 		public String toString() {
-			return "Trophees=" + this.getTrophee1() + " / condition : "+ this.getTrophee1().getCondition()+ " et "
+			return "Trophees = " + this.getTrophee1() + " / condition : "+ this.getTrophee1().getCondition()+ " et "
 					+ this.getTrophee2() + " / condition : " + this.getTrophee2().getCondition();
 		}
     

@@ -144,13 +144,7 @@ public class Joueur {
 	     */
 	    public void prendreOffre(Joueur j, Partie partie) { //ORIANE  = changement des parametre et donc du code qui en découle
 	    	// j'ai changé le parametre offre en joueur, a verifier car pas sur si j'ai bien tout remplacer les offre par j.getOffre()
-
-	        // 1) Vérifier qu'elle est disponible
-	        if (!j.getOffre().estDisponible()) {
-	            System.out.println("Cette offre a déjà été prise !");
-	            return;
-	        }
-
+	    	
 	        String nomCreateur = (j.getNom() != null)
 	                ? j.getNom()
 	                : "un joueur inconnu";
@@ -187,8 +181,7 @@ public class Joueur {
 	        // 5) Ajout au Jest
 	        this.jest.ajouterCarte(carteAPrendre);
 
-	        System.out.println(this.nom + " a pris l'offre de " + nomCreateur +
-	                " et a reçu : " + carteAPrendre);
+	        System.out.println(this.nom + " a pris une carte de l'offre de " + nomCreateur );
 	    }
 
 
@@ -242,7 +235,7 @@ public class Joueur {
 	        int choixVisible = 0;
 	        
 	        while (choixVisible != 1 && choixVisible != 2) {
-	            System.out.print("Choisissez le NUMÉRO de la carte à mettre en VISIBLE [1 ou 2] : ");
+	            System.out.print("Choisissez le NUMÉRO de la carte à mettre en VISIBLE [1 ou 2] : ");	  
 	            if (scanner.hasNextInt()) {
 	                choixVisible = scanner.nextInt();
 	                if (choixVisible != 1 && choixVisible != 2) {
@@ -289,6 +282,31 @@ public class Joueur {
 	        // Vider la main 
 	        this.mainOffre.clear();
 	        System.out.println("Les cartes de la main d'offre ont été ajoutées au Jest de " + this.nom + ".");
+	    }
+	    
+	    
+	    public Joueur prendreOffreEtJoueurSuivant(Partie p) {
+	    	
+	    	Scanner sc = new Scanner(System.in);
+	    	
+	        System.out.println(this.nom + " : L'offre de quel joueur veux-tu prendre ?");
+	        
+	        ArrayList<Joueur> joueurs = p.getJoueur();
+	        
+	        for (int i = 0; i < joueurs.size(); i++) {
+	        	if (joueurs.get(i).getOffre().estDisponible()) {   //choix dispo qui si cette offre peut etre prise 
+	            System.out.println((i) + " pour " + joueurs.get(i).getNom());
+	        	}
+	        }
+	        
+	        System.out.print("Ton choix : ");
+	        int choix = sc.nextInt();
+	        
+	        Joueur joueurChoisi = joueurs.get(choix);
+	        
+	        this.prendreOffre(joueurChoisi, p);
+	        
+	    	return joueurChoisi;
 	    }
 
 		

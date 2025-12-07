@@ -24,8 +24,7 @@ public class Carte {
 	}
 	
 	public String toString() {
-		return valeur +" de " + couleur + " / condition : "+ condition + " / extension="
-				+ extension;
+		return valeur +" de " + couleur ;
 	}
 
 	public int getValeur() {
