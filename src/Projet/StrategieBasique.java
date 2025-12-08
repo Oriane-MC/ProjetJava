@@ -25,6 +25,7 @@ Lors de la prise :
 	        Carte c1 = pioche.piocher();
 	        Carte c2 = pioche.piocher();
 	        
+	        
 	        if (c1 == null || c2 == null) {
 	            System.out.println("Pioche insuffisante pour créer une offre.");
 	            return null;
@@ -44,55 +45,55 @@ Lors de la prise :
 	        Offre offre = new Offre(forte, faible, joueur);
 	        joueur.setOffre(offre);
 
-	        System.out.println(joueur.getNom() + " (basique) crée une offre : visible = faible, cachée = forte");
+	        System.out.println(joueur.getNom() + " (basique) a crée une offre, sa carte visibl est  :" + faible);
 
 	        return offre;
 	    }
 
 	        
 	    
-	   @Override
-	    public void prendreOffreAdversaire(Offre offreChoisie, Joueur joueur) {
-	        if (offreChoisie == null) return;
-
-	        // Basique prend toujours la CARTE VISIBLE
-	        Carte prise = offreChoisie.carteVisiblePrise();
-	        if (prise != null) {
-	            joueur.getDeckPossede().ajouterCarte(prise);
-	            System.out.println(joueur.getNom() + " (basique) prend la meilleure carte visible.");
-	        }
-	    }
-	   
-	    
-	   /**
-	     * Cette méthode choisit L'OFFRE adverse 
-	     * Selon la logique :
-	     *   → prendre la carte visible la plus forte parmi toutes les offres valides
-	     *   → sinon prendre une offre au hasard
+	    /**
+	     * Choisit l’offre adverse à prendre.
+	     * Renvoie la CARTE prise (visible).
 	     */
-	    public Offre choisirMeilleureOffre(List<Offre> offres) {
+	    @Override
+	    public Carte prendreOffreAdversaire(List<Offre> offres, Joueur joueur) {
 
-	        // Filtre : offres encore valides (etat = true)
+	        if (offres == null || offres.isEmpty()) return null;
+
+	        // Récupérer uniquement les offres valides
 	        List<Offre> valides = new ArrayList<>();
 	        for (Offre o : offres) {
-	            if (o != null && o.carteVisiblePrise() == null) {
+	            if (o != null && !o.estDisponible()) {
 	                valides.add(o);
 	            }
 	        }
-
 	        if (valides.isEmpty()) return null;
 
-	        // Choisir l'offre dont la carte visible est LA PLUS FORTE
+	        // Chercher la meilleure carte visible, celle avc la valeur max 
 	        Offre meilleure = valides.stream()
 	                .max(Comparator.comparingInt(o -> o.getCarteVisible().getValeur()))
 	                .orElse(null);
 
-	        if (meilleure != null) return meilleure;
+	        Offre retenue;
+	        if (meilleure != null) {
+	            retenue = meilleure;
+	        } else {
+	            // Sinon au hasard 
+	            retenue = valides.get(new Random().nextInt(valides.size()));
+	        }
 
-	        // Si aucune meilleure → au hasard
-	        return valides.get(new Random().nextInt(valides.size()));
+	        // Prendre la carte visible et ajouter au deck 
+	        Carte prise = retenue.carteVisiblePrise();
+
+	        if (prise != null) {
+	            joueur.getDeckPossede().ajouterCarte(prise);
+	            System.out.println(joueur.getNom() + " (basique) prend la carte visible la plus forte.");
+	            
+	        }
+
+	        return prise;
 	    }
-	    
 	    
 
 	    /**

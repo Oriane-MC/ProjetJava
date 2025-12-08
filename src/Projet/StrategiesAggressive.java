@@ -19,11 +19,11 @@ public class StrategiesAggressive implements Strategie {
      * Créer l'offre agressive pour le joueur
      */
     @Override
-    public Offre choisirMonOffre(Joueur joueur, Deck pioche, List<Offre> offresAdversaires) {
+    public Offre choisirMonOffre(Joueur joueur, PaquetCarte pioche, List<Offre> offresAdversaires) {
 
         // 1️⃣ Piocher deux cartes pour créer l'offre
-        Carte c1 = pioche.piocherCarte();
-        Carte c2 = pioche.piocherCarte();
+        Carte c1 = pioche.piocher();
+        Carte c2 = pioche.piocher();
 
         if (c1 == null || c2 == null) {
             System.out.println("Pioche insuffisante pour créer une offre.");
@@ -44,7 +44,7 @@ public class StrategiesAggressive implements Strategie {
         Offre offre = new Offre(forte, faible, joueur);
         joueur.setOffre(offre);
 
-        System.out.println(joueur.getNom() + " (agressif) crée son offre : visible = faible, cachée = forte");
+        System.out.println(joueur.getNom() + " (agressif) crée son offre, sa carte visible est : " + faible );
 
         return offre;
     }
@@ -53,49 +53,38 @@ public class StrategiesAggressive implements Strategie {
      * Prendre une carte d'une offre adverse
      */
     @Override
-    public void prendreOffreAdversaire(Offre offreChoisie, Joueur joueur) {
-        if (offreChoisie == null) return;
+    public Carte prendreOffreAdversaire(List<Offre> offres, Joueur joueur) {
+    	if (offres == null || offres.isEmpty()) return null;
 
-        // 1️⃣ Tenter de prendre la carte visible (méthode déjà présente dans Offre)
-        Carte prise = offreChoisie.carteVisiblePrise(); 
-        if (prise != null) {
-            joueur.getDeckPossede().ajouterCarte(prise);
-            System.out.println(joueur.getNom() + " (agressif) prend la carte visible de l'offre adverse.");
-        }
-    }
-
-    /**
-     * Choisir l'offre la plus intéressante parmi toutes les offres adverses
-     * Ici on choisit la carte visible la plus forte disponible
-     */
-    public Offre choisirOffreAgressive(List<Offre> offres) {
-        if (offres == null || offres.isEmpty()) return null;
-
-        // 1️⃣ Filtrer les offres encore disponibles : 
-        // On teste si la carte visible n'a pas encore été prise
+        // Filtrer les offres encore disponibles
         List<Offre> valides = new ArrayList<>();
         for (Offre o : offres) {
-            if (o != null) {
-                try {
-                    // Si carteVisiblePrise() retourne une carte, elle est encore disponible
-                    // On ne l'enlève pas réellement ici car on l'appelle juste pour tester
-                    Carte test = o.getCarteVisible();
-                    if (test != null) {
-                        valides.add(o);
-                    }
-                } catch (Exception e) {
-                    // Si carte déjà prise, on ignore
-                }
+            if (o != null && o.carteVisiblePrise() == null) {
+                valides.add(o);
             }
         }
 
         if (valides.isEmpty()) return null;
 
-        // 2️⃣ Retourner l'offre dont la carte visible est la plus forte
-        return valides.stream()
+        // Prendre l'offre dont la carte visible est la plus forte
+        Offre cible = valides.stream()
                 .max(Comparator.comparingInt(o -> o.getCarteVisible().getValeur()))
                 .orElse(valides.get(new Random().nextInt(valides.size())));
-    }
+
+        // Prendre la carte visible
+        Carte prise = cible.carteVisiblePrise();
+
+        if (prise != null) {
+            joueur.getDeckPossede().ajouterCarte(prise);
+
+            // Affichage 
+            Joueur createur = cible.getCreateur();
+            System.out.println(joueur.getNom() + " (agressif) prend la carte visible : " + prise);
+            System.out.println("   → cette carte appartenait à : " + createur.getNom());
+        }
+
+        return prise;
+      }
 
     /**
      * Nom de la stratégie pour affichage

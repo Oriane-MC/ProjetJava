@@ -5,10 +5,14 @@ import java.util.List;
 
 
 /**
- * Représente un joueur contrôlé par l'ordinateur, utilisant une stratégie
- * pour prendre des décisions automatiquement durant la partie.
- * Il hérite du comportement général d'un {@link Joueur},
- * mais délègue ses choix à une instance de {@link Strategie}.
+ * Classe représentant un joueur virtuel (IA).
+ * Il utilise une stratégie pour :
+ *  - créer son offre
+ *  - choisir une offre adverse
+ *  - prendre une carte
+ * 
+ * Toute l’affichage concernant les décisions du joueur virtuel
+ * est gérée ici.
  */
 public class Virtuel extends Joueur {
 
@@ -47,7 +51,9 @@ public class Virtuel extends Joueur {
     	
     	ArrayList<Offre> offresAdversaires = new ArrayList();
     	for (Joueur j : p.getJoueur()) {
-    		offresAdversaires.add(j.getOffre());
+            if (j != this) { // DINA pr que on ignore l'offre de notre propre joueur
+                offresAdversaires.add(j.getOffre());
+            }
     	}
         return strategie.choisirMonOffre(this, p.getPioche(), offresAdversaires);
     }
@@ -55,21 +61,28 @@ public class Virtuel extends Joueur {
     public void creerMonOffre(Partie p) { //ORIANE : changement du code ici 
     	super.offre = choisirMonOffre(p);
     }
+    
     /**
-     * Demande à la stratégie de décider si le joueur virtuel doit prendre
-     * l'offre d'un adversaire. 
+     * Demande à la stratégie de déterminer quelle carte prendre parmi toutes les offres adverses.
      *
-     * @param offre Offre proposée par un joueur adverse.
+     * @param p Partie en cours
+     * @return La carte choisie par la stratégie
      */
-    private Carte deciderOffreAdversaire( ///////// ) {
-         return strategie.prendreOffreAdversaire( //////// );
+    private Carte deciderOffreAdversaire(Partie p) {
+
+        // Construction de la liste des offres adverses
+        List<Offre> offres = new ArrayList<>();
+        for (Joueur j : p.getJoueur()) {
+            if (j != this && j.getOffre() != null) {
+                offres.add(j.getOffre());
+            }
+        }
+        return strategie.prendreOffreAdversaire(offres, this);   
     }
     
     
-    public void prendreOffre(Partie partie) {
-    	Carte c = this.deciderOffreAdversaire( ///////// );
-    	super.jest.ajouterCarte(c);
-    }
+    
+    
     // prendreOffre doit faire appel a deciderOffreAdversaire pour choisir une carte de l'offre d'un des joueur et renvoyer 
     //cette carte pour pouvoir ajouter la carte au deck du joueur virtuel 
     //et decider offre adversaire doit donc retourner un joueur et doit juste faire appel

@@ -13,11 +13,11 @@ public class StratégieDéfensive implements Strategie {
      * Cachée   = carte la plus faible
      */
     @Override
-    public Offre choisirMonOffre(Joueur joueur, Deck pioche, List<Offre> offresAdversaires) {
+    public Offre choisirMonOffre(Joueur joueur, PaquetCarte pioche, List<Offre> offresAdversaires) {
 
         // On pioche 2 cartes
-        Carte c1 = pioche.piocherCarte();
-        Carte c2 = pioche.piocherCarte();
+        Carte c1 = pioche.piocher();
+        Carte c2 = pioche.piocher();
 
         if (c1 == null || c2 == null) {
             System.out.println("Pioche insuffisante pour créer une offre.");
@@ -39,7 +39,7 @@ public class StratégieDéfensive implements Strategie {
         Offre offre = new Offre(faible, forte, joueur);  
         joueur.setOffre(offre);
 
-        System.out.println(joueur.getNom() + " (défensif) crée une offre : visible = forte, cachée = faible");
+        System.out.println(joueur.getNom() + " (défensif) crée une offre, sa carte visible est : " + forte);
 
         return offre;
     }
@@ -52,27 +52,10 @@ public class StratégieDéfensive implements Strategie {
      * Prend la CARTE VISIBLE
      */
     @Override
-    public void prendreOffreAdversaire(Offre offreChoisie, Joueur joueur) {
-        if (offreChoisie == null) return;
+    public Carte prendreOffreAdversaire(List<Offre> offres, Joueur joueur) {
+    	if (offres == null || offres.isEmpty()) return null;
 
-        Carte prise = offreChoisie.carteVisiblePrise();
-        if (prise != null) {
-            joueur.getDeckPossede().ajouterCarte(prise);
-            System.out.println(joueur.getNom() + " (défensif) prend la carte visible la moins dangereuse.");
-        }
-    }
-
-
-
-
-    /**
-     * Choisir quelle offre PRENDRE :
-     * → Priorité : la carte visible LA PLUS FAIBLE
-     * → Sinon : aléatoire
-     */
-    public Offre choisirOffreDefensive(List<Offre> offres) {
-
-        // Filtrage : offres valides et non déjà prises
+        // Filtrer les offres encore disponibles
         List<Offre> valides = new ArrayList<>();
         for (Offre o : offres) {
             if (o != null && o.carteVisiblePrise() == null) {
@@ -82,17 +65,31 @@ public class StratégieDéfensive implements Strategie {
 
         if (valides.isEmpty()) return null;
 
-        // Cherche la carte visible LA PLUS FAIBLE
-        Offre plusFaible = valides.stream()
+        // Chercher la carte visible la plus faible
+        Offre cible = valides.stream()
                 .min(Comparator.comparingInt(o -> o.getCarteVisible().getValeur()))
                 .orElse(null);
 
-        if (plusFaible != null) return plusFaible;
+        // Sinon random
+        if (cible == null) {
+            cible = valides.get(new Random().nextInt(valides.size()));
+        }
 
-        // Sinon → random
-        return valides.get(new Random().nextInt(valides.size()));
-    }
+        // Prendre la carte visible
+        Carte prise = cible.carteVisiblePrise();
 
+        if (prise != null) {
+
+            Joueur createur = cible.getCreateur(); 
+
+            joueur.getDeckPossede().ajouterCarte(prise);
+
+            System.out.println(joueur.getNom() + " (défensif) prend la carte visible : " + prise);
+            System.out.println("   → cette carte appartenait à : " + createur.getNom());
+        }
+
+        return prise;
+     }
 
 
     @Override

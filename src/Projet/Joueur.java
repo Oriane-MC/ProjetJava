@@ -29,8 +29,9 @@ public class Joueur {
 			this.nom = nom;
 	        this.typeJoueur = typeJoueur;
 	        this.jest = new Deck(this); // Deck permanent
-	        this.mainOffre = new ArrayList(); // Main temporaire
+	        this.mainOffre = new ArrayList<>(); // Main temporaire
 	        this.p = partie;
+	        this.scanner = new Scanner(System.in);
 		}
 		
 		// Getters / Setters 
@@ -271,19 +272,17 @@ public class Joueur {
 	    /**
 	     * Ajoute toutes les cartes de la main temporaire au deck permanent (Jest)
 	     */
-	    public void ajouterMainAuDeck() {
+	    public void ajouterCarteDeck() {
 
 	        // METTRE UN EXCEPTION Sécurité : si aucune carte en mainOffre
 	       
 	        // Transfert de toutes les cartes
-	        for (Carte c : this.mainOffre) {
+	        for (Carte c : this.offre.getListeCarte() ) // ajouter l'offre au deck 
+	        {	if (c!= null) {
 	            this.jest.ajouterCarte(c);
-	        }
-	        // Vider la main 
-	        this.mainOffre.clear();
-	        System.out.println("Les cartes de la main d'offre ont été ajoutées au Jest de " + this.nom + ".");
+	        	}
+	         }
 	    }
-	    
 	    
 	    public Joueur prendreOffreEtJoueurSuivant(Partie p) {
 	    	
