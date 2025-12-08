@@ -61,6 +61,8 @@ public class Partie {
 		
 	}
 	
+	
+	
 
 	/**
      * Permet de récupérer le scanner utilisé dans la partie.
@@ -336,7 +338,7 @@ public class Partie {
         	
         	//chaque joueur ajoute sa main a son deck 
         	for (Joueur j : p.getJoueur()) {
-        		j.ajouterMainAuDeck();
+        		j.ajouterCarteDeck();
         	}
         	
         	//enregistrement de la partie (pour ne pas perdre) 
@@ -345,7 +347,9 @@ public class Partie {
 		
 		//distribuer les trophées, calculer les points, annoncer le gagnant 
 		p.finPartie();
-		
+		for (Joueur j : p.getJoueur()) {
+    		System.out.println(j.getDeckPossede());
+    	}
 		
 		
 	}

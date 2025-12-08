@@ -16,9 +16,9 @@ public enum TypeCarte {
 	CARTE12(3,"trèfle","HighestCoeur"),
 	CARTE13(4,"trèfle","LowesttPique"),
 	CARTE14(1,"pique","HighestTrefle"),
-	CARTE15(1,"pique","Majority3"),
-	CARTE16(1,"pique","Majority2"),
-	CARTE17(1,"pique","LowestTrefle");
+	CARTE15(2,"pique","Majority3"),
+	CARTE16(3,"pique","Majority2"),
+	CARTE17(4,"pique","LowestTrefle");
 
 	private int valeur ;
 	private String couleur;

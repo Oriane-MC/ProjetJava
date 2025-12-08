@@ -6,7 +6,7 @@ public interface Strategie  {
     public Offre choisirMonOffre(Joueur joueur,PaquetCarte pioche, List<Offre> offresAdversaires);
     
     // Décider quelle offre je vais prendre chez mes adversaire 
-    public Carte prendreOffreAdversaire(List<Offre> offres, Joueur joueur);
+    public Joueur deciderOffreAdversaire(List<Offre> offres, Joueur joueur);
 
     /**
      * Retourne le nom de la stratégie pour l'affichage.

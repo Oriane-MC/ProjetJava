@@ -88,7 +88,7 @@ public class Trophee {
 		
 			for (Joueur j : p.getJoueur()) {
 			    for (Carte c : j.getDeckPossede().getCartes()) {
-			        if (c.getCouleur().equals("trefle") && c.getValeur() < lowest) {
+			        if (c.getCouleur().equals("trèfle") && c.getValeur() < lowest) {
 			            lowest = c.getValeur();
 			            gagnant = j;
 			}}}
@@ -165,12 +165,12 @@ public class Trophee {
 		
 			for (Joueur j : p.getJoueur()) {
 			    for (Carte c : j.getDeckPossede().getCartes()) {
-			        if (c.getCouleur().equals("trefle") && c.getValeur() > highest) {
+			        if (c.getCouleur().equals("trèfle") && c.getValeur() > highest) {
 			            highest = c.getValeur();
 			            gagnant = j;
 			}}}
 			if (gagnant.getNom().equals("tmp")) {
-				GameException e = new GameException("aucun joueur n'a de trefle");
+				GameException e = new GameException("aucun joueur n'a de trèfle");
 				throw e ;
 			}
 			else {

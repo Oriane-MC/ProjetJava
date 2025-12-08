@@ -11,9 +11,6 @@ public class Joueur {
 		protected String typeJoueur; // "Humain" ou "Virtuel"
 		protected Offre offre; 
 		protected Deck jest; //correspond au carte qu'il possede de maniere permanante
-		protected ArrayList<Carte> mainOffre; // La main temporaire de 2 cartes pour former l'offre actuelle.
-		// ORIANE  : mainOffre remplacer par juste une liste basique pour plus de simplicité et changements du code relatif a ca 
-		
 		protected Partie p; // Référence à la partie (pour Scanner, etc.)
 		protected Scanner scanner;
 		
@@ -29,7 +26,6 @@ public class Joueur {
 			this.nom = nom;
 	        this.typeJoueur = typeJoueur;
 	        this.jest = new Deck(this); // Deck permanent
-	        this.mainOffre = new ArrayList<>(); // Main temporaire
 	        this.p = partie;
 	        this.scanner = new Scanner(System.in);
 		}
@@ -51,9 +47,7 @@ public class Joueur {
 	        return jest;
 	    }
 	    
-	    public ArrayList getMainOffre() { 
-	    	return mainOffre; 
-	    }
+	   
 	   
 	    public void setOffre(Offre offre) {
 	        this.offre = offre;
@@ -83,60 +77,7 @@ public class Joueur {
 	    
 	    
 	    
-	    /**
-	     * Permet au joueur de choisir une offre valide parmi celles des adversaires.
-	     * @param offres : ensemble de toutes les offres posées
-	     * @param partie : pour accès au Scanner
-	     * @return l'offre choisie par le joueur
-	     */
-	    public Offre choisirOffre(List<Offre> offres, Partie partie) { //ORIANE = je pense qu'il faut supprimer cett méthde : pas utile
-	    	// : elle n'est pas utiliser das le reste de ton code . Cette méthode est utile seuelement pour un joueur VIRTUEL
-
-	        System.out.println("\n" + this.nom + ", choisis l'offre d'un adversaire :");
-
-	        // 1) Filtrer les offres valides : pas prises + pas la sienne
-	        List<Offre> disponibles = new ArrayList<>();
-	        for (Offre o : offres) {
-	            if (o != null && o.estDisponible() && o.getCreateur() != this) {
-	                disponibles.add(o);
-	            }
-	        }
-
-	        // 2) Si rien de disponible → erreur logique mais on protège
-	        if (disponibles.isEmpty()) {
-	            System.out.println("Aucune offre disponible !");
-	            return null;
-	        }
-
-	        // 3) Affichage numéroté des offres
-	        for (int i = 0; i < disponibles.size(); i++) {
-	            Offre o = disponibles.get(i);
-	            System.out.println("  " + (i + 1) + ") Offre de " 
-	                    + o.getCreateur().getNom()
-	                    + " : visible = " + o.getCarteVisible());
-	        }
-
-	        // 4) Choix du joueur, sécurisé
-	        int choix;
-	        do {
-	            System.out.print("Ton choix (1 à " + disponibles.size() + ") : ");
-
-	            while (!partie.getScanner().hasNextInt()) {
-	                System.out.print("Veuillez entrer un nombre valable : ");
-	                partie.getScanner().next();
-	            }
-
-	            choix = partie.getScanner().nextInt();
-
-	        } while (choix < 1 || choix > disponibles.size());
-
-	        Offre selection = disponibles.get(choix - 1);
-
-	        System.out.println(this.nom + " a choisi l'offre de " 
-	                + selection.getCreateur().getNom());
-
-	        return selection;
-	    }
+	  
 
 	  
 	    
@@ -145,7 +86,7 @@ public class Joueur {
 	     */
 	    public void prendreOffre(Joueur j, Partie partie) { //ORIANE  = changement des parametre et donc du code qui en découle
 	    	// j'ai changé le parametre offre en joueur, a verifier car pas sur si j'ai bien tout remplacer les offre par j.getOffre()
-	    	
+	    	Scanner sc = new Scanner(System.in);
 	        String nomCreateur = (j.getNom() != null)
 	                ? j.getNom()
 	                : "un joueur inconnu";
@@ -159,12 +100,7 @@ public class Joueur {
 	        do {
 	            System.out.print("Prends-tu (1) la carte visible ou (2) la carte cachée ? ");
 
-	            while (!partie.getScanner().hasNextInt()) {
-	                System.out.print("Veuillez entrer 1 ou 2 : ");
-	                partie.getScanner().next();
-	            }
-
-	            choix = partie.getScanner().nextInt();
+	            choix = sc.nextInt();
 
 	        } while (choix != 1 && choix != 2);
 
@@ -194,12 +130,7 @@ public class Joueur {
 	    private void creerMonOffre(Carte faceVisible, Carte faceCachee) { //ORIANE : supression de l'attribut partie car inutile et 
 	    // passe de la méthode en privé car elle ne sert que pour ici, que a la méthode créerMonOfreHumain
 	    	
-	    	 this.offre = new Offre(faceVisible, faceCachee, this); 
-	        // Retirer les cartes de la MAIN D'OFFRE après la création de l'offre
-	        this.mainOffre.remove(faceVisible);      //ORIANE : c'est nourmal de les supprimer ici ??? il faurdrait pas mieux les supprimer dans
-	        											// prendreOffre pour le joueur a qui on prends l'offre
-	        this.mainOffre.remove(faceCachee);
-	        
+	    	 this.offre = new Offre(faceVisible, faceCachee, this);         
 	    }
 
 	    
@@ -213,15 +144,9 @@ public class Joueur {
 	        // 1. Piocher les deux cartes dans la main d'offre
 	        Carte c1 = p.getPioche().piocher();
 	        Carte c2 = p.getPioche().piocher();
-	        
-	        if (c1 == null || c2 == null) {
-	            System.out.println("Erreur: Pas assez de cartes dans la pioche.");
-	            return;
-	        }
+	                
 
-	        // Ajouter les cartes à la main temporaire (mainOffre)
-	        this.mainOffre.add(c1);
-	        this.mainOffre.add(c2);
+	        
 	        
 	        System.out.println(this.nom + " pioche deux cartes. Voici vos options :");
 	        
@@ -229,8 +154,8 @@ public class Joueur {
 	        
 	        // Affichage corrigé
 	        System.out.println("Main de " + this.nom + " :");
-	        System.out.println("  [1] " + mainOffre.get(0).toString());
-	        System.out.println("  [2] " + mainOffre.get(1).toString());
+	        System.out.println("  [1] " + c1);
+	        System.out.println("  [2] " + c2);
 
 	        // 3. Choix de quelle carte est visible
 	        int choixVisible = 0;
@@ -248,12 +173,9 @@ public class Joueur {
 	            }
 	        }
 	     // Détermination des cartes
-	        int choixVisibleIndex = choixVisible - 1;
-	        int choixCacheIndex = (choixVisible == 1) ? 1 : 0;
-	        
-	        Carte carteVisible = mainOffre.get(choixVisibleIndex);
-	        Carte carteCachee = mainOffre.get(choixCacheIndex);
-	        
+	        Carte carteVisible = (choixVisible == 1) ? c1 : c2;
+	        Carte carteCachee = (choixVisible == 1) ? c2 : c1;
+
 	        // 4. Créer l'offre
 	        creerMonOffre(carteVisible, carteCachee);
 	        
@@ -267,6 +189,7 @@ public class Joueur {
 	     */
 	    public void ajouterCarteDeck(Carte carte) { //Oriane = suppression du parametre partie 
 	        this.jest.ajouterCarte(carte);
+	        
 	    } 
 	    
 	    /**

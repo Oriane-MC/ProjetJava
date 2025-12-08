@@ -26,8 +26,9 @@ public class Virtuel extends Joueur {
      * @param strategie utilisé pour ses décisions 
      * @param p Référence à la partie pour accès au scanner, etc.
      */
-    public Virtuel(String nom, Strategie strategie, Partie partie ) {
+    public Virtuel(String nom, Partie partie ) {
         super(nom, "Virtuel", partie);
+        //GENERER UN STRATEGIE ALEATOIRE 
         this.strategie = strategie;
     }
 
@@ -47,7 +48,7 @@ public class Virtuel extends Joueur {
      * @param offresAdversaires Liste des offres déjà déposées par les autres joueurs.
      * @return L'offre choisie par le joueur virtuel conformément à sa stratégie.
      */
-    private Offre choisirMonOffre(Partie p) { //ORIANE : changement du code ici 
+    public void creerMonOffre(Partie p) { //ORIANE : changement du code ici 
     	
     	ArrayList<Offre> offresAdversaires = new ArrayList();
     	for (Joueur j : p.getJoueur()) {
@@ -55,12 +56,10 @@ public class Virtuel extends Joueur {
                 offresAdversaires.add(j.getOffre());
             }
     	}
-        return strategie.choisirMonOffre(this, p.getPioche(), offresAdversaires);
+        super.offre = strategie.choisirMonOffre(this, p.getPioche(), offresAdversaires);
     }
 
-    public void creerMonOffre(Partie p) { //ORIANE : changement du code ici 
-    	super.offre = choisirMonOffre(p);
-    }
+  
     
     /**
      * Demande à la stratégie de déterminer quelle carte prendre parmi toutes les offres adverses.
@@ -92,11 +91,20 @@ public class Virtuel extends Joueur {
     // tu peux regarder ce que j'ai fait pour choisirMonOffre dans cette classe pour te donner des idées de parametre "plus simple" a gerer
 
     
+    public Joueur prendreOffreEtJoueurSuivant (Partie p){
+    	
+    	// Il faut retourner le joueur choisi et prendre offre selon la strategie , bien respecter les noms 
+    	
+    	Joueur joueurChoisi  = strategie.deciderOffreAdversaire(null, null);
+    	
+    	// A CHANGER / this.prendreOffre(joueurChoisi, p);
+    	
+    	return joueurChoisi;
+    }
     
     
-    
-    public void ajouterMainAuDeckVirtuel() { //ORIANE : j'ai fait ca car il y en a besoin pour la partie : a verifier 
-		super.ajouterMainAuDeck();
+    public void ajouterCarteDeck() { //ORIANE : j'ai fait ca car il y en a besoin pour la partie : a verifier 
+		super.ajouterCarteDeck();
 	}
 
 }

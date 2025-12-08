@@ -9,6 +9,11 @@ import java.util.List;
  */
 public class Deck {
 	
+	@Override
+	public String toString() {
+		return "Deck [cartes=" + cartes + "]";
+	}
+
 	//attributs 
 	/** Liste des cartes contenues dans ce deck. */
 	private List<Carte> cartes; 

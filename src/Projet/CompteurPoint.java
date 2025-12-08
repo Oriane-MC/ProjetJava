@@ -32,7 +32,7 @@ public class CompteurPoint implements Visitor {
 	
 	public int visit(Carte c) throws GameException {
 		//les cartes piques et trèfles, valent leurs valeurs nominales en positif, 
-		if (c.getCouleur().equals("pique") || c.getCouleur().equals("trefle") ) {
+		if (c.getCouleur().equals("pique") || c.getCouleur().equals("trèfle") ) {
 			return c.getValeur();			
 		}
 		//les carreaux valent leurs valeurs nominales en négatifs, 
@@ -44,7 +44,7 @@ public class CompteurPoint implements Visitor {
 			return 0;
 		}
 		//les joker ne valent rien 
-		else if (c.getCouleur().equals("Joker")) {
+		else if (c.getCouleur().equals("joker")) {
 			return 0;
 		}
 		else {
@@ -115,7 +115,7 @@ public class CompteurPoint implements Visitor {
 			if ( c.getCouleur() == "pique") {
 				listPique.add(c.getValeur());
 			}
-			if ( c.getCouleur() == "trefle") {
+			if ( c.getCouleur() == "trèfle") {
 				listTrefle.add(c.getValeur());
 		}}
 		for (int elt : listPique) {
@@ -136,7 +136,7 @@ public class CompteurPoint implements Visitor {
 				if (verif.getValeur() != 1) {
 					return 0;
 		}}}
-		if (c.getCouleur().equals("pique") || c.getCouleur().equals("trefle")) {
+		if (c.getCouleur().equals("pique") || c.getCouleur().equals("trèfle")) {
 			return 5;
 		}
 		else if (c.getCouleur().equals("carreau") || c.getCouleur().equals("coeur")) {
