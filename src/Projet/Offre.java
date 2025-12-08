@@ -35,7 +35,9 @@ public class Offre {
     public Carte carteVisiblePrise() {
         if (this.etat) {
             this.etat = false; // On marque l'offre comme prise
-            return this.carteVisible;
+            Carte cartePrise = carteVisible;
+            this.carteVisible = null;
+            return cartePrise;
         } else {
             System.out.println("Action impossible : carte déjà prise !");
             return null; // On retourne null si la carte n'est pas disponible
@@ -49,7 +51,9 @@ public class Offre {
     public Carte carteCacheePrise() {
         if (this.etat) {
             this.etat = false;
-            return this.carteCachee;
+            Carte cartePrise = carteCachee;
+            this.carteCachee = null;
+            return cartePrise;
         } else {
             System.out.println("Action impossible : carte déjà prise !");
             return null; // Correction : retourne null si déjà prise
@@ -61,6 +65,13 @@ public class Offre {
      */
     public boolean estDisponible() {
         return this.etat;
+    }
+    
+    public ArrayList<Carte> getListeCarte(){
+    	ArrayList<Carte> carte = new ArrayList<Carte>();
+    	carte.add(carteVisible);
+    	carte.add(carteCachee);
+    	return carte;
     }
     
     /**
