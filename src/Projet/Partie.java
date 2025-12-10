@@ -262,7 +262,7 @@ public class Partie {
         	Carte plusForte = joueurPremier.offre.getCarteVisible();
         	for (Joueur j : this.listJoueur) {
         		Carte carteVisible = j.offre.getCarteVisible();
-        		if (plusForte.getCouleur() == carteVisible.getCouleur()) {
+        		if (plusForte.getCouleur().equals(carteVisible.getCouleur())) {
         			if (plusForte.getValeur() < carteVisible.getValeur()) {
         				plusForte = carteVisible;
         				joueurPremier = j;
