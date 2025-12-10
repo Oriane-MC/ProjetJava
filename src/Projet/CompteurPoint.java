@@ -9,11 +9,14 @@ public class CompteurPoint implements Visitor {
 		int score = 0;
 			
 		for (Carte c : j.getDeckPossede().getCartes()) { 
-			score += c.accept(this);
 			//bonus si As est la seule carte de sa couleur 
 			if (c.getValeur() == 1) {
 				score += this.scoreAs(c,j.getDeckPossede());
-			}}
+			}
+			else {
+				score += c.accept(this);
+			}
+		}
 		
 		// les coeurs sont traités différemment
 		score += this.scoreCoeur( j.getDeckPossede() );
@@ -82,10 +85,10 @@ public class CompteurPoint implements Visitor {
 		int score = 0;
 		
 		for (Carte c : deck.getCartes() ) {
-			if ( c.getCouleur() == "coeur") {
+			if ( c.getCouleur().equals("coeur")) {
 				listCoeur.add(c.getValeur());
 			}
-			if (c.getCouleur() == "joker") {
+			if (c.getCouleur().equals("joker")) {
 				joker = true;
 		}}
 		
@@ -116,10 +119,10 @@ public class CompteurPoint implements Visitor {
 		List<Integer> listPique = new ArrayList();
 		List<Integer> listTrefle = new ArrayList();
 		for (Carte c : deck.getCartes() ) {
-			if ( c.getCouleur() == "pique") {
+			if ( c.getCouleur().equals("pique")) {
 				listPique.add(c.getValeur());
 			}
-			if ( c.getCouleur() == "trèfle") {
+			if ( c.getCouleur().equals("trèfle")) {
 				listTrefle.add(c.getValeur());
 		}}
 		for (int elt : listPique) {

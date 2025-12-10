@@ -251,6 +251,10 @@ public class Joueur {
 
 	    	return joueurChoisi;
 	    }
+	    
+	    public String toString() {
+	    	return nom + " : joueur " + typeJoueur;
+	    }
 
 		
 }

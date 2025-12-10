@@ -29,15 +29,20 @@ public class Partie {
 		this.etatPartie = "en cours";
 		
 		//variantes 
-		Variante varianteChoisie = null;
         switch (v) {
-            case 1 : varianteChoisie = new VariantePremierJoueurAleatoire();
-            case 2 : varianteChoisie = new VarianteSansTrophees();
-            case 3 : varianteChoisie = null; // aucune variante
-            default : System.out.println("Choix invalide, aucune variante appliquée.");
+            case 1 : 
+            	this.variante = new VariantePremierJoueurAleatoire();
+                variante.estUtilise();
+                System.out.println("Variante : "+variante +" appliquée pour cette partie");
+            case 2 : 
+            	this.variante = new VarianteSansTrophees();
+                variante.estUtilise();
+                System.out.println("Variante : "+variante +" appliquée pour cette partie");
+            case 3 : 
+            	this.variante = null; // aucune variante
+            	System.out.println("Aucune variante appliquée pour cette partie");
         }
-        this.variante = varianteChoisie;
-        variante.estUtilise();
+     
 		
 		this.numeroTour = 0;  
 		
@@ -52,6 +57,7 @@ public class Partie {
         }
 		
 		if (extension == true) {
+			System.out.println("Les cartes 6 et 7 de chaque couleur (sauf coeur) sont ajoutés à la partie (extension)");
 			for (CarteVariante carte : CarteVariante.values()) {
 	            listC.add(new Carte(carte.getValeur(), carte.getCouleur(), "None"));
 	        }
@@ -248,7 +254,7 @@ public class Partie {
     public Joueur determinerPremierJoueur() {
     	
     	if (variante instanceof VariantePremierJoueurAleatoire ){
-    		Joueur j = variante.appliquerVariante(this.listJoueur);
+    		Joueur j = variante.appliquerVariante(this);
     		return j;
     	}
     	else {
@@ -310,7 +316,7 @@ public class Partie {
 		// demander si extension ou pas
 		int choixExtension = -1;
         while (choixExtension != 0 && choixExtension != 1) {
-            System.out.println("Voulez-vous activer les extensions pour cette partie (nouvelles cartes 6 et 7 de chaque couleurs) ? (1=oui, 0=non)");
+            System.out.println("Voulez-vous activer les extensions pour cette partie (nouvelles cartes 6 et 7 de chaque couleur sauf coeur) ? (1=oui, 0=non)");
             if (sc.hasNextInt()) {
                 choixExtension = sc.nextInt();
                 if (choixExtension != 0 && choixExtension != 1) {
@@ -423,6 +429,12 @@ public class Partie {
 		    } 
 
 		} 
+		
+		System.out.println("Récapitulatif : voici les joueurs de la partie");
+		for (Joueur j : p.getJoueur()) {
+			System.out.println(j);
+		}
+		
 
 		
 		//mélange et repartie les cartes
@@ -459,9 +471,12 @@ public class Partie {
 		
 		//distribuer les trophées, calculer les points, annoncer le gagnant 
 		p.finPartie();
+		
+		//pour verif
 		for (Joueur j : p.getJoueur()) {
     		System.out.println(j.getDeckPossede());
     	}
+		System.out.println(p.getTrophees());
 		
 		
 	}

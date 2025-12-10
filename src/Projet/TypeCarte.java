@@ -36,8 +36,13 @@ public enum TypeCarte {
 	}
 	
 	public String toStringCondition() {
-		String str = new String(this.valeur + "de" + this.couleur);
-		return str;
+		if (this == CARTE1 ) {
+			return "joker";
+		}
+		else {
+			String str = new String(this.valeur + "de" + this.couleur);
+			return str;
+		}
 	}
 
 	public int getValeur() {
