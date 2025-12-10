@@ -56,10 +56,14 @@ public class CompteurPoint implements Visitor {
 	
 	public Map<Joueur, Integer> visit(Partie p) throws GameException {
 		
-		//attribution des trophées (il n'y a que 2 trophées dans une partie normale)
-		List<Joueur> listJoueurGagnant = p.getTrophees().determinerGagnant(p);
-		listJoueurGagnant.get(0).ajouterCarteDeck(p.getTrophees().getTrophee1());
-		listJoueurGagnant.get(1).ajouterCarteDeck(p.getTrophees().getTrophee2());	
+		
+		if (!(p.getVariante() instanceof VarianteSansTrophees)) {
+			//attribution des trophées (il n'y a que 2 trophées dans une partie normale)
+			List<Joueur> listJoueurGagnant = p.getTrophees().determinerGagnant(p);
+			listJoueurGagnant.get(0).ajouterCarteDeck(p.getTrophees().getTrophee1());
+			listJoueurGagnant.get(1).ajouterCarteDeck(p.getTrophees().getTrophee2());
+		}
+			
 		
 		//calculer score pour chaque joueur
 		Map<Joueur, Integer> score = new HashMap();

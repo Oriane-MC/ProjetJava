@@ -210,24 +210,45 @@ public class Joueur {
 	    public Joueur prendreOffreEtJoueurSuivant(Partie p) {
 	    	
 	    	Scanner sc = new Scanner(System.in);
-	    	
-	        System.out.println(this.nom + " : L'offre de quel joueur veux-tu prendre ?");
-	        
-	        ArrayList<Joueur> joueurs = p.getJoueur();
-	        
-	        for (int i = 0; i < joueurs.size(); i++) {
-	        	if (joueurs.get(i).getOffre().estDisponible()) {   //choix dispo qui si cette offre peut etre prise 
-	            System.out.println((i) + " pour " + joueurs.get(i).getNom());
-	        	}
-	        }
-	        
-	        System.out.print("Ton choix : ");
-	        int choix = sc.nextInt();
-	        
-	        Joueur joueurChoisi = joueurs.get(choix);
-	        
-	        this.prendreOffre(joueurChoisi, p);
-	        
+
+	    	System.out.println(this.nom + " : L'offre de quel joueur veux-tu prendre ?");
+
+	    	ArrayList<Joueur> joueurs = p.getJoueur();
+
+	    	// Lister uniquement les choix valides = les offre qui peuvent etre prise
+	    	ArrayList<Integer> choixValides = new ArrayList<>();
+
+	    	for (int i = 0; i < joueurs.size(); i++) {
+	    	    if (joueurs.get(i).getOffre().estDisponible()) {
+	    	        System.out.println(i + " pour " + joueurs.get(i).getNom());
+	    	        choixValides.add(i);
+	    	    }
+	    	}
+
+	    	// Sécurisation du choix
+	    	int choix = -1;
+
+	    	while (!choixValides.contains(choix)) {
+	    	    System.out.print("Ton choix : ");
+
+	    	    if (sc.hasNextInt()) {
+	    	        choix = sc.nextInt();
+
+	    	        if (!choixValides.contains(choix)) {
+	    	            System.out.println("Choix invalide. Sélectionne un joueur disponible dans la liste.");
+	    	        }
+
+	    	    } else {
+	    	        System.out.println("Entrée invalide.");
+	    	        sc.next(); // vide le buffer pour éviter la boucle infinie
+	    	    }
+	    	}
+
+	    	Joueur joueurChoisi = joueurs.get(choix);
+
+	    	// Exécuter l'action une fois le choix validé
+	    	this.prendreOffre(joueurChoisi, p);
+
 	    	return joueurChoisi;
 	    }
 

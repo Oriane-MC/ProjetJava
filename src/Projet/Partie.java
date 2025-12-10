@@ -31,13 +31,13 @@ public class Partie {
 		//variantes 
 		Variante varianteChoisie = null;
         switch (v) {
-            case 1 -> varianteChoisie = new Variante("Inversion");
-            case 2 -> varianteChoisie = new Variante("Départ aléatoire");
-            case 3 -> varianteChoisie = null; // aucune variante
-            default -> System.out.println("Choix invalide, aucune variante appliquée.");
+            case 1 : varianteChoisie = new VariantePremierJoueurAleatoire();
+            case 2 : varianteChoisie = new VarianteSansTrophees();
+            case 3 : varianteChoisie = null; // aucune variante
+            default : System.out.println("Choix invalide, aucune variante appliquée.");
         }
         this.variante = varianteChoisie;
-		
+        variante.estUtilise();
 		
 		this.numeroTour = 0;  
 		
@@ -93,8 +93,22 @@ public class Partie {
 			c2 = listCarte.piocher();
 		}
 		
-		this.trophees = new Trophee(c1,c2);
-		System.out.println("Les trophées de la partie sont : " + trophees);
+		if (variante instanceof VarianteSansTrophees) {
+			variante.appliquerVariante(this);
+		}
+		else {
+			this.trophees = new Trophee(c1,c2);
+			System.out.println("Les trophées de la partie sont : " + trophees);
+		}
+		
+	}
+	
+	public void setTrophees(Trophee t) {
+		this.trophees = t;
+	}
+	
+	public Variante getVariante() {
+		return variante;
 	}
 	
 	public boolean estJouable() {
@@ -233,27 +247,33 @@ public class Partie {
      */
     public Joueur determinerPremierJoueur() {
     	
-    	Joueur joueurPremier = listJoueur.get(0);
-    	Carte plusForte = joueurPremier.offre.getCarteVisible();
-    	for (Joueur j : this.listJoueur) {
-    		Carte carteVisible = j.offre.getCarteVisible();
-    		if (plusForte.getCouleur() == carteVisible.getCouleur()) {
-    			if (plusForte.getValeur() < carteVisible.getValeur()) {
-    				plusForte = carteVisible;
-    				joueurPremier = j;
-    			}
-    		}
-    		else {
-    			int val1 = this.getForceCouleur(plusForte);
-    			int val2 = this.getForceCouleur(carteVisible);
-    			
-    			if (val1 < val2) {
-    				plusForte = carteVisible;
-    				joueurPremier = j;
-    			}
-    		}	
+    	if (variante instanceof VariantePremierJoueurAleatoire ){
+    		Joueur j = variante.appliquerVariante(this.listJoueur);
+    		return j;
     	}
-    	return joueurPremier;
+    	else {
+    		Joueur joueurPremier = listJoueur.get(0);
+        	Carte plusForte = joueurPremier.offre.getCarteVisible();
+        	for (Joueur j : this.listJoueur) {
+        		Carte carteVisible = j.offre.getCarteVisible();
+        		if (plusForte.getCouleur() == carteVisible.getCouleur()) {
+        			if (plusForte.getValeur() < carteVisible.getValeur()) {
+        				plusForte = carteVisible;
+        				joueurPremier = j;
+        			}
+        		}
+        		else {
+        			int val1 = this.getForceCouleur(plusForte);
+        			int val2 = this.getForceCouleur(carteVisible);
+        			
+        			if (val1 < val2) {
+        				plusForte = carteVisible;
+        				joueurPremier = j;
+        			}
+        		}	
+        	}
+        	return joueurPremier;
+    	}   	
     }
 
     /**
@@ -288,18 +308,42 @@ public class Partie {
 		Scanner sc = new Scanner(System.in);
 
 		// demander si extension ou pas
-		
-        System.out.println("Voulez-vous activer les extensions pour cette partie (nouvelles cartes 6 et 7 de chaque couleurs) ? (1=oui, 0=non)");
-        boolean extension = sc.nextInt() == 1;
+		int choixExtension = -1;
+        while (choixExtension != 0 && choixExtension != 1) {
+            System.out.println("Voulez-vous activer les extensions pour cette partie (nouvelles cartes 6 et 7 de chaque couleurs) ? (1=oui, 0=non)");
+            if (sc.hasNextInt()) {
+                choixExtension = sc.nextInt();
+                if (choixExtension != 0 && choixExtension != 1) {
+                    System.out.println("Choix invalide. Entrez 1 ou 0.");
+                }
+            } else {
+                System.out.println("Entrée invalide.");
+                sc.next(); // vide le buffer
+            }
+        }
+
+        boolean extension = (choixExtension == 1);
+        
         
         // demander si variantes ou pas 
-        System.out.println("Choisissez une variante pour cette partie :");
-        System.out.println("1 - Inversion (inverse l'ordre des joueurs chaque tour)");
-        System.out.println("2 - Départ aléatoire (mélange aléatoirement l'ordre des joueurs chaque tour)");
-        System.out.println("3 - Aucune");
-
-        int variante = sc.nextInt();
-        
+        int variante = -1;
+        while (variante < 1 || variante > 3) {
+        	System.out.println("Choisissez une variante pour cette partie :");
+            System.out.println("1 - Premier Joueur Aléatoire Par Tour");
+            System.out.println("2 - Partie Sans Trophées");
+            System.out.println("3 - Aucune");
+            System.out.print("Votre choix : ");
+            
+            if (sc.hasNextInt()) {
+                variante = sc.nextInt();
+                if (variante < 1 || variante > 3) {
+                    System.out.println("Choix invalide. Entrez 1, 2 ou 3.");
+                }
+            } else {
+                System.out.println("Entrée invalide.");
+                sc.next(); // vide l’entrée invalide
+            }
+        }
               
         
         //instanciation de la partie 
