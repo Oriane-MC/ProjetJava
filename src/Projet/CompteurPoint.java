@@ -19,7 +19,7 @@ public class CompteurPoint implements Visitor {
 		}
 		
 		// les coeurs sont traités différemment
-		score += this.scoreCoeur( j.getDeckPossede() );
+		score += this.scoreCoeur(j.getDeckPossede() );
 		
 		//bonus si paire de trefle et coeur
 		score += this.scorePairePiqueTrefle(j.getDeckPossede());

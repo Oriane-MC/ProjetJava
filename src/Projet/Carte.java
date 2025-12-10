@@ -24,7 +24,12 @@ public class Carte {
 	}
 	
 	public String toString() {
-		return valeur +" de " + couleur ;
+		if (couleur.equals("joker")) {
+			return "joker";
+		}
+		else {
+			return valeur +" de " + couleur ;
+		}
 	}
 
 	public int getValeur() {
