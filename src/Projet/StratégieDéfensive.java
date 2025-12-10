@@ -96,4 +96,8 @@ public class StratégieDéfensive implements Strategie {
     public String getNom() {
         return "Stratégie Défensive";
     }
+    
+    public String toString() {
+    	return "Stratégie Défensive";
+    }
 }

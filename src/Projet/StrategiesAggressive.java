@@ -89,8 +89,9 @@ public class StrategiesAggressive implements Strategie {
     /**
      * Nom de la stratégie pour affichage
      */
-    @Override
-    public String getNom() {
-        return "Stratégie Agressive";
+   
+    
+    public String toString() {
+    	return "Stratégie Agressive";
     }
 }

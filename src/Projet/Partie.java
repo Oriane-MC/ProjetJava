@@ -288,6 +288,7 @@ public class Partie {
 		Scanner sc = new Scanner(System.in);
 
 		// demander si extension ou pas
+		
         System.out.println("Voulez-vous activer les extensions pour cette partie (nouvelles cartes 6 et 7 de chaque couleurs) ? (1=oui, 0=non)");
         boolean extension = sc.nextInt() == 1;
         
@@ -295,10 +296,11 @@ public class Partie {
         System.out.println("Choisissez une variante pour cette partie :");
         System.out.println("1 - Inversion (inverse l'ordre des joueurs chaque tour)");
         System.out.println("2 - Départ aléatoire (mélange aléatoirement l'ordre des joueurs chaque tour)");
-        System.out.println("3 - Aucune (ordre normal selon les cartes visibles)");
+        System.out.println("3 - Aucune");
 
         int variante = sc.nextInt();
-       
+        
+              
         
         //instanciation de la partie 
 		Partie p = new Partie(extension, variante);
@@ -306,14 +308,80 @@ public class Partie {
 			
 		
 		//création et ajout des joueurs à la partie 
-		Joueur j1 = new Joueur("j1","reel",p); 
-		Joueur j2 = new Joueur("j2","reel",p);
-		Joueur j3 = new Joueur("j3","reel",p);
-		//Virtuel j3 = new Virtuel("j3", new StrategieBasique(),p);
-		p.ajouterJoueur(j1);
-		p.ajouterJoueur(j2);
-		p.ajouterJoueur(j3);
 		
+		int nbJoueurs = 0;
+		while (nbJoueurs != 3 && nbJoueurs != 4) {
+		    System.out.print("Choisissez le nombre de joueurs pour cette partie [3 ou 4] : ");
+		    if (sc.hasNextInt()) {
+		        nbJoueurs = sc.nextInt();
+		        if (nbJoueurs != 3 && nbJoueurs != 4) {
+		            System.out.println("Choix invalide. Entrez 3 ou 4.");
+		        }
+		    } 
+		    else {
+		        System.out.println("Entrée invalide.");
+		        sc.next(); 
+		    }
+		}
+
+		for (int i = 0; i < nbJoueurs; i++) {
+
+		    System.out.println("Quel est le nom du joueur ?");
+		    String nom = sc.next();
+
+		    int typeJ = -1;
+		    while (typeJ != 0 && typeJ != 1) {
+		        System.out.print("Est-ce un Joueur Réel (0) ou Virtuel (1) ? ");
+		        if (sc.hasNextInt()) {
+		            typeJ = sc.nextInt();
+		            if (typeJ != 0 && typeJ != 1) {
+		                System.out.println("Choix invalide. Entrez 0 ou 1.");
+		            }
+		        } 
+		        else {
+		            System.out.println("Entrée invalide.");
+		            sc.next();
+		        }
+		    }
+
+		    if (typeJ == 0) {
+
+		        p.ajouterJoueur(new Joueur(nom, "Humain", p));
+
+		    } else {   
+
+		        int strat = -1;
+		        while (strat < 0 || strat > 3) {
+		            System.out.println("Quel type de stratégie voulez-vous ?");
+		            System.out.println("0 - aléatoire");
+		            System.out.println("1 - basique");
+		            System.out.println("2 - défensive");
+		            System.out.println("3 - aggressive");
+		            System.out.print("Votre choix : ");
+
+		            if (sc.hasNextInt()) {
+		                strat = sc.nextInt();
+		                if (strat < 0 || strat > 3) {
+		                    System.out.println("Choix invalide. Entrez entre 0 et 3.");
+		                }
+		            } 
+		            else {
+		                System.out.println("Entrée invalide.");
+		                sc.next();
+		            }
+		        }
+
+		        Virtuel j = new Virtuel(nom, strat, p);
+		        p.ajouterJoueur(j);
+
+		        System.out.println("La stratégie pour le joueur virtuel est donc : " + j.getStrategie());
+
+		    } 
+
+		} 
+
+		
+		//mélange et repartie les cartes
 		p.mélanger();
 		p.répartir();
 	

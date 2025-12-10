@@ -101,8 +101,9 @@ Lors de la prise :
 	     * @return Le nom de la stratégie.
 	     */
 	    
-	    @Override 
-	    public String getNom() {
+	    
+	    
+	    public String toString() {
 	    	return "Stratégie Basique";
 	    }
 	

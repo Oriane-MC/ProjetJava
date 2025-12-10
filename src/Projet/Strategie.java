@@ -12,5 +12,6 @@ public interface Strategie  {
      * Retourne le nom de la stratégie pour l'affichage.
      * @return Le nom de la stratégie.
      */
-    public String getNom();
+    
+    public String toString();
 }

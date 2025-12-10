@@ -2,6 +2,7 @@ package Projet;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 
 /**
@@ -26,11 +27,30 @@ public class Virtuel extends Joueur {
      * @param strategie utilisé pour ses décisions 
      * @param p Référence à la partie pour accès au scanner, etc.
      */
-    public Virtuel(String nom, Partie partie ) {
+    public Virtuel(String nom, int strategie, Partie partie ) { //ORIANE : ajout pour faire choisir la stategie au joueur
         super(nom, "Virtuel", partie);
-        //GENERER UN STRATEGIE ALEATOIRE 
-        this.strategie = strategie;
+        
+        if (strategie == 0) { 
+        	Random r = new Random();
+        	int n = r.nextInt(3) + 1;
+        	strategie = n;
+        }
+        
+        switch (strategie) {
+        	case 1:
+        		this.strategie = new StrategieBasique();
+        	case 2 : 
+        		this.strategie = new StratégieDéfensive();
+        	case 3 :
+        		this.strategie = new StrategiesAggressive();
+        }
     }
+    
+    
+    public Strategie getStrategie() {
+    	return strategie;
+    }
+    
 
     // Setter 
     /**
