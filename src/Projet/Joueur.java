@@ -1,8 +1,18 @@
 package Projet;
 
-import java.util.List;
 import java.util.Scanner;
 import java.util.ArrayList;
+
+
+
+/**
+ * Classe représentant un joueur dans le jeu.
+ * <p>
+ * Un joueur peut être de type "Humain" ou "Virtuel". 
+ * Il possède un deck permanent (Jest) et peut créer et gérer des offres.
+ * Cette classe contient également la logique pour interagir avec la pioche,
+ * prendre des cartes dans les offres adverses et gérer les cartes visibles et cachées.
+ */
 
 public class Joueur {
 	
@@ -31,24 +41,30 @@ public class Joueur {
 		}
 		
 		// Getters / Setters 
+		
+		/** @return le nom du joueur */
 	    public String getNom() {
 	        return nom;
 	    }
 
+	    /** @return le type du joueur ("Humain" ou "Virtuel") */
 	    public String getTypeJoueur() {
 	        return typeJoueur;
 	    }
 
+	    /** @return l'offre actuelle du joueur */
 	    public Offre getOffre() {
 	        return offre;
 	    }
 
+
+	    /** @return le deck permanent du joueur */	
 	    public Deck getDeckPossede() {
 	        return jest;
 	    }
 	    
 	   
-	   
+	    /** Définit l'offre actuelle du joueur */
 	    public void setOffre(Offre offre) {
 	        this.offre = offre;
 	    }
@@ -65,11 +81,12 @@ public class Joueur {
 	    //Méthodes 
 
 	 
-	    /** 
-	     * méthode relatif au pattern Visitor
-	     * @param v
-	     * @return
-	     * @throws GameException 
+	    /**
+	     *  Méthode du pattern Visitor.
+	     *
+	     * @param v Visitor appliqué
+	     * @return un entier correspondant au traitement du visitor
+	     * @throws GameException si une erreur se produit lors de l'application du visitor
 	     */
 	    public int accept(Visitor v) throws GameException {
 	    	return v.visit(this);
@@ -77,25 +94,18 @@ public class Joueur {
 	    
 	    
 	    
-	  
-
-	  
 	    
 	    /**
 	     * Permet au joueur de prendre soit la carte visible, soit la carte cachée d'une offre.
 	     */
-	    public void prendreOffre(Joueur j, Partie partie) { //ORIANE  = changement des parametre et donc du code qui en découle
-	    	// j'ai changé le parametre offre en joueur, a verifier car pas sur si j'ai bien tout remplacer les offre par j.getOffre()
+	    public void prendreOffre(Joueur j, Partie partie) { 
 	    	Scanner sc = new Scanner(System.in);
 	        String nomCreateur = (j.getNom() != null)
 	                ? j.getNom()
 	                : "un joueur inconnu";
 
-	        //System.out.println("\n" + this.nom + ", tu dois choisir une carte dans l'offre de " + nomCreateur + " :");
-	        //System.out.println(" ► Carte visible : " + j.getOffre().getCarteVisible());
-	        //System.out.println(" ► Carte cachée : [???]");
-
-	        // 2) Choix sécurisé : visible ou cachée
+	        
+	        // Choix sécurisé : visible ou cachée
 	        int choix;
 	        do {
 	            System.out.print("Prends-tu (1) la carte visible ou (2) la carte cachée ? ");
@@ -104,18 +114,18 @@ public class Joueur {
 
 	        } while (choix != 1 && choix != 2);
 
-	        // 3) Récupération de la carte
+	        // Récupération de la carte
 	        Carte carteAPrendre = (choix == 1)
 	                ? j.getOffre().carteVisiblePrise()
 	                : j.getOffre().carteCacheePrise();
 
-	        // 4) Sécurité
+	        // Sécurité
 	        if (carteAPrendre == null) {
 	            System.out.println("Erreur : la carte choisie n'est pas disponible.");
 	            return;
 	        }
 
-	        // 5) Ajout au Jest
+	        // Ajout au Jest
 	        this.jest.ajouterCarte(carteAPrendre);
 
 	        System.out.println(this.nom + " a pris une carte de l'offre de " + nomCreateur );
@@ -125,7 +135,11 @@ public class Joueur {
 
 
 	    /**
-	     * Crée l'offre du joueur en utilisant le constructeur à 2 arguments de Offre.
+	     * Crée une offre pour le joueur à partir de cartes visibles et cachées.
+	     * Méthode privée utilisée pour encapsuler la création d'offre.
+	     *
+	     * @param faceVisible Carte qui sera visible
+	     * @param faceCachee Carte qui sera cachée
 	     */
 	    private void creerMonOffre(Carte faceVisible, Carte faceCachee) { //ORIANE : supression de l'attribut partie car inutile et 
 	    // passe de la méthode en privé car elle ne sert que pour ici, que a la méthode créerMonOfreHumain
@@ -137,11 +151,12 @@ public class Joueur {
 	    /**
 	     * Logique de création de l'offre pour un joueur HUMAIN, avec interaction console.
 	     * Cette méthode gère la pioche, l'affichage et le choix.
+	     *  @param p Référence à la partie en cours
 	     */
-	    public void creerMonOffre(Partie p) { // ORIANE : changement de parametre, j'ai mis que partie 
+	    public void creerMonOffre(Partie p) {  
 	         System.out.println("\n--- Tour de " + this.nom + " (Humain) : Création de l'offre ---");
 	        
-	        // 1. Piocher les deux cartes dans la main d'offre
+	        //  Piocher les deux cartes dans la main d'offre
 	        Carte c1 = p.getPioche().piocher();
 	        Carte c2 = p.getPioche().piocher();
 	                
@@ -150,14 +165,14 @@ public class Joueur {
 	        
 	        System.out.println(this.nom + " pioche deux cartes. Voici vos options :");
 	        
-	        // 2. Afficher la main avec les indices [1] et [2]
+	        //Afficher la main avec les indices [1] et [2]
 	        
-	        // Affichage corrigé
+	       
 	        System.out.println("Main de " + this.nom + " :");
 	        System.out.println("  [1] " + c1);
 	        System.out.println("  [2] " + c2);
 
-	        // 3. Choix de quelle carte est visible
+	        //  Choix de quelle carte est visible
 	        int choixVisible = 0;
 	        
 	        while (choixVisible != 1 && choixVisible != 2) {
@@ -176,7 +191,7 @@ public class Joueur {
 	        Carte carteVisible = (choixVisible == 1) ? c1 : c2;
 	        Carte carteCachee = (choixVisible == 1) ? c2 : c1;
 
-	        // 4. Créer l'offre
+	        // Créer l'offre
 	        creerMonOffre(carteVisible, carteCachee);
 	        
 	        System.out.println("Offre de " + this.nom + " créée : Visible (" + carteVisible.toString() + ") / Cachée.");
@@ -186,8 +201,9 @@ public class Joueur {
 	    
 	    /**
 	     * Ajoute une carte au deck de cartes possédées par le joueur.
+	     * @param carte Carte à ajouter
 	     */
-	    public void ajouterCarteDeck(Carte carte) { //Oriane = suppression du parametre partie 
+	    public void ajouterCarteDeck(Carte carte) { 
 	        this.jest.ajouterCarte(carte);
 	        
 	    } 
@@ -197,9 +213,7 @@ public class Joueur {
 	     */
 	    public void ajouterCarteDeck() {
 
-	        // METTRE UN EXCEPTION Sécurité : si aucune carte en mainOffre
-	       
-	        // Transfert de toutes les cartes
+	         // Transfert de toutes les cartes
 	        for (Carte c : this.offre.getListeCarte() ) // ajouter l'offre au deck 
 	        {	if (c!= null) {
 	            this.jest.ajouterCarte(c);
@@ -207,6 +221,17 @@ public class Joueur {
 	         }
 	    }
 	    
+	    
+	    
+	    /**
+	     * Permet au joueur humain de choisir une offre adverse et de prendre une carte.
+	     * <p>
+	     * Cette méthode affiche les offres disponibles, sécurise le choix et ajoute
+	     * la carte choisie au deck du joueur.
+	     *
+	     * @param p Référence à la partie en cours
+	     * @return Le joueur dont l'offre a été prise
+	     */
 	    public Joueur prendreOffreEtJoueurSuivant(Partie p) {
 	    	
 	    	Scanner sc = new Scanner(System.in);

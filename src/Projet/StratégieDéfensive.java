@@ -8,11 +8,28 @@ import java.util.Random;
 public class StratégieDéfensive implements Strategie {
 
     /**
-     * Création d’une offre défensive :
-     * Visible  = carte la plus forte (pour que personne ne la prenne) et pr esperer commencer 
-     * Cachée   = carte la plus faible
+     *  Stratégie Défensive pour un joueur virtuel
+     *  Pour la création de l'offre la logique est la suivante :
+     * - La carte visible = la plus forte
+     * - La carte cachée = la plus faible 
+     * 
+     * Lors de la prise :
+     * -Prend la carte visible la plus faible parmi les offres valides
+     * -Si aucune offre n’est valide, choisit une offre au hasard
+     * 
      */
-    @Override
+ 
+	
+	
+    /**
+     * Crée l'offre du joueur selon la logique défensive.
+     * 
+     * @param joueur le joueur qui crée l'offre
+     * @param pioche le paquet de cartes à partir duquel on pioche
+     * @param offresAdversaires les offres des autres joueurs (non utilisées ici)
+     * @return l'offre créée ou null si la pioche est insuffisante
+     */
+	@Override
     public Offre choisirMonOffre(Joueur joueur, PaquetCarte pioche, List<Offre> offresAdversaires) {
 
         // On pioche 2 cartes
@@ -36,7 +53,7 @@ public class StratégieDéfensive implements Strategie {
 
         // Logique défensive :
         // Visible = forte | Cachée = faible
-        Offre offre = new Offre(faible, forte, joueur);  
+        Offre offre = new Offre(forte, faible, joueur);  
         joueur.setOffre(offre);
 
         System.out.println(joueur.getNom() + " (défensif) crée une offre, sa carte visible est : " + forte);
@@ -47,18 +64,23 @@ public class StratégieDéfensive implements Strategie {
 
 
 
-    /**
-     * Prendre une offre adverse – version défensive :
-     * Prend la CARTE VISIBLE
-     */
+	/**
+    * Décide quelle offre adverse prendre.
+    * 
+    * <p>Prend la carte visible la plus faible parmi les offres valides.</p>
+    * 
+    * @param offres la liste des offres adverses
+    * @param joueur le joueur qui doit choisir
+    * @return le joueur dont la carte a été prise, ou null si aucune offre n'est disponible
+    */
     @Override
-    public Carte prendreOffreAdversaire(List<Offre> offres, Joueur joueur) {
+    public Joueur deciderOffreAdversaire(List<Offre> offres, Joueur joueur) {
     	if (offres == null || offres.isEmpty()) return null;
 
         // Filtrer les offres encore disponibles
         List<Offre> valides = new ArrayList<>();
         for (Offre o : offres) {
-            if (o != null && o.carteVisiblePrise() == null) {
+            if (o != null && o.getCarteVisible() != null) {
                 valides.add(o);
             }
         }
@@ -75,24 +97,24 @@ public class StratégieDéfensive implements Strategie {
             cible = valides.get(new Random().nextInt(valides.size()));
         }
 
-        // Prendre la carte visible
+        
+        // On prend la carte VISIBLE ici et ajoute au deck
         Carte prise = cible.carteVisiblePrise();
-
         if (prise != null) {
-
-            Joueur createur = cible.getCreateur(); 
-
             joueur.getDeckPossede().ajouterCarte(prise);
-
-            System.out.println(joueur.getNom() + " (défensif) prend la carte visible : " + prise);
-            System.out.println("   → cette carte appartenait à : " + createur.getNom());
+            System.out.println(joueur.getNom() + " (défensif) prend chez le joueur " + cible.getCreateur().getNom() + " sa carte : "  + prise)  ;
         }
-
-        return prise;
+        
+         return cible.getCreateur();
+        
      }
 
 
-    @Override
+    /**
+     * Retourne le nom de la stratégie pour affichage.
+     * 
+     * @return le nom de la stratégie ("Stratégie Défensive")
+     */
     public String getNom() {
         return "Stratégie Défensive";
     }

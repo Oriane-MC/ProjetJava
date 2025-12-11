@@ -3,17 +3,16 @@ package Projet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
 
 /**
  * Classe représentant un joueur virtuel (IA).
  * Il utilise une stratégie pour :
  *  - créer son offre
- *  - choisir une offre adverse
- *  - prendre une carte
+ *  - prendre offre et determiner le prochain joueur  
+ *  - set la stratégie
  * 
- * Toute l’affichage concernant les décisions du joueur virtuel
- * est gérée ici.
  */
 public class Virtuel extends Joueur {
 
@@ -39,14 +38,21 @@ public class Virtuel extends Joueur {
         switch (strategie) {
         	case 1:
         		this.strategie = new StrategieBasique();
+        		break;
         	case 2 : 
         		this.strategie = new StratégieDéfensive();
+        		break;
         	case 3 :
         		this.strategie = new StrategiesAggressive();
+        		break;
         }
     }
     
-    
+    /**
+     * Retourne la stratégie actuellement utilisée par le joueur virtuel.
+     *
+     * @return La stratégie appliquée.
+     */ 
     public Strategie getStrategie() {
     	return strategie;
     }
@@ -62,17 +68,18 @@ public class Virtuel extends Joueur {
     }
 
     /**
-     * Demande à la stratégie de choisir l'offre que le joueur virtuel va créer, c'est à dire 
-     * lorsque le joueur doit sélectionner une carte visible et une carte cachée à partir de sa main.
-     * @param pioche          La pioche permettant éventuellement de tirer des cartes.
-     * @param offresAdversaires Liste des offres déjà déposées par les autres joueurs.
-     * @return L'offre choisie par le joueur virtuel conformément à sa stratégie.
+     * Crée l'offre du joueur virtuel en se basant sur sa stratégie.
+     * <p>
+     * Cette méthode sélectionne une carte visible et une carte cachée
+     * à partir de la main du joueur virtuel.
+     *
+     * @param p Référence à la partie en cours, utilisée pour accéder à la pioche et aux offres adverses.
      */
-    public void creerMonOffre(Partie p) { //ORIANE : changement du code ici 
+    public void creerMonOffre(Partie p) { 
     	
     	ArrayList<Offre> offresAdversaires = new ArrayList();
     	for (Joueur j : p.getJoueur()) {
-            if (j != this) { // DINA pr que on ignore l'offre de notre propre joueur
+            if (j != this) { 
                 offresAdversaires.add(j.getOffre());
             }
     	}
@@ -82,48 +89,38 @@ public class Virtuel extends Joueur {
   
     
     /**
-     * Demande à la stratégie de déterminer quelle carte prendre parmi toutes les offres adverses.
+     * Permet au joueur virtuel de choisir une offre adverse et de déterminer
+     * quel joueur cibler pour prendre une carte.
+     * <p>
+     * La stratégie appliquée décide automatiquement quel joueur et quelle carte prendre et prend la carte.
      *
-     * @param p Partie en cours
-     * @return La carte choisie par la stratégie
+     * @param p Référence à la partie en cours.
+     * @return Le joueur choisi par le joueur virtuel pour prendre une carte.
      */
-    private Carte deciderOffreAdversaire(Partie p) {
-
-        // Construction de la liste des offres adverses
-        List<Offre> offres = new ArrayList<>();
-        for (Joueur j : p.getJoueur()) {
-            if (j != this && j.getOffre() != null) {
-                offres.add(j.getOffre());
-            }
-        }
-        return strategie.prendreOffreAdversaire(offres, this);   
-    }
-    
-    
-    
-    
-    // prendreOffre doit faire appel a deciderOffreAdversaire pour choisir une carte de l'offre d'un des joueur et renvoyer 
-    //cette carte pour pouvoir ajouter la carte au deck du joueur virtuel 
-    //et decider offre adversaire doit donc retourner un joueur et doit juste faire appel
-    // a une méthode de stratégie qui permet de renvoyer le carte le plus interresant à prendre parmes le offres et les joueur
-    // normalement le code squellet est bon pour ici (pas dans les classe stategie par exemple), fait juste que tu mettes les parametres 
-    // que tu veux là ou j'ai mis des //////// (tu peux te débrouiller un peu comme tu veux en ayant partie en parametre en vrai 
-    // tu peux regarder ce que j'ai fait pour choisirMonOffre dans cette classe pour te donner des idées de parametre "plus simple" a gerer
-
     
     public Joueur prendreOffreEtJoueurSuivant (Partie p){
-    	
-    	// Il faut retourner le joueur choisi et prendre offre selon la strategie , bien respecter les noms 
-    	
-    	Joueur joueurChoisi  = strategie.deciderOffreAdversaire(null, null);
-    	
-    	// A CHANGER / this.prendreOffre(joueurChoisi, p);
-    	
-    	return joueurChoisi;
+    	Scanner sc = new Scanner(System.in);
+
+    	System.out.println("C'est au tour du joueur virtuel " +this.nom + "  de choisir une offre ");
+
+    	// Construire la liste des offres adverses encore disponibles
+        List<Offre> offresAdverses = new ArrayList<>();
+        for (Joueur j : p.getJoueur()) {
+            if (j != this && j.getOffre() != null && j.getOffre().estDisponible()) {
+                offresAdverses.add(j.getOffre());
+            }
+        }   	
+     //  La stratégie décide quel joueur cibler
+        Joueur joueurChoisi = strategie.deciderOffreAdversaire(offresAdverses, this);          
+        
+      
+      // Retourner le joueur choisi
+        return joueurChoisi;
+    
     }
     
-    
-    public void ajouterCarteDeck() { //ORIANE : j'ai fait ca car il y en a besoin pour la partie : a verifier 
+     
+    public void ajouterCarteDeck() {  
 		super.ajouterCarteDeck();
 	}
 

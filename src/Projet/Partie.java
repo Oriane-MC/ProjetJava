@@ -313,6 +313,9 @@ public class Partie {
 	public static void main (String[] args) throws GameException {
 		Scanner sc = new Scanner(System.in);
 
+		 System.out.println("Bienvenue dans le jeu de Orianne et Dina, nous te souhaitons une superbe partie !");
+         
+		
 		// demander si extension ou pas
 		int choixExtension = -1;
         while (choixExtension != 0 && choixExtension != 1) {
@@ -469,6 +472,8 @@ public class Partie {
 		
         }
 		
+       
+        
 		//distribuer les trophées, calculer les points, annoncer le gagnant 
 		p.finPartie();
 		

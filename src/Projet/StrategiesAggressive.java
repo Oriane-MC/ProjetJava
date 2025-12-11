@@ -6,17 +6,22 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Stratégie Agressive :
- * - Lors de la création d'une offre :
- *      Visible = faible (attire les adversaires)
+ * Stratégie Agressive  pour un joueur virtuel :
+ * -Lors de la création d'une offre :
+ *      Visible = faible 
  *      Cachée  = forte (je garde la meilleure)
  * - Lors de la prise d'une offre adverse :
  *      Toujours prendre la carte visible la plus forte
  */
 public class StrategiesAggressive implements Strategie {
 
-    /**
-     * Créer l'offre agressive pour le joueur
+	/**
+     * Crée l'offre agressive pour le joueur.
+     * 
+     * @param joueur le joueur qui crée l'offre
+     * @param pioche le paquet de cartes pour piocher
+     * @param offresAdversaires les offres des autres joueurs (non utilisées ici)
+     * @return l'offre créée ou null si la pioche est insuffisante
      */
     @Override
     public Offre choisirMonOffre(Joueur joueur, PaquetCarte pioche, List<Offre> offresAdversaires) {
@@ -41,7 +46,7 @@ public class StrategiesAggressive implements Strategie {
         }
 
         // 3️⃣ Logique agressive : visible = faible, cachée = forte
-        Offre offre = new Offre(forte, faible, joueur);
+        Offre offre = new Offre(faible, forte, joueur);
         joueur.setOffre(offre);
 
         System.out.println(joueur.getNom() + " (agressif) crée son offre, sa carte visible est : " + faible );
@@ -49,48 +54,56 @@ public class StrategiesAggressive implements Strategie {
         return offre;
     }
 
+    
+    
+    
     /**
-     * Prendre une carte d'une offre adverse
+     * Décide quelle offre adverse prendre.
+     * 
+     * <p>Prend toujours la carte visible la plus forte parmi les offres valides.</p>
+     * 
+     * @param offres la liste des offres adverses
+     * @param joueur le joueur qui doit choisir
+     * @return le joueur dont la carte a été prise, ou null si aucune offre n'est disponible
      */
     @Override
-    public Carte prendreOffreAdversaire(List<Offre> offres, Joueur joueur) {
+    public Joueur deciderOffreAdversaire(List<Offre> offres, Joueur joueur) {
     	if (offres == null || offres.isEmpty()) return null;
 
         // Filtrer les offres encore disponibles
         List<Offre> valides = new ArrayList<>();
         for (Offre o : offres) {
-            if (o != null && o.carteVisiblePrise() == null) {
+            if (o != null && o.getCarteVisible() != null) {
                 valides.add(o);
             }
         }
 
         if (valides.isEmpty()) return null;
 
-        // Prendre l'offre dont la carte visible est la plus forte
-        Offre cible = valides.stream()
+     // Choisir l'offre avec la carte visible la plus forte
+         Offre cible = valides.stream()
                 .max(Comparator.comparingInt(o -> o.getCarteVisible().getValeur()))
                 .orElse(valides.get(new Random().nextInt(valides.size())));
 
-        // Prendre la carte visible
-        Carte prise = cible.carteVisiblePrise();
-
-        if (prise != null) {
-            joueur.getDeckPossede().ajouterCarte(prise);
-
-            // Affichage 
-            Joueur createur = cible.getCreateur();
-            System.out.println(joueur.getNom() + " (agressif) prend la carte visible : " + prise);
-            System.out.println("   → cette carte appartenait à : " + createur.getNom());
-        }
-
-        return prise;
+         
+         // Prendre la carte visible et l'ajouter au deck du joueur
+         Carte prise = cible.carteVisiblePrise();
+         if (prise != null) {
+             joueur.getDeckPossede().ajouterCarte(prise);
+             System.out.println(joueur.getNom() + " (agressif) prend chez " 
+                 + cible.getCreateur().getNom() + " la carte : " + prise);
+         }
+         
+         //retourne le joueur 
+         return cible.getCreateur();
       }
 
-    /**
-     * Nom de la stratégie pour affichage
-     */
-   
     
+    /**
+     * Retourne le nom de la stratégie pour affichage.
+     * 
+     * @return le nom de la stratégie ("Stratégie Agressive")
+     */
     public String toString() {
     	return "Stratégie Agressive";
     }
