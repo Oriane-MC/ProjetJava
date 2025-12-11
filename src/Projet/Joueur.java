@@ -91,9 +91,9 @@ public class Joueur {
 	                ? j.getNom()
 	                : "un joueur inconnu";
 
-	        System.out.println("\n" + this.nom + ", tu dois choisir une carte dans l'offre de " + nomCreateur + " :");
-	        System.out.println(" ► Carte visible : " + j.getOffre().getCarteVisible());
-	        System.out.println(" ► Carte cachée : [???]");
+	        //System.out.println("\n" + this.nom + ", tu dois choisir une carte dans l'offre de " + nomCreateur + " :");
+	        //System.out.println(" ► Carte visible : " + j.getOffre().getCarteVisible());
+	        //System.out.println(" ► Carte cachée : [???]");
 
 	        // 2) Choix sécurisé : visible ou cachée
 	        int choix;
@@ -220,7 +220,7 @@ public class Joueur {
 
 	    	for (int i = 0; i < joueurs.size(); i++) {
 	    	    if (joueurs.get(i).getOffre().estDisponible()) {
-	    	        System.out.println(i + " pour " + joueurs.get(i).getNom());
+	    	        System.out.println(i + " pour " + joueurs.get(i).getNom()+ " ( " + joueurs.get(i).getOffre()+ " )");
 	    	        choixValides.add(i);
 	    	    }
 	    	}

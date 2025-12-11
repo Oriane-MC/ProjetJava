@@ -90,5 +90,12 @@ public class Offre {
         return disponibles;
     }
 
+	@Override
+	public String toString() {
+		return "Offre : " + carteVisible + " / ??? " ;
+	}
+    
+    
+
 
 }
