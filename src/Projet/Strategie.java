@@ -11,7 +11,7 @@ import java.util.List;
  * </ul>
  * 
  */
-public interface Strategie  {
+public interface Strategie   {
 	
 	/**
      * Crée l'offre du joueur.

@@ -1,5 +1,7 @@
 package Projet;
 
+import java.io.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -14,11 +16,12 @@ import java.util.Scanner;
  *  - set la stratégie
  * 
  */
-public class Virtuel extends Joueur {
+public class Virtuel extends Joueur implements Serializable {
 
 	/** Stratégie appliquée par le joueur virtuel pour ses décisions. */
-    private Strategie strategie;
-  
+    private  transient Strategie strategie;
+    private static final long serialVersionUID = 1L;
+    private int strategieInt;
 
     /**
      * Constructeur du joueur virtuel
@@ -26,7 +29,7 @@ public class Virtuel extends Joueur {
      * @param strategie utilisé pour ses décisions 
      * @param p Référence à la partie pour accès au scanner, etc.
      */
-    public Virtuel(String nom, int strategie, Partie partie ) { //ORIANE : ajout pour faire choisir la stategie au joueur
+    public Virtuel(String nom, int strategie, Partie partie ) { 
         super(nom, "Virtuel", partie);
         
         if (strategie == 0) { 
@@ -35,6 +38,8 @@ public class Virtuel extends Joueur {
         	strategie = n;
         }
         
+        this.strategieInt = strategie;  // mémoriser la stratégie
+
         switch (strategie) {
         	case 1:
         		this.strategie = new StrategieBasique();
@@ -56,7 +61,17 @@ public class Virtuel extends Joueur {
     public Strategie getStrategie() {
     	return strategie;
     }
-    
+   /**
+    * Réinitialiser la stratégie apres chargement d'une sauvegarde  
+    */
+    public void reinitialiserStrategie() {
+        switch (strategieInt) {
+            case 1 -> this.strategie = new StrategieBasique();
+            case 2 -> this.strategie = new StratégieDéfensive();
+            case 3 -> this.strategie = new StrategiesAggressive();
+        }
+    }
+
 
     // Setter 
     /**
@@ -67,6 +82,12 @@ public class Virtuel extends Joueur {
         this.strategie = strategie;
     }
 
+    
+    @Override
+    public void setPartie(Partie p) {
+        super.setPartie(p);
+    }
+ 
     /**
      * Crée l'offre du joueur virtuel en se basant sur sa stratégie.
      * <p>
@@ -87,7 +108,7 @@ public class Virtuel extends Joueur {
     }
 
   
-    
+    @Override
     /**
      * Permet au joueur virtuel de choisir une offre adverse et de déterminer
      * quel joueur cibler pour prendre une carte.
@@ -98,8 +119,9 @@ public class Virtuel extends Joueur {
      * @return Le joueur choisi par le joueur virtuel pour prendre une carte.
      */
     
-    public Joueur prendreOffreEtJoueurSuivant (Partie p){
-    	Scanner sc = new Scanner(System.in);
+    public Joueur prendreOffreEtJoueurSuivant (Partie p, ArrayList<Joueur> dejaJoue){
+    	ArrayList<Joueur> joueurs = p.getJoueur();
+       Scanner sc = new Scanner(System.in);
 
     	System.out.println("C'est au tour du joueur virtuel " +this.nom + "  de choisir une offre ");
 
@@ -107,15 +129,54 @@ public class Virtuel extends Joueur {
         List<Offre> offresAdverses = new ArrayList<>();
         for (Joueur j : p.getJoueur()) {
             if (j != this && j.getOffre() != null && j.getOffre().estDisponible()) {
-                offresAdverses.add(j.getOffre());
+            	
+            	offresAdverses.add(j.getOffre());
             }
         }   	
-     //  La stratégie décide quel joueur cibler
-        Joueur joueurChoisi = strategie.deciderOffreAdversaire(offresAdverses, this);          
+     
+        Joueur joueurChoisi = null;
         
+        if (offresAdverses.isEmpty() && this.getOffre() != null && this.getOffre().estDisponible()) {
+            // Cas du dernier joueur : obligé de prendre sa propre offre
+            joueurChoisi = this;
+        } else if (!offresAdverses.isEmpty()) {
+            // Appel à TA méthode de stratégie
+            joueurChoisi = strategie.deciderOffreAdversaire(offresAdverses, this);
+        }
       
+        
+        if (!dejaJoue.contains(this)) {
+            dejaJoue.add(this);
+        }
+        
+        Joueur joueurSuivant = null;
+        
+     // Priorité 1 : Le joueur dont on vient de prendre l'offre s'il n'a pas encore pris de carte
+        if (joueurChoisi != null && !dejaJoue.contains(joueurChoisi)) {
+            joueurSuivant = joueurChoisi;
+        } 
+        // Priorité 2 : Le joueur n'ayant pas encore joué avec la carte visible la plus forte
+        else {
+            int valeurMax = -1;
+            for (Joueur j : joueurs) {
+                if (!dejaJoue.contains(j) && j.getOffre() != null && j.getOffre().getCarteVisible() != null) {
+                    int valeur = j.getOffre().getCarteVisible().getValeur();
+                    
+                    if (valeur > valeurMax) {
+                        valeurMax = valeur;
+                        joueurSuivant = j;
+                    } else if (valeur == valeurMax && joueurSuivant != null) {
+                        // Utilisation de ta méthode de force de couleur en cas d'égalité
+                        if (p.getForceCouleur(j.getOffre().getCarteVisible()) > 
+                            p.getForceCouleur(joueurSuivant.getOffre().getCarteVisible())) {
+                            joueurSuivant = j;
+                        }
+                    }
+                }
+            }
+        }
       // Retourner le joueur choisi
-        return joueurChoisi;
+        return joueurSuivant;
     
     }
     

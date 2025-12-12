@@ -1,12 +1,14 @@
 package Projet;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class VarianteSansTrophees implements Variante {
+public class VarianteSansTrophees implements Variante,  Serializable {
 	
 	private String nom;
 	private boolean utilise;
-	
+	private static final long serialVersionUID = 1L;
+
 	public VarianteSansTrophees() {
 		this.nom = "Partie Sans Trophees";
 		this.utilise = false;

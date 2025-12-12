@@ -1,12 +1,15 @@
 package Projet;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class VariantePremierJoueurAleatoire implements Variante {
+public class VariantePremierJoueurAleatoire implements Variante, Serializable {
 	
 	private String nom;
 	private boolean utilise;
+	private static final long serialVersionUID = 1L;
+
 	
 	public VariantePremierJoueurAleatoire() {
 		this.nom = "Premier Joueur Aleatoire Par Tour";

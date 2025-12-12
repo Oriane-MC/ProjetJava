@@ -1,11 +1,13 @@
 package Projet;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class PaquetCarte {
+public class PaquetCarte implements Serializable{
 	
 	private LinkedList<Carte> listPioche;
-	
+	private static final long serialVersionUID = 1L;
+
 	public PaquetCarte(LinkedList<Carte> list) {
 		this.listPioche = list;
 	}

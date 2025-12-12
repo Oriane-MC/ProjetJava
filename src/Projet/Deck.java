@@ -1,5 +1,6 @@
 package Projet;
 
+import java.io.Serializable;
 import java.util.ArrayList; 
 import java.util.List;
 
@@ -7,7 +8,7 @@ import java.util.List;
  * Représente un paquet de cartes (deck) utilisé dans le jeu.
  * Il permet d'ajouter des cartes, d'en retirer et de piocher.
  */
-public class Deck {
+public class Deck implements Serializable {
 	
 	@Override
 	public String toString() {
@@ -19,6 +20,8 @@ public class Deck {
 	private List<Carte> cartes; 
 	 /** Joueur propriétaire du deck. Peut être null si c'est la pioche du jeu. */
 	private Joueur proprietaire; 
+	private static final long serialVersionUID = 1L;
+
 	
 	// constructeur 
 	 /**

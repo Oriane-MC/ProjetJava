@@ -1,19 +1,22 @@
 package Projet;
 
+
+import java.io.*;
 import java.util.*;
 
-public class Partie {
+public class Partie implements Serializable{
 	
 	private ArrayList<Joueur> listJoueur;
 	private PaquetCarte listCarte;
 	private String etatPartie;
 	private boolean extension; //extension = nouvelles cartes
 	private Trophee trophees;
-	private Scanner scanner; 
+	private transient Scanner scanner; 
 	private Map<Joueur, Integer> score;
 	private Variante variante; // DINA peut être null si aucune variante choisie
 	private int numeroTour;//DINA 
-	
+	private static final long serialVersionUID = 1L;
+
 	
 	
 	
@@ -288,7 +291,7 @@ public class Partie {
      * * @param c carte dont la couleur doit être évaluée
      * @return un entier représentant la "force" de la couleur
      */
-    private int getForceCouleur(Carte c) {
+    protected int getForceCouleur(Carte c) {
         if (c == null) return 0;
 
         String couleur = c.getCouleur().toLowerCase();
@@ -307,184 +310,204 @@ public class Partie {
     }
     
     	
-	
-	
-
-	public static void main (String[] args) throws GameException {
-		Scanner sc = new Scanner(System.in);
-
-		 System.out.println("Bienvenue dans le jeu de Orianne et Dina, nous te souhaitons une superbe partie !");
-         
-		
-		// demander si extension ou pas
-		int choixExtension = -1;
-        while (choixExtension != 0 && choixExtension != 1) {
-            System.out.println("Voulez-vous activer les extensions pour cette partie (nouvelles cartes 6 et 7 de chaque couleur sauf coeur) ? (1=oui, 0=non)");
-            if (sc.hasNextInt()) {
-                choixExtension = sc.nextInt();
-                if (choixExtension != 0 && choixExtension != 1) {
-                    System.out.println("Choix invalide. Entrez 1 ou 0.");
-                }
-            } else {
-                System.out.println("Entrée invalide.");
-                sc.next(); // vide le buffer
-            }
+    /**
+     * Sauvegarde la partie actuelle dans un fichier.
+     */
+    public void sauvegarder(String fichier) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new java.io.FileOutputStream(fichier))) {
+            oos.writeObject(this);
+            System.out.println("Partie sauvegardée dans : " + fichier);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Erreur lors de la sauvegarde.");
         }
-
-        boolean extension = (choixExtension == 1);
-        
-        
-        // demander si variantes ou pas 
-        int variante = -1;
-        while (variante < 1 || variante > 3) {
-        	System.out.println("Choisissez une variante pour cette partie :");
-            System.out.println("1 - Premier Joueur Aléatoire Par Tour");
-            System.out.println("2 - Partie Sans Trophées");
-            System.out.println("3 - Aucune");
-            System.out.print("Votre choix : ");
-            
-            if (sc.hasNextInt()) {
-                variante = sc.nextInt();
-                if (variante < 1 || variante > 3) {
-                    System.out.println("Choix invalide. Entrez 1, 2 ou 3.");
-                }
-            } else {
-                System.out.println("Entrée invalide.");
-                sc.next(); // vide l’entrée invalide
-            }
-        }
-              
-        
-        //instanciation de la partie 
-		Partie p = new Partie(extension, variante);
-		
-			
-		
-		//création et ajout des joueurs à la partie 
-		
-		int nbJoueurs = 0;
-		while (nbJoueurs != 3 && nbJoueurs != 4) {
-		    System.out.print("Choisissez le nombre de joueurs pour cette partie [3 ou 4] : ");
-		    if (sc.hasNextInt()) {
-		        nbJoueurs = sc.nextInt();
-		        if (nbJoueurs != 3 && nbJoueurs != 4) {
-		            System.out.println("Choix invalide. Entrez 3 ou 4.");
-		        }
-		    } 
-		    else {
-		        System.out.println("Entrée invalide.");
-		        sc.next(); 
-		    }
-		}
-
-		for (int i = 0; i < nbJoueurs; i++) {
-
-		    System.out.println("Quel est le nom du joueur ?");
-		    String nom = sc.next();
-
-		    int typeJ = -1;
-		    while (typeJ != 0 && typeJ != 1) {
-		        System.out.print("Est-ce un Joueur Réel (0) ou Virtuel (1) ? ");
-		        if (sc.hasNextInt()) {
-		            typeJ = sc.nextInt();
-		            if (typeJ != 0 && typeJ != 1) {
-		                System.out.println("Choix invalide. Entrez 0 ou 1.");
-		            }
-		        } 
-		        else {
-		            System.out.println("Entrée invalide.");
-		            sc.next();
-		        }
-		    }
-
-		    if (typeJ == 0) {
-
-		        p.ajouterJoueur(new Joueur(nom, "Humain", p));
-
-		    } else {   
-
-		        int strat = -1;
-		        while (strat < 0 || strat > 3) {
-		            System.out.println("Quel type de stratégie voulez-vous ?");
-		            System.out.println("0 - aléatoire");
-		            System.out.println("1 - basique");
-		            System.out.println("2 - défensive");
-		            System.out.println("3 - aggressive");
-		            System.out.print("Votre choix : ");
-
-		            if (sc.hasNextInt()) {
-		                strat = sc.nextInt();
-		                if (strat < 0 || strat > 3) {
-		                    System.out.println("Choix invalide. Entrez entre 0 et 3.");
-		                }
-		            } 
-		            else {
-		                System.out.println("Entrée invalide.");
-		                sc.next();
-		            }
-		        }
-
-		        Virtuel j = new Virtuel(nom, strat, p);
-		        p.ajouterJoueur(j);
-
-		        System.out.println("La stratégie pour le joueur virtuel est donc : " + j.getStrategie());
-
-		    } 
-
-		} 
-		
-		System.out.println("Récapitulatif : voici les joueurs de la partie");
-		for (Joueur j : p.getJoueur()) {
-			System.out.println(j);
-		}
-		
-
-		
-		//mélange et repartie les cartes
-		p.mélanger();
-		p.répartir();
+    }
 	
-
-        while (p.estJouable()) {
-        	//tour de plus 
-        	p.tourSuivant();
-        
-        	//chaque joueur crée son offre 
-        	for (Joueur j : p.getJoueur()) {
-        		j.creerMonOffre(p);
-        	}
-		        	
-        	//le premier joueur joue 
-        	Joueur suivant = p.determinerPremierJoueur().prendreOffreEtJoueurSuivant(p);
-        	
-        	//chaque joueur prend une offre et donne le prochain joueur en choissisant l'offre 
-        	for (int i = 0; i < (p.getJoueur().size()-1) ; i++) {
-        		Joueur j = suivant;
-        		suivant = j.prendreOffreEtJoueurSuivant(p);
-        	}
-        	
-        	//chaque joueur ajoute sa main a son deck 
-        	for (Joueur j : p.getJoueur()) {
-        		j.ajouterCarteDeck();
-        	}
-        	
-        	//enregistrement de la partie (pour ne pas perdre) 
-		
+    /**
+     * Charge une partie depuis un fichier de sauvegarde.
+     */
+    public static Partie charger(String fichier) {
+        try (ObjectInputStream ois = new ObjectInputStream(new java.io.FileInputStream(fichier))) {
+            Partie p = (Partie) ois.readObject();
+            System.out.println("Partie chargée depuis : " + fichier);
+            return p;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Erreur lors du chargement.");
+            return null;
         }
-		
-       
-        
-		//distribuer les trophées, calculer les points, annoncer le gagnant 
-		p.finPartie();
-		
-		//pour verif
-		for (Joueur j : p.getJoueur()) {
-    		System.out.println(j.getDeckPossede());
+    }
+
+    public static void main (String[] args) throws GameException {
+   	    Scanner sc = new Scanner(System.in);
+    	    System.out.println("Bienvenue dans le jeu de Orianne et Dina, nous te souhaitons une superbe partie !");
+
+    	    Partie p = null;
+    	    File fichierSave = new File("partie.txt");
+
+    	    // Vérifier si une partie sauvegardée existe
+    	    if (fichierSave.exists()) {
+    	        System.out.println("Une partie sauvegardée a été trouvée.");
+    	        System.out.println("1 - Reprendre la partie");
+    	        System.out.println("2 - Nouvelle partie");
+    	        int choix = -1;
+    	        while (choix != 1 && choix != 2) {
+    	            if (sc.hasNextInt()) {
+    	                choix = sc.nextInt();
+    	                if (choix != 1 && choix != 2) {
+    	                    System.out.println("Entrez 1 ou 2.");
+    	                }
+    	            } else {
+    	                sc.next();
+    	            }
+    	        }
+
+    	        if (choix == 1) {
+    	            p = Partie.charger("partie.txt");
+    	            if (p != null) {
+    	                // Réinjecter le scanner (transient)
+    	                p.scanner = sc;
+    	                // Réattacher chaque joueur à la partie et réinitialiser la stratégie pour les Virtuels
+    	                for (Joueur j : p.getJoueur()) {
+    	                    j.setPartie(p);
+    	                    j.setScanner(sc);
+    	                    if (j instanceof Virtuel v) {
+    	                        v.reinitialiserStrategie();
+    	                    }
+    	                }
+    	                System.out.println("Partie rechargée. Reprise en cours...");
+    	            }
+    	        }
+    	    }
+
+    	    // Si aucune partie chargée, créer une nouvelle partie
+    	    if (p == null) {
+    	        // demander si extension ou pas
+    	        int choixExtension = -1;
+    	        while (choixExtension != 0 && choixExtension != 1) {
+    	            System.out.println("Voulez-vous activer les extensions pour cette partie (nouvelles cartes 6 et 7 de chaque couleur sauf coeur) ? (1=oui, 0=non)");
+    	            if (sc.hasNextInt()) {
+    	                choixExtension = sc.nextInt();
+    	                if (choixExtension != 0 && choixExtension != 1) {
+    	                    System.out.println("Choix invalide. Entrez 1 ou 0.");
+    	                }
+    	            } else {
+    	                sc.next();
+    	            }
+    	        }
+    	        boolean extension = (choixExtension == 1);
+
+    	        // demander variante
+    	        int variante = -1;
+    	        while (variante < 1 || variante > 3) {
+    	            System.out.println("Choisissez une variante pour cette partie :");
+    	            System.out.println("1 - Premier Joueur Aléatoire Par Tour");
+    	            System.out.println("2 - Partie Sans Trophées");
+    	            System.out.println("3 - Aucune");
+    	            if (sc.hasNextInt()) {
+    	                variante = sc.nextInt();
+    	            } else {
+    	                sc.next();
+    	            }
+    	        }
+
+    	        // instanciation de la partie
+    	        p = new Partie(extension, variante);
+
+    	        // création et ajout des joueurs
+    	        int nbJoueurs = 0;
+    	        while (nbJoueurs != 3 && nbJoueurs != 4) {
+    	            System.out.print("Choisissez le nombre de joueurs pour cette partie [3 ou 4] : ");
+    	            if (sc.hasNextInt()) {
+    	                nbJoueurs = sc.nextInt();
+    	            } else {
+    	                sc.next();
+    	            }
+    	        }
+
+    	        for (int i = 0; i < nbJoueurs; i++) {
+    	            System.out.println("Quel est le nom du joueur ?");
+    	            String nom = sc.next();
+    	            int typeJ = -1;
+    	            while (typeJ != 0 && typeJ != 1) {
+    	                System.out.print("Est-ce un Joueur Réel (0) ou Virtuel (1) ? ");
+    	                if (sc.hasNextInt()) {
+    	                    typeJ = sc.nextInt();
+    	                } else {
+    	                    sc.next();
+    	                }
+    	            }
+
+    	            if (typeJ == 0) {
+    	                p.ajouterJoueur(new Joueur(nom, "Humain", p));
+    	            } else {
+    	                int strat = -1;
+    	                while (strat < 0 || strat > 3) {
+    	                    System.out.println("Quel type de stratégie voulez-vous ?");
+    	                    System.out.println("0 - aléatoire");
+    	                    System.out.println("1 - basique");
+    	                    System.out.println("2 - défensive");
+    	                    System.out.println("3 - aggressive");
+    	                    if (sc.hasNextInt()) {
+    	                        strat = sc.nextInt();
+    	                    } else {
+    	                        sc.next();
+    	                    }
+    	                }
+    	                Virtuel j = new Virtuel(nom, strat, p);
+    	                p.ajouterJoueur(j);
+    	                System.out.println("La stratégie pour le joueur virtuel est donc : " + j.getStrategie());
+    	            }
+    	        }
+
+    	        // récapitulatif
+    	        System.out.println("Récapitulatif : voici les joueurs de la partie");
+    	        for (Joueur j : p.getJoueur()) {
+    	            System.out.println(j);
+    	        }
+
+    	        // mélange et répartition des cartes
+    	        p.mélanger();
+    	        p.répartir();
+    	    }
+
+    	    // boucle de jeu
+    	    while (p.estJouable()) {
+    	        p.tourSuivant();
+    	        for (Joueur j : p.getJoueur()) {
+    	            j.creerMonOffre(p);
+    	        }
+    	        
+    	        ArrayList<Joueur> ontJoueCeTour = new ArrayList<>();
+    	        
+    	        Joueur suivant = p.determinerPremierJoueur().prendreOffreEtJoueurSuivant(p, ontJoueCeTour );
+    	       
+    	        
+    	        for (int i = 0; i < (p.getJoueur().size()-1); i++) {
+    	        	Joueur j = suivant;
+    	            suivant = j.prendreOffreEtJoueurSuivant(p, ontJoueCeTour);
+    	        }
+
+    	        for (Joueur j : p.getJoueur()) {
+    	            j.ajouterCarteDeck();
+    	        }
+
+    	        // sauvegarde automatique
+    	        System.out.println("Voulez-vous sauvegarder la partie ? (1=oui, 0=non)");
+    	        int save = sc.nextInt();
+    	        if (save == 1) {
+    	            p.sauvegarder("partie.txt");
+    	        }
+    	    }
+
+    	    // fin de partie
+    	    p.finPartie();
+
+    	    // vérification
+    	    for (Joueur j : p.getJoueur()) {
+    	        System.out.println(j.getDeckPossede());
+    	    }
+    	    System.out.println(p.getTrophees());
     	}
-		System.out.println(p.getTrophees());
-		
-		
-	}
 
-	
 }

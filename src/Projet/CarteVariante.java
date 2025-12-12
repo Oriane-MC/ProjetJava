@@ -1,6 +1,8 @@
 package Projet;
 
-public enum CarteVariante {
+import java.io.Serializable;
+
+public enum CarteVariante implements Serializable {
 
 	CARTE18(6,"pique"),
 	CARTE19(7,"pique"),
@@ -14,6 +16,8 @@ public enum CarteVariante {
 	
 	private int valeur ;
 	private String couleur;
+	private static final long serialVersionUID = 1L;
+
 	
 	private CarteVariante(int valeur,String couleur) {
 		this.valeur = valeur;

@@ -1,10 +1,12 @@
 package Projet;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class CompteurPoint implements Visitor {
+public class CompteurPoint implements Visitor,  Serializable {
 	
-	
+	private static final long serialVersionUID = 1L;
+
 	public int visit(Joueur j) throws GameException {
 		int score = 0;
 			

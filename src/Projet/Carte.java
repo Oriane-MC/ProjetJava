@@ -1,14 +1,15 @@
 package Projet;
 
+import java.io.Serializable;
 
-
-public class Carte {
+public class Carte implements Serializable {
 	
 	private int valeur;
 	private String couleur;
 	private String condition;
 	private boolean extension;   //comment on va faire pour gérer ça ?
-	
+	private static final long serialVersionUID = 1L;
+
 	
 	public Carte(int valeur, String couleur, String condition) {
 		this.valeur = valeur;

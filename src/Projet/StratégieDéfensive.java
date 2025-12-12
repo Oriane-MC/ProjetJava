@@ -1,5 +1,6 @@
 package Projet;
 
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Random;
 
 public class StratégieDéfensive implements Strategie {
 
+	
     /**
      *  Stratégie Défensive pour un joueur virtuel
      *  Pour la création de l'offre la logique est la suivante :

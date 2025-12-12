@@ -1,6 +1,8 @@
 package Projet;
 
-public enum TypeCarte {
+import java.io.Serializable;
+
+public enum TypeCarte implements Serializable {
 	
 	CARTE1(0,"joker","BestJest"),
 	CARTE2(1,"coeur","Joker"),
@@ -23,7 +25,8 @@ public enum TypeCarte {
 	private int valeur ;
 	private String couleur;
 	private String condition;
-	
+	private static final long serialVersionUID = 1L;
+
 	private TypeCarte(int valeur,String couleur, String condition) {
 		this.valeur = valeur;
 		this.couleur = couleur;

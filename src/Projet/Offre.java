@@ -1,14 +1,16 @@
 package Projet;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Offre {
+public class Offre implements Serializable{
 
     private Carte carteVisible;
     private Carte carteCachee; 
     private Joueur createur; // Réfère au joueur qui a créer l'offre
     private boolean etat; // true = cartes non prises, false = cartes déjà prises
+    private static final long serialVersionUID = 1L;
 
     public Offre(Carte cCache, Carte cVisible, Joueur j) {
         this.carteCachee = cCache;

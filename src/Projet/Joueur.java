@@ -1,6 +1,7 @@
 package Projet;
 
 import java.util.Scanner;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
@@ -14,16 +15,17 @@ import java.util.ArrayList;
  * prendre des cartes dans les offres adverses et gérer les cartes visibles et cachées.
  */
 
-public class Joueur {
+public class Joueur implements Serializable {
 	
 	// Attributs d'un joueur
 		protected String nom; 
 		protected String typeJoueur; // "Humain" ou "Virtuel"
 		protected Offre offre; 
 		protected Deck jest; //correspond au carte qu'il possede de maniere permanante
-		protected Partie p; // Référence à la partie (pour Scanner, etc.)
-		protected Scanner scanner;
-		
+		protected transient Partie p; // Référence à la partie (pour Scanner, etc.)
+		protected transient Scanner scanner;
+		private static final long serialVersionUID = 1L;
+		private  ArrayList<Joueur> dejaJoue = new ArrayList<>();
 		// Constructeur 
 		 /**
 	     * Constructeur principal.
@@ -76,6 +78,15 @@ public class Joueur {
 	    public boolean isVirtuel() {
 	        return "Virtuel".equalsIgnoreCase(this.typeJoueur);
 	    }
+	    
+	    public void setPartie(Partie p) {
+	        this.p = p;
+	    }
+
+	    public void setScanner(Scanner sc) {
+	        this.scanner = sc;
+	    }
+
 	    
 		
 	    //Méthodes 
@@ -230,26 +241,37 @@ public class Joueur {
 	     * la carte choisie au deck du joueur.
 	     *
 	     * @param p Référence à la partie en cours
-	     * @return Le joueur dont l'offre a été prise
+	     * @return Le joueur qui doit joueur selon les regles 
 	     */
-	    public Joueur prendreOffreEtJoueurSuivant(Partie p) {
+	    public Joueur prendreOffreEtJoueurSuivant(Partie p, ArrayList<Joueur> dejaJoueCeTour) {
 	    	
-	    	Scanner sc = new Scanner(System.in);
+	    	
+	        Scanner sc = this.scanner;
 
 	    	System.out.println(this.nom + " : L'offre de quel joueur veux-tu prendre ?");
 
 	    	ArrayList<Joueur> joueurs = p.getJoueur();
-
-	    	// Lister uniquement les choix valides = les offre qui peuvent etre prise
 	    	ArrayList<Integer> choixValides = new ArrayList<>();
-
-	    	for (int i = 0; i < joueurs.size(); i++) {
-	    	    if (joueurs.get(i).getOffre().estDisponible()) {
-	    	        System.out.println(i + " pour " + joueurs.get(i).getNom()+ " ( " + joueurs.get(i).getOffre()+ " )");
-	    	        choixValides.add(i);
+	    	  
+	    	// Lister uniquement les choix valides = les offre qui peuvent etre prise
+	    	
+	    	  for (int i = 0; i < joueurs.size(); i++) {
+	    	        Joueur j = joueurs.get(i);
+	    	        // Offre disponible et joueur n'a pas encore joué
+	    	        if (j != this && j.getOffre() != null && j.getOffre().estDisponible()) {
+	    	            System.out.println(i + " pour " + j.getNom() + " ( " + j.getOffre() + " )");
+	    	            choixValides.add(i);
+	    	        }
 	    	    }
-	    	}
+	    	
+	    	// Exception : proposer sa propre offre si toutes les autres sont prises
+	    	    if (choixValides.isEmpty() && this.getOffre() != null && this.getOffre().estDisponible()) {
+	    	        int index = joueurs.indexOf(this);
+	    	        System.out.println(index + " pour toi-même (dernière offre disponible)");
+	    	        choixValides.add(index);
+	    	    }
 
+	    	
 	    	// Sécurisation du choix
 	    	int choix = -1;
 
@@ -271,11 +293,46 @@ public class Joueur {
 
 	    	Joueur joueurChoisi = joueurs.get(choix);
 
-	    	// Exécuter l'action une fois le choix validé
+	    	// Prendre l'offre une fois le choix validé
 	    	this.prendreOffre(joueurChoisi, p);
+	    	
+	    	
+	    	 //  Ajouter ce joueur dans la liste des joueurs ayant joué ce tour
+	    	dejaJoueCeTour.add(this);
+	        
+	       Joueur joueurSuivant = null; 
 
-	    	return joueurChoisi;
+	    // Priorité 1 : Le joueur dont on vient de prendre l'offre (s'il n'a pas encore pris de carte)
+	       if (!dejaJoueCeTour.contains(joueurChoisi)) {
+	           joueurSuivant = joueurChoisi;
+	       } 
+	       // Priorité 2 : Le joueur n'ayant pas encore pris de carte avec la carte visible la plus forte
+	       else {
+	           int valeurMax = -1;
+	           for (Joueur j : joueurs) {
+	               if (!dejaJoueCeTour.contains(j)) {
+	                   int valeurVisible = j.getOffre().getCarteVisible().getValeur();
+	                   // Note : En phase 3, l'As vaut 1 et le Joker 0
+	                   if (valeurVisible > valeurMax) {
+	                       valeurMax = valeurVisible;
+	                       joueurSuivant = j;
+	                   } else if (valeurVisible == valeurMax && joueurSuivant != null) {
+	                       if (p.getForceCouleur(j.getOffre().getCarteVisible()) > 
+	                           p.getForceCouleur(joueurSuivant.getOffre().getCarteVisible())) {
+	                           joueurSuivant = j;
+	                       }
+	                   }
+	               }
+	           }
+	       }
+	       return joueurSuivant;
+	    		    	
 	    }
+	    
+	    
+	    
+	    
+	    
 	    
 	    public String toString() {
 	    	return nom + " : joueur " + typeJoueur;

@@ -1,11 +1,13 @@
 package Projet;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Trophee {
+public class Trophee implements Serializable {
 	
 	private LinkedList<Carte> listTrophee;
-	
+	private static final long serialVersionUID = 1L;
+
 	public Trophee (Carte c1, Carte c2) {
 		this.listTrophee = new LinkedList();
 		this.listTrophee.add(c1);
