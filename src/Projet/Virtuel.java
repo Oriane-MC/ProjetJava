@@ -184,5 +184,9 @@ public class Virtuel extends Joueur implements Serializable {
     public void ajouterCarteDeck() {  
 		super.ajouterCarteDeck();
 	}
+    
+    public String toString() {
+    	return nom + " : joueur " + typeJoueur + " ( "+ strategie+" )";
+    }
 
 }

@@ -61,13 +61,39 @@ public class CompteurPoint implements Visitor,  Serializable {
 	
 	public Map<Joueur, Integer> visit(Partie p) throws GameException {
 		
-		
 		if (!(p.getVariante() instanceof VarianteSansTrophees)) {
-			//attribution des trophées (il n'y a que 2 trophées dans une partie normale)
-			List<Joueur> listJoueurGagnant = p.getTrophees().determinerGagnant(p);
-			listJoueurGagnant.get(0).ajouterCarteDeck(p.getTrophees().getTrophee1());
-			listJoueurGagnant.get(1).ajouterCarteDeck(p.getTrophees().getTrophee2());
-		}
+
+	        List<Joueur> gagnants = p.getTrophees().determinerGagnant(p);
+
+	        Joueur j0 = gagnants.get(0);
+	        Joueur j1 = gagnants.get(1);
+
+	      //si nom du joueur = "tmp" alors un seul joueur prends tout
+	        if (j0.getNom().equals("tmp")) {
+	            // j1 prend tout
+	            j1.ajouterCarteDeck(p.getTrophees().getTrophee(1));
+	            j1.ajouterCarteDeck(p.getTrophees().getTrophee(2));
+
+	        } else if (j1.getNom().equals("tmp")) {
+	            // j0 prend tout
+	            j0.ajouterCarteDeck(p.getTrophees().getTrophee(1));
+	            j0.ajouterCarteDeck(p.getTrophees().getTrophee(2));
+
+	        }
+	        else {
+	            // Attribution normale
+	            for (int i = 0; i < 2; i++) {
+	                Joueur j = gagnants.get(i);
+
+	              //si nom du joueur = "personne" alors le trophées ne va à personnne 
+	                if (j.getNom().equals("personne")) {
+	                    continue;
+	                }
+
+	                j.ajouterCarteDeck(p.getTrophees().getTrophee(i+1));
+	            }
+	        }
+	    }
 			
 		
 		//calculer score pour chaque joueur

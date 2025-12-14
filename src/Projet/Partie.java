@@ -37,13 +37,20 @@ public class Partie implements Serializable{
             	this.variante = new VariantePremierJoueurAleatoire();
                 variante.estUtilise();
                 System.out.println("Variante : "+variante +" appliquée pour cette partie");
+                break;
             case 2 : 
             	this.variante = new VarianteSansTrophees();
                 variante.estUtilise();
                 System.out.println("Variante : "+variante +" appliquée pour cette partie");
+                break;
             case 3 : 
             	this.variante = null; // aucune variante
             	System.out.println("Aucune variante appliquée pour cette partie");
+            	break;
+            default :
+            	this.variante = null; // aucune variante
+            	System.out.println("Aucune variante appliquée pour cette partie");
+            	break;
         }
      
 		
@@ -340,7 +347,7 @@ public class Partie implements Serializable{
 
     public static void main (String[] args) throws GameException {
    	    Scanner sc = new Scanner(System.in);
-    	    System.out.println("Bienvenue dans le jeu de Orianne et Dina, nous te souhaitons une superbe partie !");
+    	    System.out.println("Bienvenue dans le jeu de Oriane et Dina, nous te souhaitons une superbe partie !");
 
     	    Partie p = null;
     	    File fichierSave = new File("partie.txt");
@@ -505,7 +512,7 @@ public class Partie implements Serializable{
 
     	    // vérification
     	    for (Joueur j : p.getJoueur()) {
-    	        System.out.println(j.getDeckPossede());
+    	        System.out.println(j.getNom() +j.getDeckPossede());
     	    }
     	    System.out.println(p.getTrophees());
     	}

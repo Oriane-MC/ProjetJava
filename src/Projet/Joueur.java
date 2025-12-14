@@ -152,8 +152,7 @@ public class Joueur implements Serializable {
 	     * @param faceVisible Carte qui sera visible
 	     * @param faceCachee Carte qui sera cachée
 	     */
-	    private void creerMonOffre(Carte faceVisible, Carte faceCachee) { //ORIANE : supression de l'attribut partie car inutile et 
-	    // passe de la méthode en privé car elle ne sert que pour ici, que a la méthode créerMonOfreHumain
+	    private void creerMonOffre(Carte faceVisible, Carte faceCachee) { 
 	    	
 	    	 this.offre = new Offre(faceVisible, faceCachee, this);         
 	    }

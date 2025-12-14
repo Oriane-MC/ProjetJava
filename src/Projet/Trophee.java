@@ -22,6 +22,13 @@ public class Trophee implements Serializable {
 		return this.listTrophee.get(1);
 	}
 	
+	public Carte getTrophee(int i) {
+		if (i == 1 || i == 2) {
+			return this.listTrophee.get(i-1);
+		}
+		return null;
+	}
+	
 	public LinkedList<Carte> getListTrophee(){
 		return this.listTrophee;
 	}
@@ -81,6 +88,7 @@ public class Trophee implements Serializable {
     				throw new GameException("condition du trophée inconnu"); 
     		}
     	}
+    	
     	return listJ;
     }
     	
@@ -313,6 +321,21 @@ public class Trophee implements Serializable {
     	}
     		
     	public Joueur gagnantJoker(Partie p) throws GameException {
+    		
+    		
+    		//si le deuxième trophées est le joker ca pose problème lors de la vérification du premier trophées : 
+    		if (p.getTrophees().getTrophee2().getCouleur().equals("joker")) {
+    			return new Joueur("tmp","tmp",p);
+    		}
+    		
+    		//si le joker est dans la pioche ca pose problème aussi :
+    		for (Carte c : p.getPioche().getListPioche()) {
+    			if (c.getCouleur().equals("joker")){
+    				return new Joueur("personne","tmp",p);
+    			}
+    		}
+    		
+    				
     		for (Joueur j : p.getJoueur()) {
 			    for (Carte c : j.getDeckPossede().getCartes()) {
 			    	if (c.getCouleur().equals("joker")) {
