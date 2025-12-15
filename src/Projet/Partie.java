@@ -314,6 +314,7 @@ public class Partie implements Serializable{
     
     public void tourSuivant() {
     	this.numeroTour ++;
+    	System.out.println("Le tour n°"+this.numeroTour+" a été créé.");
     }
     
     	
