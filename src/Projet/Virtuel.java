@@ -139,6 +139,8 @@ public class Virtuel extends Joueur implements Serializable {
         if (offresAdverses.isEmpty() && this.getOffre() != null && this.getOffre().estDisponible()) {
             // Cas du dernier joueur : obligé de prendre sa propre offre
             joueurChoisi = this;
+            System.out.println( " Il prend sa propre offre (dernière offre disponible)");
+	        
         } else if (!offresAdverses.isEmpty()) {
             // Appel à TA méthode de stratégie
             joueurChoisi = strategie.deciderOffreAdversaire(offresAdverses, this);
