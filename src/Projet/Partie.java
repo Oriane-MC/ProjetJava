@@ -4,7 +4,7 @@ package Projet;
 import java.io.*;
 import java.util.*;
 
-public class Partie implements Serializable{
+public class Partie extends Observable implements Serializable{
 	
 	private ArrayList<Joueur> listJoueur;
 	private PaquetCarte listCarte;
@@ -18,6 +18,17 @@ public class Partie implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	
+	//**********************************************************************************************************************
+
+	
+	public void notifier() {
+        setChanged();
+        notifyObservers();
+    }
+	
+	
+	
+	//**********************************************************************************************************************
 	
 	
 	/**
