@@ -1,4 +1,4 @@
-package Projet;
+package Modèle;
 
 import java.io.Serializable;
 import java.util.ArrayList; 
@@ -70,6 +70,11 @@ public class Deck implements Serializable {
 			this.cartes.add(carte);
 		}
 	}
+    
+ // À ajouter à la fin de ta classe Deck
+    public int getTaille() {
+        return this.cartes.size();
+    }
 	
     /**
      * Pioche une carte depuis le deck.
