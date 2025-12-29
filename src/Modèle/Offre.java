@@ -2,21 +2,25 @@ package Modèle;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
-public class Offre implements Serializable{
 
+
+public class Offre implements Serializable {
     private Carte carteVisible;
-    private Carte carteCachee; 
-    private Joueur createur; // Réfère au joueur qui a créer l'offre
-    private boolean etat; // true = cartes non prises, false = cartes déjà prises
+    private Carte carteCachee;
+    private Joueur createur;
+    private boolean disponible; // true si aucune carte n'a encore été prise
     private static final long serialVersionUID = 1L;
 
-    public Offre(Carte cCache, Carte cVisible, Joueur j) {
-        this.carteCachee = cCache;
+    public Offre(Carte cCachee, Carte cVisible, Joueur createur) {
+        this.carteCachee = cCachee;
         this.carteVisible = cVisible;
-        this.createur = j; // Attribution du créateur
-        this.etat = true;
+        this.createur = createur;
+        this.disponible = true;
+    }
+
+    public boolean estDisponible() {
+        return disponible;
     }
 
     public Carte getCarteVisible() {
@@ -24,83 +28,52 @@ public class Offre implements Serializable{
     }
 
     public Carte getCarteCachee() {
-        return this.carteCachee;
+        return carteCachee;
     }
-    /**
-     * @return L'objet Joueur créateur de l'offre.
-     */
+
     public Joueur getCreateur() {
         return createur;
     }
 
     /**
-     * Prend la carte visible si l'offre est encore disponible.
-     * @return la carte visible, ou null si déjà prise
+     * Ramasse la carte visible. L'offre devient indisponible.
      */
     public Carte carteVisiblePrise() {
-        if (this.etat) {
-            this.etat = false; // On marque l'offre comme prise
-            Carte cartePrise = carteVisible;
-            this.carteVisible = null;
-            return cartePrise;
-        } else {
-            System.out.println("Action impossible : carte déjà prise !");
-            return null; // On retourne null si la carte n'est pas disponible
+        if (disponible) {
+            disponible = false;
+            Carte temp = carteVisible;
+            carteVisible = null; // Elle n'est plus sur la table
+            return temp;
         }
+        return null;
     }
 
     /**
-     * Prend la carte cachée si l'offre est encore disponible.
-     * @return la carte cachée, ou null si déjà prise
+     * Ramasse la carte cachée. L'offre devient indisponible.
      */
     public Carte carteCacheePrise() {
-        if (this.etat) {
-            this.etat = false;
-            Carte cartePrise = carteCachee;
-            this.carteCachee = null;
-            return cartePrise;
-        } else {
-            System.out.println("Action impossible : carte déjà prise !");
-            return null; // Correction : retourne null si déjà prise
+        if (disponible) {
+            disponible = false;
+            Carte temp = carteCachee;
+            carteCachee = null; // Elle n'est plus sur la table
+            return temp;
         }
+        return null;
     }
 
     /**
-     * Vérifie si l'offre est encore disponible
+     * Retourne les cartes encore présentes dans l'offre (utile pour la fin du tour).
      */
-    public boolean estDisponible() {
-        return this.etat;
-    }
-    
-    public ArrayList<Carte> getListeCarte(){
-    	ArrayList<Carte> carte = new ArrayList<Carte>();
-    	carte.add(carteVisible);
-    	carte.add(carteCachee);
-    	return carte;
-    }
-    
-    /**
-     * Retourne la liste des offres encore disponibles (non prises).
-     */
-    public static List<Offre> getOffresDisponibles(List<Offre> offres) {
-
-        List<Offre> disponibles = new ArrayList<>();
-
-        for (Offre o : offres) {
-            if (o.estDisponible()) {
-                disponibles.add(o);
-            }
-        }
-
-        return disponibles;
+    public ArrayList<Carte> getListeCarte() {
+        ArrayList<Carte> list = new ArrayList<>();
+        if (carteVisible != null) list.add(carteVisible);
+        if (carteCachee != null) list.add(carteCachee);
+        return list;
     }
 
-	@Override
-	public String toString() {
-		return "Offre : " + carteVisible + " / ??? " ;
-	}
-    
-    
-
-
+    @Override
+    public String toString() {
+        String v = (carteVisible != null) ? carteVisible.toString() : "Prise";
+        return "Offre [Visible: " + v + " | Cachée: ???]";
+    }
 }

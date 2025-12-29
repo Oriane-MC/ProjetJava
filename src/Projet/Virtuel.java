@@ -107,6 +107,15 @@ public class Virtuel extends Joueur implements Serializable {
         super.offre = strategie.choisirMonOffre(this, p.getPioche(), offresAdversaires);
     }
 
+    
+ // Dans Virtuel.java
+
+ // Cette méthode est appelée automatiquement par Java après le chargement (desérialisation)
+ private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+     in.defaultReadObject(); // On charge les données normales (nom, score...)
+     // On recrée la stratégie qui avait disparu
+     this.reinitialiserStrategie(); 
+ }
   
     @Override
     /**
