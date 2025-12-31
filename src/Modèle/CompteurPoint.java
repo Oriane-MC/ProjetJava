@@ -3,11 +3,22 @@ package Modèle;
 import java.io.Serializable;
 import java.util.*;
 
+/**
+ * Implémente le calcul des scores selon les règles du jeu JEST.
+ * Cette classe utilise le pattern Visitor pour parcourir les joueurs,
+ * les cartes et les parties.
+ */
 public class CompteurPoint implements Visitor, Serializable {
     
     private static final long serialVersionUID = 1L;
 
-    @Override
+    /**
+     * Calcule le score total d'un joueur à partir de son deck.
+     *
+     * @param j joueur à évaluer
+     * @return score final du joueur (toujours positif ou nul)
+     * @throws GameException en cas d'erreur lors du calcul
+     */
     public int visit(Joueur j) throws GameException {
         int score = 0;
         
@@ -35,7 +46,13 @@ public class CompteurPoint implements Visitor, Serializable {
         return Math.max(score, 0);
     }
     
-    @Override
+    /**
+     * Calcule le score associé à une carte selon sa couleur.
+     *
+     * @param c carte à évaluer
+     * @return score de la carte
+     * @throws GameException si la couleur est inconnue
+     */
     public int visit(Carte c) throws GameException {
         String couleur = c.getCouleur().toLowerCase();
         
@@ -56,7 +73,14 @@ public class CompteurPoint implements Visitor, Serializable {
         }
     }
         
-    @Override
+    /**
+     * Calcule les scores finaux de tous les joueurs d'une partie.
+     * Gère l'attribution des trophées avant le calcul des scores.
+     *
+     * @param p partie à évaluer
+     * @return association entre chaque joueur et son score final
+     * @throws GameException en cas d'erreur lors du calcul
+     */
     public Map<Joueur, Integer> visit(Partie p) throws GameException {
         
         // 1. Attribution des trophées (si ce n'est pas la variante "Sans Trophées")
@@ -88,7 +112,14 @@ public class CompteurPoint implements Visitor, Serializable {
         
         return scores;
     }
-            
+    
+    /**
+     * Calcule le score des cartes cœur d'un deck,
+     * en tenant compte de la présence éventuelle du Joker.
+     *
+     * @param deck deck du joueur
+     * @return score lié aux cœurs
+     */
     public int scoreCoeur(Deck deck) {
         List<Integer> listCoeur = new ArrayList<>();
         boolean joker = false;
@@ -118,6 +149,12 @@ public class CompteurPoint implements Visitor, Serializable {
         return score;   
     }
     
+    /**
+     * Calcule le bonus associé aux paires pique/trèfle de même valeur.
+     *
+     * @param deck deck du joueur
+     * @return bonus de score
+     */
     public int scorePairePiqueTrefle(Deck deck) {
         int score = 0;
         List<Integer> listPique = new ArrayList<>();
@@ -138,6 +175,14 @@ public class CompteurPoint implements Visitor, Serializable {
         return score;
     }   
     
+    /**
+     * Calcule le score spécifique d'un As lorsqu'il est seul de sa couleur.
+     *
+     * @param c carte As à évaluer
+     * @param d deck du joueur
+     * @return score de l'As
+     * @throws GameException si la couleur de l'As est invalide
+     */
     public int scoreAs(Carte c, Deck d) throws GameException {
         // Vérifie si l'As est la seule carte de cette couleur dans le deck
         for (Carte verif : d.getCartes()) {

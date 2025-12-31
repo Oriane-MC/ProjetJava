@@ -3,41 +3,62 @@ package Modèle;
 import java.io.Serializable;
 import java.util.*;
 
+/**
+ * Représente un paquet de cartes (pioche) pour le jeu.
+ * Permet de piocher, mélanger et gérer les cartes restantes.
+ */
 public class PaquetCarte implements Serializable {
     
     private LinkedList<Carte> listPioche;
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Crée un paquet de cartes à partir d'une liste donnée.
+     *
+     * @param list liste initiale de cartes
+     */
     public PaquetCarte(LinkedList<Carte> list) {
         this.listPioche = list;
     }
     
     /**
      * Pioche la première carte du paquet.
-     * @return La carte retirée, ou null si vide.
+     *
+     * @return carte retirée, ou null si le paquet est vide
      */
     public Carte piocher() {
         return this.listPioche.poll();
     }
 
     /**
-     * Méthode requise par la classe Partie pour vérifier si le jeu peut continuer.
-     * C'est cette méthode qui causait ton erreur de compilation.
+     * Retourne le nombre de cartes restantes dans le paquet.
+     *
+     * @return nombre de cartes
      */
     public int getNombreCartes() {
         return (listPioche != null) ? listPioche.size() : 0;
     }
 
+    /**
+     * Retourne la liste des cartes du paquet.
+     *
+     * @return liste des cartes
+     */
     public LinkedList<Carte> getListPioche() {
         return listPioche;
     }
 
+    /**
+     * Remplace la liste des cartes du paquet.
+     *
+     * @param listPioche nouvelle liste de cartes
+     */
     public void setListPioche(LinkedList<Carte> listPioche) {
         this.listPioche = listPioche;
     }
     
     /**
-     * Mélange les cartes de la pioche de manière aléatoire.
+     * Mélange les cartes du paquet de manière aléatoire.
      */
     public void melanger() {
         if (listPioche != null) {
@@ -45,7 +66,12 @@ public class PaquetCarte implements Serializable {
         }
     }
 
-    @Override
+    /**
+     * Retourne une représentation textuelle du paquet,
+     * indiquant le nombre de cartes restantes.
+     *
+     * @return description du paquet
+     */
     public String toString() {
         return "Pioche (" + getNombreCartes() + " cartes restantes)"; 
     }

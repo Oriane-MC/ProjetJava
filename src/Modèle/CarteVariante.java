@@ -2,6 +2,10 @@ package Modèle;
 
 import java.io.Serializable;
 
+/**
+ * Énumération représentant des variantes de cartes.
+ * Chaque variante est caractérisée par une valeur et une couleur.
+ */
 public enum CarteVariante implements Serializable {
 
 	CARTE18(6,"pique"),
@@ -11,39 +15,46 @@ public enum CarteVariante implements Serializable {
 	CARTE22(6,"carreau"),
 	CARTE23(7,"carreau");
 	
-	
-		
-	
 	private int valeur ;
 	private String couleur;
 	private static final long serialVersionUID = 1L;
 
-	
+	/**
+	 * Construit une variante de carte avec une valeur et une couleur données.
+	 *
+	 * @param valeur valeur de la carte
+	 * @param couleur couleur de la carte
+	 */
 	private CarteVariante(int valeur,String couleur) {
 		this.valeur = valeur;
 		this.couleur = couleur;
 	}
 	
+	/**
+	 * Retourne une représentation textuelle de la variante de carte.
+	 *
+	 * @return description de la variante
+	 */
 	public String toString() {
 		String str = new String(this.valeur + "de" + this.couleur);
 		return str;
 	}
 	
-
+	/**
+	 * Retourne la valeur de la variante de carte.
+	 *
+	 * @return valeur de la carte
+	 */
 	public int getValeur() {
 		return valeur;
 	}
 
-	public void setValeur(int valeur) {
-		this.valeur = valeur;
-	}
-
+	/**
+	 * Retourne la couleur de la variante de carte.
+	 *
+	 * @return couleur de la carte
+	 */
 	public String getCouleur() {
 		return couleur;
 	}
-
-	public void setCouleur(String couleur) {
-		this.couleur = couleur;
-	}
-
 }
