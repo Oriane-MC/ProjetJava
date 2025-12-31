@@ -100,29 +100,71 @@ public class VueGraphique extends JFrame implements Observateur {
 
      // Dans VueGraphique.java (Listener du bouton Charger)
 
+        btnCharger.addActionListener(e -> chargerPartie());       
         
-         btnCharger.addActionListener(e -> {
-        	    Partie pChargee = Partie.charger("partie_jest.ser");
-        	    if (pChargee != null) {
-        	        this.modele = pChargee;
-        	        this.modele.enregistrerObservateur(this);
-        	        
-        	        // --- PROTECTION CONTRE LE NULL ---
-        	        String nomJoueur = "Inconnu";
-        	        if (modele.getJoueurActuel() != null) {
-        	            nomJoueur = modele.getJoueurActuel().getNom();
-        	        }
-        	        this.modele.relancerLeJeuApresChargement();
-        	        this.modele.notifier();
-        	        
-
-        	        JOptionPane.showMessageDialog(this, "Partie chargée ! Tour de : " + nomJoueur);
-        	    } else {
-        	        JOptionPane.showMessageDialog(this, "Échec du chargement : fichier introuvable ou corrompu.");
-        	    }
-        	});
-        revalidate(); repaint();
     }
+    
+    
+    
+    /**
+     * Méthode dédiée au chargement d'une partie
+     * Gère proprement la réinitialisation du modèle et de la vue
+     */
+    private void chargerPartie() {
+        // 1️⃣ Charger la partie depuis le fichier
+        Partie partieChargee = Partie.charger("partie_jest.ser");
+        
+        if (partieChargee == null) {
+            JOptionPane.showMessageDialog(this,
+                "Impossible de charger la partie.\nLe fichier est introuvable ou corrompu.",
+                "Erreur de chargement",
+                JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // 2️⃣ Remplacer l'ancien modèle par le nouveau
+        this.modele = partieChargee;
+
+        // 3️⃣ CRUCIAL : Ré-enregistrer cette vue comme observateur
+        // (la sérialisation ne sauvegarde pas les observateurs)
+        this.modele.enregistrerObservateur(this);
+
+        // 4️⃣ Réinitialiser le jeu après chargement
+        if (this.modele != null) {
+            try {
+                this.modele.relancerLeJeuApresChargement();
+            } catch (Exception ex) {
+                System.err.println("Avertissement : relancerLeJeuApresChargement() a échoué");
+                ex.printStackTrace();
+            }
+        }
+
+
+        // 5️⃣ Forcer la mise à jour de l'interface
+        this.modele.notifier();
+
+        // 6️⃣ Message de confirmation
+        String message = "Partie chargée avec succès !";
+        if (modele.getJoueurActuel() != null) {
+            message += "\n\nC'est au tour de : " + modele.getJoueurActuel().getNom();
+            message += "\nTour n°" + modele.getNumeroTour();
+        }
+        
+        // Compter les offres disponibles
+        int offresDisponibles = 0;
+        for (Joueur j : modele.getJoueur()) {
+            if (j.getOffre() != null && j.getOffre().estDisponible()) {
+                offresDisponibles++;
+            }
+        }
+        message += "\n\nOffres disponibles: " + offresDisponibles;
+        
+        JOptionPane.showMessageDialog(this, 
+            message,
+            "Chargement réussi",
+            JOptionPane.INFORMATION_MESSAGE);
+    }
+
 
     @Override
     public void update(Partie p) {

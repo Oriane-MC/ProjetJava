@@ -28,14 +28,17 @@ public class Partie implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public Partie() {}
+     
+    
 
     // --- LOGIQUE DE SAUVEGARDE ET CHARGEMENT ---
-    public static void sauvegarder(Partie p, String fichier) {
+    public static boolean sauvegarder(Partie p, String fichier) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fichier))) {
             oos.writeObject(p);
-            // On ne met pas de message ici pour éviter le spam, c'est l'appelant qui gère l'affichage si besoin
+            return true;  // ✅ Succès
         } catch (IOException e) {
             e.printStackTrace();
+            return false; // ✅ Échec
         }
     }
 
@@ -50,7 +53,6 @@ public class Partie implements Serializable {
     // --- Gestion des Observateurs ---
  
     public void enregistrerObservateur(Observateur o) {
-        // CORRECTION : On recrée la liste si elle est null (ce qui arrive après un chargement !)
         if (this.observateurs == null) {
             this.observateurs = new ArrayList<>();
         }
@@ -60,50 +62,33 @@ public class Partie implements Serializable {
  // Dans Partie.java
 
     public void relancerLeJeuApresChargement() {
-        // 1. Recréer les listes internes si elles sont null après désérialisation
-        if (this.ontJoueCeTour == null) {
-            this.ontJoueCeTour = new ArrayList<>();
+        // 1️⃣ Recréer les listes transient (pas sauvegardées)
+        if (observateurs == null) {
+            observateurs = new ArrayList<>();
         }
-        if (this.cartesEnAttente == null) {
-            this.cartesEnAttente = new ArrayList<>();
+        if (ontJoueCeTour == null) {
+            ontJoueCeTour = new ArrayList<>();
         }
-
-        // 2. Sécurité CRUCIALE : Éviter le NullPointerException sur joueurActuel
-        // Si la partie est lancée mais que le joueur actuel est perdu, on tente de le restaurer
-        if (this.joueurActuel == null && !listJoueur.isEmpty() && etat != EtatPartie.INITIALISATION) {
-            this.joueurActuel = listJoueur.get(0);
+        if (cartesEnAttente == null) {
+            cartesEnAttente = new ArrayList<>();
         }
 
-        // 3. Réinitialiser les stratégies des robots (les objets Stratégie sont transient)
+        // 2️⃣ Restaurer joueurActuel si nécessaire
+        if (joueurActuel == null && !listJoueur.isEmpty() && etat != EtatPartie.INITIALISATION) {
+            joueurActuel = listJoueur.get(0);
+        }
+
+        // 3️⃣ Réinitialiser les stratégies IA
         for (Joueur j : listJoueur) {
             if (j instanceof Virtuel) {
                 ((Virtuel) j).reinitialiserStrategie();
             }
         }
 
-        // 4. Relancer la mécanique de jeu selon l'état actuel
-        if (etat == EtatPartie.RAMASSAGE) {
-            if (joueurActuel instanceof Virtuel) {
-                // Relance le Timer pour que l'IA joue son coup
-                verifierSiRobotDoitJouer(); 
-            }
-        } 
-        else if (etat == EtatPartie.OFFRES) {
-            if (joueurActuel instanceof Virtuel) {
-                // Si le robot n'avait pas encore de cartes à choisir, on repoche
-                if (cartesEnAttente.isEmpty() && listCarte != null && listCarte.getNombreCartes() >= 2) {
-                    proposerOffreAuJoueurSuivant();
-                } 
-                // Si les cartes sont déjà là, on demande à l'IA de choisir
-                else if (!cartesEnAttente.isEmpty()) {
-                    ((Virtuel) joueurActuel).choisirOffreGraphique(cartesEnAttente.get(0), cartesEnAttente.get(1));
-                }
-            }
-        }
-
-        // 5. Rafraîchir la vue pour afficher les boutons (pour les humains) ou le statut
-        notifier();
+        // 4️⃣ Message de confirmation
+        dernierMessage = "Partie chargée - Tour n°" + numeroTour;
     }
+
     
     public void notifier() {
         if (this.observateurs != null) {
@@ -225,19 +210,21 @@ public class Partie implements Serializable {
             j.setOffre(null); 
         }
 
-        // 2. PROPOSITION DE SAUVEGARDE
-        // On demande à l'utilisateur s'il veut sauvegarder avant de continuer
-        int choix = JOptionPane.showConfirmDialog(null, 
-            "Le tour " + numeroTour + " est terminé.\nVoulez-vous sauvegarder la partie maintenant ?", 
-            "Sauvegarde Automatique", 
-            JOptionPane.YES_NO_OPTION);
         
-        if (choix == JOptionPane.YES_OPTION) {
-            sauvegarder(this, "partie_jest.ser");
-            JOptionPane.showMessageDialog(null, "Partie sauvegardée sous 'partie_jest.ser' !");
-        }
-
-        // 3. Suite du jeu
+     // 2. PROPOSITION DE SAUVEGARDE
+        // On demande à l'utilisateur s'il veut sauvegarder avant de continuer
+        //int choix = JOptionPane.showConfirmDialog(null, 
+            //"Le tour " + numeroTour + " est terminé.\nVoulez-vous sauvegarder la partie maintenant ?", 
+            //"Sauvegarde Automatique", 
+            //JOptionPane.YES_NO_OPTION);
+        
+        //if (choix == JOptionPane.YES_OPTION) {
+            //sauvegarder(this, "partie_jest.ser");
+            //JOptionPane.showMessageDialog(null, "Partie sauvegardée sous 'partie_jest.ser' !");
+        //}
+        
+        
+        // 2. Suite du jeu (pas de pop-up ici!)
         if (estJouable()) {
             numeroTour++;
             demarrerNouveauTour();
@@ -245,6 +232,7 @@ public class Partie implements Serializable {
             terminerLaPartie();
         }
     }
+    
 
     private void terminerLaPartie() {
         this.etat = EtatPartie.FIN;

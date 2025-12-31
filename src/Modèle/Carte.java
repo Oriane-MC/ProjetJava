@@ -7,7 +7,7 @@ public class Carte implements Serializable {
 	private int valeur;
 	private String couleur;
 	private String condition;
-	private boolean extension;   //comment on va faire pour gérer ça ?
+	private boolean extension;
 	private static final long serialVersionUID = 1L;
 
 	
