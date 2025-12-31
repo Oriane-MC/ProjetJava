@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.*;
 import javax.swing.Timer;
 
+
 import javax.swing.JOptionPane; // Nécessaire pour la boîte de dialogue
 
 public class Partie implements Serializable {
@@ -314,10 +315,28 @@ public class Partie implements Serializable {
     public void mélanger() { if (listCarte != null) listCarte.melanger(); }
 
     public void répartir() {
-        if (varianteChoisie != 2 && trophees == null) {
-            this.trophees = new Trophee(listCarte.piocher(), listCarte.piocher());
-        }
-    }
+    	if (trophees == null) {
+    		Carte c1 = listCarte.piocher();
+    		while (c1.getExtension()) { //on ne peut mettre un carte extension en trophées
+    			c1 = listCarte.piocher();
+    		}
+    		
+    		Carte c2 = listCarte.piocher();
+    		while (c2.getExtension()) {
+    			c2 = listCarte.piocher();
+    		}
+    		
+    		if (objetVariante instanceof VarianteSansTrophees) {
+    			objetVariante.appliquerVariante(this);
+    		}
+    		else {
+    			this.trophees = new Trophee(c1,c2);
+    			System.out.println("Les trophées de la partie sont : " + trophees);
+    		}
+    	
+    	}
+	}
+    
 
     public void setTrophees(Trophee t) { this.trophees = t; }
 
