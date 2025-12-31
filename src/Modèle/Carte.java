@@ -71,7 +71,7 @@ public class Carte implements Serializable {
 		return extension;
 	}
 	
-	public void estExtension() { //pas sur de cette manière de procéder 
+	public void estExtension() { 
 		this.extension = true;
 	}
 

@@ -267,13 +267,33 @@ public class VueGraphique extends JFrame implements Observateur {
         for (Joueur j : modele.getJoueur()) tapisDeJeu.add(creerPanelJoueur(j));
 
         JPanel panelBas = new JPanel(new BorderLayout());
-        panelBas.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        panelBas.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        panelBas.setPreferredSize(new Dimension(getWidth(), 80)); // hauteur plus grande
+        
         labelMsg.setText(" Action : " + modele.getDernierMessage());
         labelMsg.setFont(new Font("Arial", Font.ITALIC, 13));
         panelBas.add(labelMsg, BorderLayout.CENTER);
+        
+        JPanel panelCentre = new JPanel();
+        panelCentre.setLayout(new BoxLayout(panelCentre, BoxLayout.Y_AXIS));
+        
+        JPanel panelTrophee = new JPanel();
+        panelTrophee.setBackground(new Color(44, 62, 80));
+        panelTrophee.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30)); // hauteur limitée
 
+
+        JLabel labelTrophee = new JLabel("Trophée : " + (modele.getTrophees() != null ? modele.getTrophees() : "Aucun"));
+        labelTrophee.setForeground(Color.WHITE);
+        labelTrophee.setFont(new Font("SansSerif", Font.ITALIC, 14));
+        
+        panelTrophee.add(labelTrophee);
+
+        
+        panelCentre.add(panelTrophee);
+        panelCentre.add(tapisDeJeu);
+        
         add(panelInfos, BorderLayout.NORTH);
-        add(tapisDeJeu, BorderLayout.CENTER);
+        add(panelCentre, BorderLayout.CENTER);
         add(panelBas, BorderLayout.SOUTH);
 
         revalidate(); repaint();
@@ -294,6 +314,16 @@ public class VueGraphique extends JFrame implements Observateur {
         titre.setAlignmentX(Component.CENTER_ALIGNMENT);
         pFin.add(titre);
         pFin.add(Box.createRigidArea(new Dimension(0, 30)));
+        
+        Joueur gagnant = modele.joueurGagnant();
+        String texteGagnant = (gagnant != null) ? "Le joueur gagnant est : " + gagnant.getNom() : "Aucun gagnant";
+        JLabel labelGagnant = new JLabel(texteGagnant);
+        labelGagnant.setForeground(Color.WHITE);
+        labelGagnant.setFont(new Font("SansSerif", Font.BOLD, 16));
+        labelGagnant.setAlignmentX(Component.CENTER_ALIGNMENT);
+        pFin.add(labelGagnant);
+        pFin.add(Box.createRigidArea(new Dimension(0, 30))); // espace avant les scores
+       
 
         Map<Joueur, Integer> scores = modele.getScoresFinaux();
         if (scores != null) {

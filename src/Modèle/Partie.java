@@ -3,6 +3,7 @@ package Modèle;
 import java.io.*;
 import java.util.*;
 import javax.swing.Timer;
+
 import javax.swing.JOptionPane; // Nécessaire pour la boîte de dialogue
 
 public class Partie implements Serializable {
@@ -59,7 +60,6 @@ public class Partie implements Serializable {
         this.observateurs.add(o);
     }
     
- // Dans Partie.java
 
     public void relancerLeJeuApresChargement() {
         // 1️⃣ Recréer les listes transient (pas sauvegardées)
@@ -126,7 +126,7 @@ public class Partie implements Serializable {
     public PaquetCarte getPioche() { return listCarte; }
 
     public void lancerPartie() {
-        if (listJoueur.size() < 3) return;
+        if (this.estJouable()) return;
         initialiserJeu();
         mélanger();
         demarrerNouveauTour();
@@ -163,11 +163,11 @@ public class Partie implements Serializable {
         }
     }
 
-    public void validerChoixOffre(Carte visible) {
+    public void validerChoixOffre(Carte c) {
         if (cartesEnAttente == null || cartesEnAttente.size() < 2) return; 
         try {
-            Carte cachee = (cartesEnAttente.get(0).equals(visible)) ? cartesEnAttente.get(1) : cartesEnAttente.get(0);
-            joueurActuel.setOffre(new Offre(cachee, visible, joueurActuel));
+            Carte cachee = (cartesEnAttente.get(0).equals(c)) ? cartesEnAttente.get(1) : cartesEnAttente.get(0);
+            joueurActuel.setOffre(new Offre(cachee, c, joueurActuel));
             cartesEnAttente.clear();
             indexJoueurOffre++;
             proposerOffreAuJoueurSuivant();
@@ -202,7 +202,7 @@ public class Partie implements Serializable {
         }
     }
 
-    // --- Phase 3 : Transition et Sauvegarde ---
+    // --- Phase 3 : Transition ---
     private void finirTourEtSuivant() {
         // 1. Ramassage des cartes restantes
         for (Joueur j : listJoueur) {
@@ -210,21 +210,7 @@ public class Partie implements Serializable {
             j.setOffre(null); 
         }
 
-        
-     // 2. PROPOSITION DE SAUVEGARDE
-        // On demande à l'utilisateur s'il veut sauvegarder avant de continuer
-        //int choix = JOptionPane.showConfirmDialog(null, 
-            //"Le tour " + numeroTour + " est terminé.\nVoulez-vous sauvegarder la partie maintenant ?", 
-            //"Sauvegarde Automatique", 
-            //JOptionPane.YES_NO_OPTION);
-        
-        //if (choix == JOptionPane.YES_OPTION) {
-            //sauvegarder(this, "partie_jest.ser");
-            //JOptionPane.showMessageDialog(null, "Partie sauvegardée sous 'partie_jest.ser' !");
-        //}
-        
-        
-        // 2. Suite du jeu (pas de pop-up ici!)
+        // 2. Suite du jeu
         if (estJouable()) {
             numeroTour++;
             demarrerNouveauTour();
@@ -280,7 +266,6 @@ public class Partie implements Serializable {
         if (varianteChoisie == 1 && objetVariante != null) return objetVariante.appliquerVariante(this);
         Joueur vainqueur = null;
         for (Joueur j : listJoueur) {
-            if (ontJoueCeTour.contains(j)) continue;
             if (vainqueur == null || comparerForce(j.getOffre().getCarteVisible(), vainqueur.getOffre().getCarteVisible()) > 0) {
                 vainqueur = j;
             }
@@ -312,11 +297,18 @@ public class Partie implements Serializable {
     }
 
     private void initialiserJeu() {
-        LinkedList<Carte> listC = new LinkedList<>();
-        for (TypeCarte type : TypeCarte.values()) {
-            listC.add(new Carte(type.getValeur(), type.getCouleur(), type.getCondition()));
+    	LinkedList<Carte> listC = new LinkedList();
+		for (TypeCarte carte : TypeCarte.values()) {
+            listC.add(new Carte(carte.getValeur(), carte.getCouleur(), carte.getCondition()));
         }
-        this.listCarte = new PaquetCarte(listC);
+		
+		if (extension == true) {
+			System.out.println("Les cartes 6 et 7 de chaque couleur (sauf coeur) sont ajoutés à la partie (extension)");
+			for (CarteVariante carte : CarteVariante.values()) {
+	            listC.add(new Carte(carte.getValeur(), carte.getCouleur(), "None"));
+	        }
+		}
+		this.listCarte = new PaquetCarte(listC);
     }
 
     public void mélanger() { if (listCarte != null) listCarte.melanger(); }
@@ -332,6 +324,7 @@ public class Partie implements Serializable {
     // Getters
     public EtatPartie getEtat() { return etat; }
     public ArrayList<Joueur> getJoueur() { return listJoueur; }
+    public ArrayList<Joueur> getJoueurOntJoueCeTour() { return ontJoueCeTour; }
     public List<Carte> getCartesEnAttente() { return cartesEnAttente; }
     public Joueur getJoueurActuel() { return joueurActuel; }
     public String getDernierMessage() { return dernierMessage; }
