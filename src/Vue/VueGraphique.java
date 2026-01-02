@@ -149,7 +149,6 @@ public class VueGraphique extends JFrame implements Observateur {
             modele.lancerPartie();
         });
         
-        // Listener pour charger la partie
         btnCharger.addActionListener(e -> chargerPartie());       
         
     }
@@ -159,7 +158,7 @@ public class VueGraphique extends JFrame implements Observateur {
      * Met à jour le modèle, réenregistre la vue comme observateur, et rafraîchit l'affichage.
      */
     private void chargerPartie() {
-        // 1️⃣ Charger la partie depuis le fichier
+        // 1. Charger la partie depuis le fichier
         Partie partieChargee = Partie.charger("partie_jest.ser");
         
         if (partieChargee == null) {
@@ -170,14 +169,13 @@ public class VueGraphique extends JFrame implements Observateur {
             return;
         }
 
-        // 2️⃣ Remplacer l'ancien modèle par le nouveau
+        // 2️. Remplacer l'ancien modèle par le nouveau
         this.modele = partieChargee;
 
-        // 3️⃣ CRUCIAL : Ré-enregistrer cette vue comme observateur
-        // (la sérialisation ne sauvegarde pas les observateurs)
+        // 3️. Ré-enregistrer cette vue comme observateur
         this.modele.enregistrerObservateur(this);
 
-        // 4️⃣ Réinitialiser le jeu après chargement
+        // 4️. Réinitialiser le jeu après chargement
         if (this.modele != null) {
             try {
                 this.modele.relancerLeJeuApresChargement();
@@ -188,17 +186,17 @@ public class VueGraphique extends JFrame implements Observateur {
         }
 
 
-        // 5️⃣ Forcer la mise à jour de l'interface
+        // 5️. Forcer la mise à jour de l'interface
         this.modele.notifier();
 
-        // 6️⃣ Message de confirmation
+        // 6️. Message de confirmation
         String message = "Partie chargée avec succès !";
         if (modele.getJoueurActuel() != null) {
             message += "\n\nC'est au tour de : " + modele.getJoueurActuel().getNom();
             message += "\nTour n°" + modele.getNumeroTour();
         }
         
-        // Compter les offres disponibles
+        // 7. Compter les offres disponibles
         int offresDisponibles = 0;
         for (Joueur j : modele.getJoueur()) {
             if (j.getOffre() != null && j.getOffre().estDisponible()) {
@@ -340,7 +338,7 @@ public class VueGraphique extends JFrame implements Observateur {
 
         JPanel panelBas = new JPanel(new BorderLayout());
         panelBas.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        panelBas.setPreferredSize(new Dimension(getWidth(), 80)); // hauteur plus grande
+        panelBas.setPreferredSize(new Dimension(getWidth(), 80)); 
         
         labelMsg.setText(" Action : " + modele.getDernierMessage());
         labelMsg.setFont(new Font("Arial", Font.ITALIC, 13));
@@ -351,7 +349,7 @@ public class VueGraphique extends JFrame implements Observateur {
         
         JPanel panelTrophee = new JPanel();
         panelTrophee.setBackground(new Color(44, 62, 80));
-        panelTrophee.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30)); // hauteur limitée
+        panelTrophee.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30)); 
 
 
         JLabel labelTrophee = new JLabel("Trophée : " + (modele.getTrophees() != null ? modele.getTrophees() : "Aucun"));
@@ -403,8 +401,7 @@ public class VueGraphique extends JFrame implements Observateur {
         labelGagnant.setFont(new Font("SansSerif", Font.BOLD, 16));
         labelGagnant.setAlignmentX(Component.CENTER_ALIGNMENT);
         pFin.add(labelGagnant);
-        pFin.add(Box.createRigidArea(new Dimension(0, 30))); // espace avant les scores
-       
+        pFin.add(Box.createRigidArea(new Dimension(0, 30)));        
 
         Map<Joueur, Integer> scores = modele.getScoresFinaux();
         if (scores != null) {
