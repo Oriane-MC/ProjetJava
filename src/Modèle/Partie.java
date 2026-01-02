@@ -617,15 +617,6 @@ public class Partie implements Serializable {
      */
     public int getVariante() { return varianteChoisie; }
 
-    /**
-     * Retourne la liste des joueurs de la partie.
-     *
-     * @return liste des joueurs
-     */
-	public ArrayList<Joueur> getListJoueur() {
-		return listJoueur;
-	}
-
 	/**
 	 * Définit la liste des joueurs de la partie.
 	 *
@@ -633,15 +624,6 @@ public class Partie implements Serializable {
 	 */
 	public void setListJoueur(ArrayList<Joueur> listJoueur) {
 		this.listJoueur = listJoueur;
-	}
-
-	/**
-	 * Retourne la pioche actuelle de la partie.
-	 *
-	 * @return paquet de cartes
-	 */
-	public PaquetCarte getListCarte() {
-		return listCarte;
 	}
 
 	/**
@@ -669,15 +651,6 @@ public class Partie implements Serializable {
 	 */
 	public void setExtension(boolean extension) {
 		this.extension = extension;
-	}
-
-	/**
-	 * Retourne le numéro de variante choisi pour la partie.
-	 *
-	 * @return numéro de variante
-	 */
-	public int getVarianteChoisie() {
-		return varianteChoisie;
 	}
 
 	/**
@@ -723,15 +696,6 @@ public class Partie implements Serializable {
 	 */
 	public void setObjetVariante(Variante objetVariante) {
 		this.objetVariante = objetVariante;
-	}
-
-	/**
-	 * Retourne la liste des joueurs ayant joué ce tour.
-	 *
-	 * @return liste des joueurs
-	 */
-	public ArrayList<Joueur> getOntJoueCeTour() {
-		return ontJoueCeTour;
 	}
 
 	/**
