@@ -9,10 +9,19 @@ import java.io.Serializable;
  */
 public class Carte implements Serializable {
 	
+	/** La valeur de la carte (ex : 1, 2, 3, ...) */
 	private int valeur;
+
+	/** La couleur de la carte (ex : coeur, carreau, trèfle, pique, joker) */
 	private String couleur;
+
+	/** La condition spéciale du trophée associée à cette carte */
 	private String condition;
+
+	/** Indique si la carte fait partie de l'extension */
 	private boolean extension;
+
+	/** Identifiant de version pour la sérialisation */
 	private static final long serialVersionUID = 1L;
 
 	/**

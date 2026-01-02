@@ -3,8 +3,6 @@ package Modèle;
 import java.io.*;
 import java.util.*;
 import javax.swing.Timer;
-
-
 import javax.swing.JOptionPane; // Nécessaire pour la boîte de dialogue
 
 /**
@@ -19,25 +17,53 @@ public class Partie implements Serializable {
 	 */
     public enum EtatPartie { INITIALISATION, OFFRES, RAMASSAGE, FIN }
     
+    /** Liste des joueurs participant à la partie */
     private ArrayList<Joueur> listJoueur = new ArrayList<>();
-    private List<Carte> cartesEnAttente = new ArrayList<>(); 
+
+    /** Cartes actuellement en attente lors d'une offre */
+    private List<Carte> cartesEnAttente = new ArrayList<>();
+
+    /** Paquet de cartes/pioche utilisées dans la partie */
     private PaquetCarte listCarte;
+
+    /** Phase actuelle de la partie */
     private EtatPartie etat = EtatPartie.INITIALISATION;
+
+    /** Indique si l'extension du jeu est activée */
     private boolean extension = false;
-    private int varianteChoisie = 3; 
+
+    /** Variante choisie pour la partie (1, 2, ou 3) */
+    private int varianteChoisie = 3;
+
+    /** Dernier message envoyé aux joueurs */
     private String dernierMessage = "Bienvenue ! Ajoutez les joueurs.";
+
+    /** Trophées utilisés dans la partie */
     private Trophee trophees;
+
+    /** Numéro du tour actuel */
     private int numeroTour = 1;
+
+    /** Index du joueur dont c'est le tour de proposer une offre */
     private int indexJoueurOffre = 0;
-    
-    private Joueur joueurActuel; 
-    private Variante objetVariante; 
+
+    /** Joueur actuellement actif */
+    private Joueur joueurActuel;
+
+    /** Objet représentant la variante appliquée à la partie */
+    private Variante objetVariante;
+
+    /** Liste des joueurs ayant déjà joué ce tour */
     private ArrayList<Joueur> ontJoueCeTour = new ArrayList<>();
+
+    /** Scores finaux de la partie, associés à chaque joueur */
     private Map<Joueur, Integer> scoresFinaux;
 
+    /** Liste d'observateurs de la partie (non sérialisable) */
     private transient List<Observateur> observateurs = new ArrayList<>();
-    private static final long serialVersionUID = 1L;
 
+    /** Identifiant de version pour la sérialisation */
+    private static final long serialVersionUID = 1L;
     
     /**
      * Constructeur par défaut.

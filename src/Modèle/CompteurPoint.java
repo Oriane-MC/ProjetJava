@@ -10,6 +10,7 @@ import java.util.*;
  */
 public class CompteurPoint implements Visitor, Serializable {
     
+	/** Identifiant de version pour la sérialisation */
     private static final long serialVersionUID = 1L;
 
     /**
@@ -188,7 +189,7 @@ public class CompteurPoint implements Visitor, Serializable {
         for (Carte verif : d.getCartes()) {
             if (c.getCouleur().equalsIgnoreCase(verif.getCouleur())) {
                 if (verif.getValeur() != 1) {
-                    return 0; // Il y a une autre carte de la même couleur
+                    return 1; // Il y a une autre carte de la même couleur
                 }
             }
         }

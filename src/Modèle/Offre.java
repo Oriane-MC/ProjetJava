@@ -9,11 +9,20 @@ import java.util.ArrayList;
  */
 public class Offre implements Serializable {
 	
-    private Carte carteVisible;
-    private Carte carteCachee;
-    private Joueur createur;
-    private boolean disponible; // true si aucune carte n'a encore été prise
-    private static final long serialVersionUID = 1L;
+	/** Carte visible de l'offre, que les autres joueurs peuvent voir */
+	private Carte carteVisible;
+
+	/** Carte cachée de l'offre, que seul le créateur connaît */
+	private Carte carteCachee;
+
+	/** Joueur ayant créé cette offre */
+	private Joueur createur;
+
+	/** Indique si l'offre est encore disponible pour être prise (true si aucune carte n'a été prise) */
+	private boolean disponible;
+
+	/** Identifiant de version pour la sérialisation */
+	private static final long serialVersionUID = 1L;
 
     /**
      * Crée une offre avec une carte cachée, une carte visible et un créateur.

@@ -9,8 +9,11 @@ import java.util.*;
  */
 public class PaquetCarte implements Serializable {
     
-    private LinkedList<Carte> listPioche;
-    private static final long serialVersionUID = 1L;
+	/** Liste des cartes présentes dans le paquet, utilisée comme pioche */
+	private LinkedList<Carte> listPioche;
+
+	/** Identifiant de version pour la sérialisation */
+	private static final long serialVersionUID = 1L;
 
     /**
      * Crée un paquet de cartes à partir d'une liste donnée.

@@ -9,12 +9,23 @@ import java.util.ArrayList;
  */
 public class Joueur implements Serializable {
 	
-    protected String nom;
-    protected String typeJoueur; // "Humain" ou "Virtuel"
-    protected Offre offre;
-    protected Deck deckPossede; 
-    protected transient Partie p;
-    private static final long serialVersionUID = 1L;
+	/** Nom du joueur */
+	protected String nom;
+
+	/** Type du joueur : "Humain" ou "Virtuel" */
+	protected String typeJoueur;
+
+	/** L'offre actuellement en cours pour ce joueur */
+	protected Offre offre;
+
+	/** Le deck possédé par le joueur */
+	protected Deck deckPossede;
+
+	/** La partie à laquelle ce joueur appartient (transient pour ne pas sérialiser) */
+	protected transient Partie p;
+
+	/** Identifiant de version pour la sérialisation */
+	private static final long serialVersionUID = 1L;
 
     /**
      * Crée un joueur avec un nom, un type et une référence à la partie.

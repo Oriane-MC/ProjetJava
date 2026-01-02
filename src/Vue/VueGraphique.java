@@ -6,20 +6,70 @@ import Modèle.*;
 import java.util.Map;
 import java.util.List;
 
+/**
+ * Interface graphique principale du jeu Jest.
+ * 
+ * Cette classe implémente Observateur pour être notifiée des changements
+ * dans le modèle Partie. Elle utilise Swing pour afficher les écrans
+ * de configuration, de jeu et de résultats.
+ */
 public class VueGraphique extends JFrame implements Observateur {
+	
+    /** Référence à la Partie observé. */
     private Partie modele;
 
-    // Composants Saisie
+    // Composants de Saisie
+    /**
+     * Zone de saisie du nom du joueur à ajouter.
+     */
     private JTextField fieldNom = new JTextField(15);
+
+    /**
+     * ComboBox pour choisir le type de joueur : "Humain" ou "Virtuel".
+     */
     private JComboBox<String> comboType = new JComboBox<>(new String[]{"Humain", "Virtuel"});
+
+    /**
+     * ComboBox pour sélectionner la stratégie d'un joueur virtuel : 
+     * "Aléatoire", "Basique", "Défensive" ou "Aggressive".
+     */
     private JComboBox<String> comboStrat = new JComboBox<>(new String[]{"Aléatoire", "Basique", "Défensive", "Aggressive"});
+
+    /**
+     * Checkbox permettant d'activer l'extension, qui ajoute les cartes 6 et 7 au jeu.
+     */
     private JCheckBox checkExtension = new JCheckBox("Activer l'extension (6 et 7)");
+
+    /**
+     * RadioButton pour sélectionner la variante "Premier Joueur Aléatoire".
+     */
     private JRadioButton rbV1 = new JRadioButton("1 - Premier Aléatoire");
+
+    /**
+     * RadioButton pour sélectionner la variante "Sans Trophées".
+     */
     private JRadioButton rbV2 = new JRadioButton("2 - Sans Trophées");
+
+    /**
+     * RadioButton pour ne sélectionner aucune variante (par défaut sélectionné).
+     */
     private JRadioButton rbV3 = new JRadioButton("3 - Aucune", true);
+
+    /**
+     * Zone de texte affichant le récapitulatif des joueurs ajoutés.
+     */
     private JTextArea areaRecap = new JTextArea(8, 30);
+
+    /**
+     * Label affichant le statut général ou les messages de la partie.
+     */
     private JLabel labelMsg = new JLabel("Statut : En attente de joueurs...");
 
+    /**
+     * Constructeur principal.
+     * Initialise la fenêtre, configure les panneaux et rend la fenêtre visible.
+     * @param p la partie à observer et gérer graphiquement
+     */
     public VueGraphique(Partie p) {
         this.modele = p;
         setTitle("Jest Game - Configuration MVC");
@@ -31,6 +81,10 @@ public class VueGraphique extends JFrame implements Observateur {
         setVisible(true);
     }
 
+    /**
+     * Initialise l'écran de configuration de la partie.
+     * Permet de saisir les joueurs, choisir la stratégie IA, et configurer les variantes.
+     */
     private void initialiserEcranConfiguration() {
         getContentPane().removeAll();
         JPanel panelNord = new JPanel();
@@ -104,11 +158,9 @@ public class VueGraphique extends JFrame implements Observateur {
         
     }
     
-    
-    
     /**
-     * Méthode dédiée au chargement d'une partie
-     * Gère proprement la réinitialisation du modèle et de la vue
+     * Charge une partie sauvegardée depuis un fichier.
+     * Met à jour le modèle, réenregistre la vue comme observateur, et rafraîchit l'affichage.
      */
     private void chargerPartie() {
         // 1️⃣ Charger la partie depuis le fichier
@@ -165,8 +217,10 @@ public class VueGraphique extends JFrame implements Observateur {
             JOptionPane.INFORMATION_MESSAGE);
     }
 
-
-    @Override
+    /**
+     * Mise à jour de la vue graphique suite à un changement du modèle.
+     * @param p la partie mise à jour
+     */
     public void update(Partie p) {
         SwingUtilities.invokeLater(() -> {
             if (p.getEtat() == Partie.EtatPartie.INITIALISATION) {
@@ -186,6 +240,18 @@ public class VueGraphique extends JFrame implements Observateur {
         });
     }
 
+    /**
+     * Crée un JPanel représentant un joueur et son état actuel sur le plateau.
+     * 
+     * Le panneau inclut :
+     * - Le nom du joueur et son type (Humain ou Virtuel)
+     * - Le nombre de cartes dans son "Jest"
+     * - Les boutons pour sélectionner les cartes visibles ou cachées si c'est le tour d'un humain
+     * - Une coloration différente si le joueur est actif ou si son offre est déjà prise
+     *
+     * @param j le joueur à représenter
+     * @return un JPanel contenant les informations et actions possibles pour ce joueur
+     */
     private JPanel creerPanelJoueur(Joueur j) {
         JPanel p = new JPanel(new BorderLayout());
         boolean estActif = (j == modele.getJoueurActuel());
@@ -241,6 +307,16 @@ public class VueGraphique extends JFrame implements Observateur {
         return p;
     }
 
+    /**
+     * Affiche le plateau de jeu complet dans la fenêtre graphique.
+     * 
+     * Cette méthode :
+     * - Réinitialise la zone centrale
+     * - Affiche les informations du tour en cours
+     * - Affiche chaque joueur via {@link #creerPanelJoueur(Joueur)}
+     * - Inclut un bouton pour sauvegarder manuellement la partie
+     * - Affiche les trophées actuels
+     */
     private void afficherPlateauDeJeu() {
         getContentPane().removeAll();
         setLayout(new BorderLayout());
@@ -299,6 +375,15 @@ public class VueGraphique extends JFrame implements Observateur {
         revalidate(); repaint();
     }
 
+    /**
+     * Affiche l'écran final de la partie avec le classement des joueurs.
+     *
+     * La méthode :
+     * - Réinitialise la fenêtre centrale
+     * - Affiche le joueur gagnant, ou indique s'il n'y a pas de gagnant
+     * - Affiche les scores finaux détaillés pour chaque joueur
+     * - Ajoute un bouton pour quitter le jeu
+     */
     private void afficherEcranResultats() {
         getContentPane().removeAll();
         setLayout(new BorderLayout());
@@ -384,5 +469,4 @@ public class VueGraphique extends JFrame implements Observateur {
         add(new JScrollPane(pFin), BorderLayout.CENTER);
         revalidate(); repaint();
     }
-
 }

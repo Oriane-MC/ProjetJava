@@ -10,10 +10,14 @@ import java.util.List;
  */
 public class Deck implements Serializable {
 	
-	private List<Carte> cartes; 
-	private Joueur proprietaire; 
-	private static final long serialVersionUID = 1L;
+	/** La liste des cartes contenues dans le deck */
+	private List<Carte> cartes;
 
+	/** Le joueur propriétaire de ce deck */
+	private Joueur proprietaire;
+
+	/** Identifiant de version pour la sérialisation */
+	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * Construit un deck vide associé à un joueur.

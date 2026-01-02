@@ -15,8 +15,13 @@ public enum CarteVariante implements Serializable {
 	CARTE22(6,"carreau"),
 	CARTE23(7,"carreau");
 	
-	private int valeur ;
+	/** La valeur numérique de la carte variante (ex : 6, 7) */
+	private int valeur;
+
+	/** La couleur de la carte variante (ex : pique, trèfle, carreau) */
 	private String couleur;
+
+	/** Identifiant de version pour la sérialisation */
 	private static final long serialVersionUID = 1L;
 
 	/**

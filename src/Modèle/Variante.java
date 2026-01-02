@@ -1,16 +1,29 @@
 package Modèle;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+/**
+ * Interface représentant une variante de jeu.
+ *
+ * Une variante modifie le déroulement ou les règles de la partie.
+ */
 public interface Variante {
 	
+	/**
+	 * Indique que la variante est utilisée dans la partie.
+	 */
 	public void estUtilise();
 	
-	public Joueur appliquerVariante(Partie p ); //renvoie joueur pour variante = VariantePremierJoueurAleatoire et null pour variante = VarianteSansTrophees
+	/**
+	 * Applique les effets de la variante à la partie.
+	 *
+	 * @param p la partie sur laquelle la variante est appliquée
+	 * @return un joueur ou null selon la variante
+	 */
+	public Joueur appliquerVariante(Partie p );
 	
+	/**
+	 * Retourne le nom de la variante pour l'affichage.
+	 *
+	 * @return une description textuelle de la variante
+	 */
 	public String toString();
-	
-
 }

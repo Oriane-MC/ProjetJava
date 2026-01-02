@@ -4,12 +4,32 @@ import java.io.*;
 import java.util.*;
 import javax.swing.Timer;
 
+/**
+ * Représente un joueur virtuel contrôlé par une stratégie.
+ */
 public class Virtuel extends Joueur implements Serializable {
 
+	/**
+	 * Stratégie utilisée par le joueur virtuel.
+	 * Transient car recréée après désérialisation.
+	 */
     private transient Strategie strategie;
+    /**
+     * Identifiant de sérialisation.
+     */
     private static final long serialVersionUID = 1L;
+    /**
+     * Identifiant numérique de la stratégie choisie.
+     */
     private int strategieInt;
 
+    /**
+     * Crée un joueur virtuel avec une stratégie donnée.
+     *
+     * @param nom nom du joueur
+     * @param strategieChoisie identifiant de la stratégie (0 = aléatoire)
+     * @param partie partie associée
+     */
     public Virtuel(String nom, int strategieChoisie, Partie partie) { 
         super(nom, "Virtuel", partie);
         
@@ -21,6 +41,9 @@ public class Virtuel extends Joueur implements Serializable {
         initialiserStrategieObjet();
     }
 
+    /**
+     * Initialise la stratégie en fonction de l'identifiant choisi.
+     */
     private void initialiserStrategieObjet() {
         switch (strategieInt) {
             case 1 -> this.strategie = new StrategieBasique();
@@ -30,13 +53,20 @@ public class Virtuel extends Joueur implements Serializable {
         }
     }
 
+    /**
+     * Réinitialise la stratégie du joueur virtuel.
+     */
     public void reinitialiserStrategie() {
         initialiserStrategieObjet();
     }
 
     /**
-     * L'IA choisit sa carte visible et notifie la partie.
+     * Choisit automatiquement une offre et notifie la partie après un délai.
+     *
+     * @param c1 première carte proposée
+     * @param c2 seconde carte proposée
      */
+
     public void choisirOffreGraphique(Carte c1, Carte c2) {
         ArrayList<Offre> offresAdversaires = new ArrayList<>();
         for (Joueur j : p.getJoueur()) {
@@ -56,7 +86,9 @@ public class Virtuel extends Joueur implements Serializable {
     }
 
     /**
-     * L'IA décide chez qui ramasser et quelle carte prendre.
+     * Joue automatiquement la phase de ramassage selon la stratégie.
+     *
+     * @param partie partie en cours
      */
     public void jouerAutomatiquement(Partie partie) {
         List<Offre> offresDispo = new ArrayList<>();
@@ -81,6 +113,12 @@ public class Virtuel extends Joueur implements Serializable {
         }
     }
 
+    /**
+     * Vérifie si toutes les offres adverses ont déjà été prises.
+     *
+     * @param partie partie en cours
+     * @return true si aucune autre offre n'est disponible
+     */
     private boolean toutesAutresOffresPrises(Partie partie) {
         for (Joueur j : partie.getJoueur()) {
             if (j != this && j.getOffre() != null && j.getOffre().estDisponible()) {
@@ -90,11 +128,47 @@ public class Virtuel extends Joueur implements Serializable {
         return true;
     }
 
+    /**
+     * Retourne la stratégie utilisée par le joueur virtuel.
+     *
+     * @return stratégie courante
+     */
     public Strategie getStrategie() {
         return strategie;
     }
+    
+    /**
+     * Retourne l'identifiant numérique de la stratégie.
+     *
+     * @return identifiant de la stratégie
+     */
+    public int getStrategieInt() {
+		return strategieInt;
+	}
 
-    @Override
+    /**
+     * Modifie l'identifiant numérique de la stratégie.
+     *
+     * @param strategieInt nouvel identifiant de stratégie
+     */
+	public void setStrategieInt(int strategieInt) {
+		this.strategieInt = strategieInt;
+	}
+
+	/**
+	 * Modifie la stratégie utilisée par le joueur virtuel.
+	 *
+	 * @param strategie nouvelle stratégie
+	 */
+	public void setStrategie(Strategie strategie) {
+		this.strategie = strategie;
+	}
+	
+	/**
+     * Retourne une représentation textuelle du joueur virtuel.
+     *
+     * @return description du joueur et de sa stratégie
+     */
     public String toString() {
         String nomStrat = (strategie != null) ? strategie.getClass().getSimpleName() : "Inconnue";
         return nom + " (IA: " + nomStrat + ")";
