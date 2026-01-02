@@ -96,7 +96,7 @@ public enum TypeCarte implements Serializable {
 	/**
 	 * Modifie la couleur de la carte.
 	 *
-	 * @param couleur nouvelle couleur de la carte
+	 * @return la condition de la carte
 	 */
 	public String getCondition() {
 		return condition;

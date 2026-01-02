@@ -6,3 +6,10 @@
  * conception comme Observer, Strategy et Visitor pour structurer la logique
  * du jeu, gérer les interactions et les stratégies des joueurs.
  */
+module ProjetJava {
+    requires java.desktop;
+    exports Modèle;
+    exports Controleur;
+    exports Vue;
+}
+
