@@ -47,7 +47,7 @@ public class Virtuel extends Joueur implements Serializable {
     private void initialiserStrategieObjet() {
         switch (strategieInt) {
             case 1 -> this.strategie = new StrategieBasique();
-            case 2 -> this.strategie = new StratégieDéfensive(); // Assure-toi que le nom du fichier correspond
+            case 2 -> this.strategie = new StratégieDéfensive(); 
             case 3 -> this.strategie = new StrategiesAggressive();
             default -> this.strategie = new StrategieBasique();
         }

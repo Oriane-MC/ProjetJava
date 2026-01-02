@@ -3,6 +3,7 @@ package Modèle;
 import java.io.*;
 import java.util.*;
 import javax.swing.Timer;
+
 import javax.swing.JOptionPane; // Nécessaire pour la boîte de dialogue
 
 /**
@@ -109,7 +110,7 @@ public class Partie implements Serializable {
      * Réinitialise les éléments transient et restaure l'état nécessaire après le chargement d'une partie.
      */
     public void relancerLeJeuApresChargement() {
-        // 1️ Recréer les listes transient (pas sauvegardées)
+        // Recréer les listes transient (pas sauvegardées)
         if (observateurs == null) {
             observateurs = new ArrayList<>();
         }
@@ -119,21 +120,44 @@ public class Partie implements Serializable {
         if (cartesEnAttente == null) {
             cartesEnAttente = new ArrayList<>();
         }
+        
+        // Restaurer la référence à la Partie pour tous les joueurs
+        for (Joueur j : listJoueur) {
+            j.setPartie(this);
+        }
 
-        // 2️ Restaurer joueurActuel si nécessaire
+        // Restaurer joueurActuel si nécessaire
         if (joueurActuel == null && !listJoueur.isEmpty() && etat != EtatPartie.INITIALISATION) {
             joueurActuel = listJoueur.get(0);
         }
 
-        // 3️ Réinitialiser les stratégies IA
+        // Réinitialiser les stratégies IA
         for (Joueur j : listJoueur) {
             if (j instanceof Virtuel) {
                 ((Virtuel) j).reinitialiserStrategie();
             }
         }
 
-        // 4️ Message de confirmation
+        // Message de confirmation
         dernierMessage = "Partie chargée - Tour n°" + numeroTour;
+        
+        // Relancer la logique de jeu si nécessaire
+        if (etat == EtatPartie.OFFRES && joueurActuel != null) {
+            // Si on est en phase d'offres et que c'est un joueur virtuel, relancer son action
+            if (joueurActuel instanceof Virtuel && cartesEnAttente != null && cartesEnAttente.size() == 2) {
+                Timer timer = new Timer(1500, e -> 
+                    ((Virtuel) joueurActuel).choisirOffreGraphique(
+                        cartesEnAttente.get(0), 
+                        cartesEnAttente.get(1)
+                    )
+                );
+                timer.setRepeats(false);
+                timer.start();
+            }
+        } else if (etat == EtatPartie.RAMASSAGE && joueurActuel != null) {
+            // Si on est en phase de ramassage et que c'est un joueur virtuel
+            verifierSiRobotDoitJouer();
+        }
     }
 
     // --- Gestion des Observateurs ---
@@ -233,6 +257,7 @@ public class Partie implements Serializable {
         this.indexJoueurOffre = 0; 
         this.répartir(); 
         this.etat = EtatPartie.OFFRES;
+        notifier();
         proposerOffreAuJoueurSuivant();
     }
 
@@ -242,25 +267,49 @@ public class Partie implements Serializable {
      * - Si le joueur est virtuel, déclenche son choix automatique.
      * - Si la pioche n'a plus assez de cartes, termine le tour et passe à la phase suivante.
      */
+    /**
+     * Propose l'offre de cartes au joueur suivant dans la phase d'offres.
+     * 
+     * - Si le joueur est virtuel, déclenche son choix automatique.
+     * - Si la pioche n'a plus assez de cartes, termine le tour et passe à la phase suivante.
+     */
     private void proposerOffreAuJoueurSuivant() {
-        if (indexJoueurOffre < listJoueur.size()) {
-            this.joueurActuel = listJoueur.get(indexJoueurOffre);
-            this.cartesEnAttente.clear();
+        // Vérifier si tous les joueurs ont déjà reçu leur offre
+        if (indexJoueurOffre >= listJoueur.size()) {
+            passerAuRamassage();
+            return;
+        }
+        
+        this.joueurActuel = listJoueur.get(indexJoueurOffre);
+        this.cartesEnAttente.clear();
 
-            if (listCarte.getNombreCartes() >= 2) {
-                this.cartesEnAttente.add(listCarte.piocher());
-                this.cartesEnAttente.add(listCarte.piocher());
-                this.dernierMessage = joueurActuel.getNom() + ", choisis ta carte VISIBLE.";
-                notifier();
-                
-                if (joueurActuel instanceof Virtuel) {
-                    ((Virtuel) joueurActuel).choisirOffreGraphique(cartesEnAttente.get(0), cartesEnAttente.get(1));
-                }
-            } else {
-                finirTourEtSuivant(); 
+        // Vérifier qu'il reste bien 2 cartes disponibles
+        if (listCarte.getNombreCartes() >= 2) {
+            this.cartesEnAttente.add(listCarte.piocher());
+            this.cartesEnAttente.add(listCarte.piocher());
+            this.dernierMessage = joueurActuel.getNom() + ", choisis ta carte VISIBLE.";
+            notifier();
+            
+            if (joueurActuel instanceof Virtuel) {
+                // Délai pour laisser le temps à l'interface de se mettre à jour
+                Timer timer = new Timer(1500, e -> 
+                    ((Virtuel) joueurActuel).choisirOffreGraphique(
+                        cartesEnAttente.get(0), 
+                        cartesEnAttente.get(1)
+                    )
+                );
+                timer.setRepeats(false);
+                timer.start();
             }
         } else {
-            passerAuRamassage();
+            // Plus assez de cartes : terminer prématurément le tour
+            dernierMessage = "Plus assez de cartes pour continuer les offres. Passage au ramassage.";
+            notifier();
+            // NE PAS passer au ramassage si tous les joueurs n'ont pas d'offre !
+            // On termine directement le tour
+            Timer timer = new Timer(1500, e -> finirTourEtSuivant());
+            timer.setRepeats(false);
+            timer.start();
         }
     }
 
@@ -279,6 +328,7 @@ public class Partie implements Serializable {
             proposerOffreAuJoueurSuivant();
         } catch (Exception e) {
             System.err.println("Erreur validation offre: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -339,12 +389,14 @@ public class Partie implements Serializable {
             j.setOffre(null); 
         }
 
-        // 2. Suite du jeu
+        // 2. demarre nouveau tour ou termine la partie
         if (estJouable()) {
             numeroTour++;
             demarrerNouveauTour();
+            notifier();
         } else {
             terminerLaPartie();
+            notifier();
         }
     }
     
@@ -358,13 +410,22 @@ public class Partie implements Serializable {
     private void terminerLaPartie() {
         this.etat = EtatPartie.FIN;
         try {
-            CompteurPoint visiteur = new CompteurPoint();
-            this.scoresFinaux = visiteur.visit(this); 
+        	Visitor cpt = new CompteurPoint();
+        	this.scoresFinaux = this.accept(cpt);
             this.dernierMessage = "Jeu terminé !";
         } catch (Exception e) {
             this.dernierMessage = "Erreur calcul score.";
         }
         notifier();
+    }
+    
+    /** 
+     * méthode relatif au pattern Visitor
+     * @param v
+     * @return
+     */
+    public Map<Joueur, Integer> accept(Visitor v) throws GameException {
+    	return v.visit(this);
     }
 
     // --- Autres Méthodes ---
@@ -475,8 +536,8 @@ public class Partie implements Serializable {
      *
      * @return true si la partie est jouable, false sinon
      */
-    public boolean estJouable() {
-        return listCarte != null && listCarte.getNombreCartes() >= listJoueur.size();
+    public boolean estJouable() {    	
+        return (listCarte != null && listCarte.getNombreCartes() >= (listJoueur.size() * 2));
     }
 
     /**
@@ -493,7 +554,6 @@ public class Partie implements Serializable {
         }
 		
 		if (extension == true) {
-			System.out.println("Les cartes 6 et 7 de chaque couleur (sauf coeur) sont ajoutés à la partie (extension)");
 			for (CarteVariante carte : CarteVariante.values()) {
 	            listC.add(new Carte(carte.getValeur(), carte.getCouleur(), "None"));
 	        }

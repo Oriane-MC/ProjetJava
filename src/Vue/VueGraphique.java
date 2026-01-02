@@ -150,10 +150,6 @@ public class VueGraphique extends JFrame implements Observateur {
         });
         
         // Listener pour charger la partie
-     // Dans VueGraphique.java (dans initialiserEcranConfiguration)
-
-     // Dans VueGraphique.java (Listener du bouton Charger)
-
         btnCharger.addActionListener(e -> chargerPartie());       
         
     }
