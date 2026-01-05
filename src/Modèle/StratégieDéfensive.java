@@ -15,6 +15,11 @@ import java.util.Random;
 public class StratégieDéfensive implements Strategie {
 
 	/**
+	 * Crée une stratégie de type défensive
+	 */
+	public StratégieDéfensive() {	}
+	
+	/**
      * Crée l'offre du joueur selon la stratégie défensive.
      * La carte visible est la plus forte et la carte cachée est la plus faible.
      *

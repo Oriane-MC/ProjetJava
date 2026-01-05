@@ -11,6 +11,11 @@ import java.util.Random;
  * - Lors du choix d'une offre adverse, le joueur est choisi aléatoirement parmi les offres disponibles.
  */
 public class StrategieBasique implements Strategie {
+	
+	/**
+	 * Crée une stratégie de type basique
+	 */
+	public StrategieBasique() {	}
     
 	/**
 	 * Crée l'offre du joueur.

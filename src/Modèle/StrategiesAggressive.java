@@ -15,6 +15,11 @@ import java.util.Random;
 public class StrategiesAggressive implements Strategie {
 
 	/**
+	 * Crée une stratégie de type aggressive
+	 */
+	public StrategiesAggressive() {	}
+	
+	/**
      * Crée l'offre du joueur selon la stratégie agressive.
      * La carte visible est la plus faible et la carte cachée est la plus forte.
      *

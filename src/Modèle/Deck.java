@@ -93,18 +93,5 @@ public class Deck implements Serializable {
      */
     public int getTaille() {
         return this.cartes.size();
-    }
-    
-    /**
-     * Retire et retourne la dernière carte du deck.
-     *
-     * @return carte retirée, ou null si le deck est vide
-     */
-    public Carte piocherCarte() {
-		if (this.cartes.isEmpty()) {
-			return null; // Retourne null si le deck est vide
-		}
-		// Pioche la dernière carte et l'enlever
-		return this.cartes.remove(this.cartes.size() - 1); 
-	}  
+    } 
 }

@@ -12,6 +12,11 @@ public class CompteurPoint implements Visitor, Serializable {
     
 	/** Identifiant de version pour la sérialisation */
     private static final long serialVersionUID = 1L;
+    
+    /**
+	 * Crée un compteur de points
+	 */
+	public CompteurPoint() {	}
 
     /**
      * Calcule le score total d'un joueur à partir de son deck.
