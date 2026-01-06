@@ -20,6 +20,9 @@ public class VueConsole implements Observateur, Runnable {
 	
     /** Référence à la partie en cours. */
     private Partie partie;
+    
+    private boolean attenteAction = false;
+
 
     /**
      * Méthode appelée lorsque le modèle notifie un changement.
@@ -27,19 +30,25 @@ public class VueConsole implements Observateur, Runnable {
      *
      * @param p la partie mise à jour
      */
-    public void update(Partie p) {
+    @Override
+    public synchronized void update(Partie p) {
         this.partie = p;
+
         System.out.println("\n" + "=".repeat(30));
         System.out.println("[CONSOLE] " + p.getDernierMessage());
         System.out.println("=".repeat(30));
 
+        // Autoriser une nouvelle action humaine
+        attenteAction = false;
+
         if (p.getEtat() == EtatPartie.FIN) {
             System.out.println("\n--- SCORES FINAUX ---");
-            p.getScore().forEach((joueur, score) -> {
-                System.out.println(joueur.getNom() + " : " + score + " points");
-            });
+            p.getScore().forEach((joueur, score) ->
+                System.out.println(joueur.getNom() + " : " + score + " points")
+            );
         }
     }
+
 
     /**
      * Boucle du thread console.
@@ -47,22 +56,28 @@ public class VueConsole implements Observateur, Runnable {
      * Tant que le thread tourne, attend les actions du joueur humain
      * et affiche les menus appropriés selon l'état de la partie.
      */
+    @Override
     public void run() {
         while (true) {
-            // On ne demande une saisie QUE si c'est le tour d'un humain
-            if (partie != null && partie.getJoueurActuel() != null 
-                && !(partie.getJoueurActuel() instanceof Modèle.Virtuel)) {
-                
+            if (partie != null
+                && partie.getJoueurActuel() != null
+                && !(partie.getJoueurActuel() instanceof Modèle.Virtuel)
+                && !attenteAction) {
+
+                attenteAction = true;
+
                 if (partie.getEtat() == EtatPartie.OFFRES) {
                     afficherMenuOffre(partie);
-                } 
+                }
                 else if (partie.getEtat() == EtatPartie.RAMASSAGE) {
                     afficherMenuRamassage(partie);
                 }
             }
-            try { Thread.sleep(500); } catch (InterruptedException e) {} 
+
+            try { Thread.sleep(200); } catch (InterruptedException e) {}
         }
     }
+
 
     /**
      * Affiche le menu pour le choix de l'offre et valide la carte choisie.

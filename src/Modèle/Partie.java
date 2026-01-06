@@ -186,6 +186,28 @@ public class Partie implements Serializable {
     // --- Initialisation ---
     
     /**
+     * Vérifie si le nombre de joueurs permet de lancer la partie.
+     * Affiche un message d'erreur si ce n'est pas le cas.
+     *
+     * @return true si le nombre de joueurs est valide, false sinon
+     */
+    public boolean verifierNombreJoueurs() {
+        if (listJoueur.size() < 3) {
+            dernierMessage = "Il faut au minimum 3 joueurs pour lancer la partie !";
+            JOptionPane.showMessageDialog(
+                null,
+                dernierMessage,
+                "Nombre de joueurs insuffisant",
+                JOptionPane.WARNING_MESSAGE
+            );
+            notifier();
+            return false;
+        }
+        return true;
+    }
+
+    
+    /**
      * Ajoute un joueur à la partie.
      * Limite de 4 joueurs maximum.
      *
@@ -196,7 +218,8 @@ public class Partie implements Serializable {
     public void ajouterJoueur(String nom, String type, int strategie) {
         if (listJoueur.size() >= 4) {
             dernierMessage = "Maximum 4 joueurs !";
-        } else {
+        } 
+        else {
             Joueur j = type.equalsIgnoreCase("Virtuel") ? 
                        new Virtuel(nom, strategie, this) : new Joueur(nom, "Humain", this);
             listJoueur.add(j);
@@ -236,6 +259,7 @@ public class Partie implements Serializable {
      * Initialise et lance la partie : mélange les cartes, distribue les trophées et démarre le premier tour.
      */
     public void lancerPartie() {
+    	if (!verifierNombreJoueurs()) return;
         if (this.estJouable()) return;
         initialiserJeu();
         mélanger();
