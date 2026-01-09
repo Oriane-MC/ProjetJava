@@ -58,7 +58,7 @@ public class Partie implements Serializable {
     private ArrayList<Joueur> ontJoueCeTour = new ArrayList<>();
 
     /** Scores finaux de la partie, associés à chaque joueur */
-    private Map<Joueur, Integer> scoresFinaux;
+    private Map<Joueur, Integer> scoresFinaux = new HashMap<>();
 
     /** Liste d'observateurs de la partie (non sérialisable) */
     private transient List<Observateur> observateurs = new ArrayList<>();
@@ -438,6 +438,7 @@ public class Partie implements Serializable {
         	this.scoresFinaux = this.accept(cpt);
             this.dernierMessage = "Jeu terminé !";
         } catch (Exception e) {
+        	e.printStackTrace();
             this.dernierMessage = "Erreur calcul score.";
         }
         notifier();
