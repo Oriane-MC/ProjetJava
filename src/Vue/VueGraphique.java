@@ -196,15 +196,6 @@ public class VueGraphique extends JFrame implements Observateur {
             message += "\nTour n°" + modele.getNumeroTour();
         }
         
-        // 7. Compter les offres disponibles
-        int offresDisponibles = 0;
-        for (Joueur j : modele.getJoueur()) {
-            if (j.getOffre() != null && j.getOffre().estDisponible()) {
-                offresDisponibles++;
-            }
-        }
-        message += "\n\nOffres disponibles: " + offresDisponibles;
-        
         JOptionPane.showMessageDialog(this, 
             message,
             "Chargement réussi",
